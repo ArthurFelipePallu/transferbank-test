@@ -4,7 +4,8 @@ Aplicação full stack desenvolvida para simular o fluxo de autenticação de um
 
 
 Requisito 1 – Prompts Utilizados
-Geração da Logo (Nano Banana)
+
+* Geração da Logo (Nano Banana)
 
 Prompt utilizado:
 gere a logo para um banco / uma corretora de criptoativos ficticio , o banco teria presença mais consolidada no sul do país (Brasil) , com branches nas principais capitais do país
@@ -12,10 +13,7 @@ apenas a logo , sem o nome do banco e sem iluminação na imagem , apenas a logo
 retire a aparencia 3d da imagem , deixe a logo puramente 2d , sem sombras
 
 
-
-
-
- Geração do Layout das Páginas (UX Pilot)
+* Geração do Layout das Páginas (UX Pilot)
 
 Prompt utilizado:
 generate a design for a mobile and web onboarding website, use the colorpalete of transferbank, the design should encompass a register main page , asking for CNPJ , name of the company , fantasy name, crypto currency that user wishes to operate , phone , email , password and password confirmation, password should have strenght security control.
