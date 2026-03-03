@@ -1,17 +1,89 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Vue\\transfer-bank-project\\backend\\src\\Api\\Api.csproj": {}
+    "E:\\vue\\transfer-bank-project\\backend\\src\\api\\Api.csproj": {}
   },
   "projects": {
-    "E:\\Vue\\transfer-bank-project\\backend\\src\\Api\\Api.csproj": {
+    "E:\\vue\\transfer-bank-project\\backend\\src\\api\\Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Vue\\transfer-bank-project\\backend\\src\\Api\\Api.csproj",
+        "projectUniqueName": "E:\\vue\\transfer-bank-project\\backend\\src\\api\\Api.csproj",
         "projectName": "Api",
-        "projectPath": "E:\\Vue\\transfer-bank-project\\backend\\src\\Api\\Api.csproj",
+        "projectPath": "E:\\vue\\transfer-bank-project\\backend\\src\\api\\Api.csproj",
         "packagesPath": "C:\\Users\\Arthut Pallu\\.nuget\\packages\\",
-        "outputPath": "E:\\Vue\\transfer-bank-project\\backend\\src\\Api\\obj\\",
+        "outputPath": "E:\\vue\\transfer-bank-project\\backend\\src\\api\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Arthut Pallu\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj": {
+                "projectPath": "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[10.1.4, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj",
+        "projectName": "Domain",
+        "projectPath": "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\Arthut Pallu\\.nuget\\packages\\",
+        "outputPath": "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Arthut Pallu\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -38,17 +110,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "dependencies": {
-            "Microsoft.AspNetCore.OpenApi": {
-              "target": "Package",
-              "version": "[9.0.11, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
@@ -60,33 +126,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[9.0.11, 9.0.11]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[9.0.11, 9.0.11]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[9.0.11, 9.0.11]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[9.0.11, 9.0.11]"
-            }
-          ],
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\Arthut Pallu\\.dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

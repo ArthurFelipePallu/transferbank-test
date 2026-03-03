@@ -1,0 +1,12 @@
+E:\vue\transfer-bank-project\backend\src\Domain\bin\Debug\net9.0\Domain.deps.json
+E:\vue\transfer-bank-project\backend\src\Domain\bin\Debug\net9.0\Domain.dll
+E:\vue\transfer-bank-project\backend\src\Domain\bin\Debug\net9.0\Domain.pdb
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\Domain.sourcelink.json
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\Domain.dll
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\refint\Domain.dll
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\Domain.pdb
+E:\vue\transfer-bank-project\backend\src\Domain\obj\Debug\net9.0\ref\Domain.dll
