@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import CryptoChip from './CryptoChip.vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import { onboardingSchema, type OnboardingFormValues } from '../schemas/onboarding'
 import FormInputField from './FormInputField.vue'
-
+import { CryptoCurrencyEnum } from '@/api/backendApi'
+import { onboardingSchema, type OnboardingFormValues } from '../schemas/onboarding'
+import { CryptoCurrencyModel, cryptoCurrencies } from '@/models/CryptoCurrencyModel'
 const props = withDefaults(
   defineProps<{
     submitLabel?: string
@@ -43,7 +45,7 @@ const {
   setTouched: setCryptoTouched,
 } = useField<OnboardingFormValues['cryptoCurrencies']>('cryptoCurrencies')
 
-const toggleCrypto = (symbol: 'BTC' | 'ETH' | 'USDT') => {
+const toggleCrypto = (symbol: CryptoCurrencyEnum) => {
   setCryptoTouched(true)
   const current = values.cryptoCurrencies ?? []
   if (current.includes(symbol)) {
@@ -95,12 +97,7 @@ const submit = handleSubmit((values) => {
 <template>
   <form class="form" @submit.prevent="submit">
     <div class="field-row">
-      <FormInputField
-        name="cnpj"
-        label="CNPJ"
-        placeholder="00.000.000/0000-00"
-        inputmode="numeric"
-      />
+      <FormInputField name="cnpj" label="CNPJ" placeholder="00.000.000/0000-00" inputmode="numeric" />
 
       <FormInputField name="companyName" label="Company name" placeholder="Your company LTDA" />
     </div>
@@ -110,67 +107,26 @@ const submit = handleSubmit((values) => {
     <div class="field">
       <label class="inline-label">Crypto currencies to operate</label>
       <div class="chips">
-        <button
-          type="button"
-          class="chip"
-          :class="{ 'chip--active': values.cryptoCurrencies?.includes('BTC') }"
-          @click="toggleCrypto('BTC')"
-        >
-          BTC
-        </button>
-        <button
-          type="button"
-          class="chip"
-          :class="{ 'chip--active': values.cryptoCurrencies?.includes('ETH') }"
-          @click="toggleCrypto('ETH')"
-        >
-          ETH
-        </button>
-        <button
-          type="button"
-          class="chip"
-          :class="{ 'chip--active': values.cryptoCurrencies?.includes('USDT') }"
-          @click="toggleCrypto('USDT')"
-        >
-          USDT
-        </button>
+        <CryptoChip v-for="c in cryptoCurrencies" :key="c.alias" :currency-model="c"
+          :is-active="values.cryptoCurrencies?.includes(c.currency)" @clicked="toggleCrypto" />
+
       </div>
       <p v-if="cryptoMeta.touched && cryptoError" class="error">{{ cryptoError }}</p>
     </div>
 
     <div class="field-row">
-      <FormInputField
-        name="phone"
-        label="Phone"
-        type="tel"
-        placeholder="+55 11 99999-9999"
-        inputmode="tel"
-      />
+      <FormInputField name="phone" label="Phone" type="tel" placeholder="+55 11 99999-9999" inputmode="tel" />
 
-      <FormInputField
-        name="email"
-        label="Email"
-        type="email"
-        placeholder="you@company.com"
-        autocomplete="email"
-      />
+      <FormInputField name="email" label="Email" type="email" placeholder="you@company.com" autocomplete="email" />
     </div>
 
-    <FormInputField
-      name="password"
-      label="Password"
-      type="password"
-      autocomplete="new-password"
-      placeholder="Create a strong password"
-    >
+    <FormInputField name="password" label="Password" type="password" autocomplete="new-password"
+      placeholder="Create a strong password">
       <template #below>
         <div class="password-strength">
           <div class="password-strength-bar">
-            <div
-              class="password-strength-bar-fill"
-              :class="passwordStrengthClass"
-              :style="{ width: passwordStrengthPercent + '%' }"
-            />
+            <div class="password-strength-bar-fill" :class="passwordStrengthClass"
+              :style="{ width: passwordStrengthPercent + '%' }" />
           </div>
           <span class="password-strength-label">{{ passwordStrengthLabel }}</span>
         </div>
@@ -183,13 +139,8 @@ const submit = handleSubmit((values) => {
       </template>
     </FormInputField>
 
-    <FormInputField
-      name="passwordConfirmation"
-      label="Confirm password"
-      type="password"
-      autocomplete="new-password"
-      placeholder="Repeat your password"
-    />
+    <FormInputField name="passwordConfirmation" label="Confirm password" type="password" autocomplete="new-password"
+      placeholder="Repeat your password" />
 
     <button class="submit" type="submit" :disabled="!meta.valid">
       {{ props.submitLabel }}
@@ -214,7 +165,7 @@ const submit = handleSubmit((values) => {
   gap: 1.25rem;
 }
 
-.field-row > * {
+.field-row>* {
   flex: 1 1 0;
 }
 
@@ -236,32 +187,7 @@ const submit = handleSubmit((values) => {
   gap: 0.5rem;
 }
 
-.chip {
-  padding: 0.4rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid var(--color-chip-border);
-  background: var(--color-chip-bg);
-  color: var(--color-text-main);
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    transform 0.05s ease;
-}
 
-.chip--active {
-  background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
-  border-color: transparent;
-  color: var(--color-white);
-  transform: translateY(-1px);
-}
-
-.chip:focus-visible {
-  outline: 2px solid var(--color-primary-teal-alt);
-  outline-offset: 2px;
-}
 
 .password-strength {
   display: flex;
@@ -315,7 +241,7 @@ const submit = handleSubmit((values) => {
   color: var(--color-text-muted);
 }
 
-.password-hints li + li {
+.password-hints li+li {
   margin-top: 0.1rem;
 }
 
@@ -366,4 +292,3 @@ const submit = handleSubmit((values) => {
   }
 }
 </style>
-

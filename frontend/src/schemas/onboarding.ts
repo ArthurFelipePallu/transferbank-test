@@ -1,13 +1,12 @@
 import { z } from 'zod'
+import { CryptoCurrencyEnum } from '@/api/backendApi'
 
 export const onboardingSchema = z
   .object({
     cnpj: z.string().min(1, 'CNPJ is required'),
     companyName: z.string().min(1, 'Company name is required'),
     fullName: z.string().min(1, 'Name is required'),
-    cryptoCurrencies: z
-      .array(z.enum(['BTC', 'ETH', 'USDT']))
-      .min(1, 'Select at least one currency'),
+    cryptoCurrencies: z.array(z.enum(CryptoCurrencyEnum)).min(1, 'Select at least one currency'),
     phone: z.string().min(1, 'Phone is required'),
     email: z.email('Enter a valid email address'),
     password: z
