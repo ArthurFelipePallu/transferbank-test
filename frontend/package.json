@@ -14,7 +14,7 @@
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
     "format": "prettier --write --experimental-cli src/",
-    "generate:api": "swagger-typescript-api generate -p http://localhost:5287/swagger/v1/swagger.json -o src/api -n backendApi.ts"
+    "generate:api": "swagger-typescript-api generate -p http://localhost:5287/swagger/v1/swagger.json -o src/api -n backendApi.ts / --module-name-first-tag"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
