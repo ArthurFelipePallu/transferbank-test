@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import CryptoChip from './CryptoChip.vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from './FormInputField.vue'
-import { CryptoCurrencyEnum } from '@/api/backendApi'
+import { CryptoCurrencyEnum, type CryptoCurrencyDto } from '@/api/backendApi'
 import { onboardingSchema, type OnboardingFormValues } from '../schemas/onboarding'
-import { CryptoCurrencyModel, cryptoCurrencies } from '@/models/CryptoCurrencyModel'
+import { getCryptoCurrencies } from '@/api/repositories/currencyRepository'
+
+
+const cryptoCurrencies = ref<CryptoCurrencyDto[]>([])
+
+onMounted(async () => {
+  cryptoCurrencies.value = await getCryptoCurrencies()
+})
+
 const props = withDefaults(
   defineProps<{
     submitLabel?: string
@@ -108,7 +116,7 @@ const submit = handleSubmit((values) => {
       <label class="inline-label">Crypto currencies to operate</label>
       <div class="chips">
         <CryptoChip v-for="c in cryptoCurrencies" :key="c.alias" :currency-model="c"
-          :is-active="values.cryptoCurrencies?.includes(c.currency)" @clicked="toggleCrypto" />
+          :is-active="values.cryptoCurrencies?.includes(c.value)" @clicked="toggleCrypto" />
 
       </div>
       <p v-if="cryptoMeta.touched && cryptoError" class="error">{{ cryptoError }}</p>
