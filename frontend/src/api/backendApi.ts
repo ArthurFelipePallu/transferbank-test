@@ -23,17 +23,25 @@ export enum CryptoCurrencyEnum {
 }
 
 export interface CompanyDto {
-  cnpj?: string | null;
-  companyName?: string | null;
-  fullName?: string | null;
-  cryptoCurrencies?: CryptoCurrencyEnum[] | null;
-  phone?: string | null;
-  email?: string | null;
-  password?: string | null;
+  /** @minLength 1 */
+  cnpj: string;
+  /** @minLength 1 */
+  companyName: string;
+  /** @minLength 1 */
+  fullName: string;
+  cryptoCurrencies: CryptoCurrencyEnum[];
+  /** @minLength 1 */
+  phone: string;
+  /** @minLength 1 */
+  email: string;
+  /** @minLength 1 */
+  password: string;
 }
 
-export interface CryptoCurrencyResponseDto {
-  currency?: CryptoCurrencyEnum;
+export interface CryptoCurrencyDto {
+  value: CryptoCurrencyEnum;
+  /** @minLength 1 */
+  alias: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -298,7 +306,7 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
-  api = {
+  currency = {
     /**
      * No description
      *
@@ -307,13 +315,29 @@ export class Api<
      * @request GET:/api/Currency/most-valuable-currency
      */
     currencyMostValuableCurrencyList: (params: RequestParams = {}) =>
-      this.request<CryptoCurrencyResponseDto, any>({
+      this.request<CryptoCurrencyDto, any>({
         path: `/api/Currency/most-valuable-currency`,
         method: "GET",
         format: "json",
         ...params,
       }),
 
+    /**
+     * No description
+     *
+     * @tags Currency
+     * @name CurrencyAllCryptoCurrenciesList
+     * @request GET:/api/Currency/all-crypto-currencies
+     */
+    currencyAllCryptoCurrenciesList: (params: RequestParams = {}) =>
+      this.request<CryptoCurrencyDto[], any>({
+        path: `/api/Currency/all-crypto-currencies`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  registry = {
     /**
      * No description
      *
