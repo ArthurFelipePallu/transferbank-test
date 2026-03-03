@@ -1,16 +1,17 @@
-﻿using Domain.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using Domain.Enums;
 
 namespace Domain.Models;
 
 public class CompanyDto
 {
-    public string Cnpj { get; set; }
-    public string CompanyName { get; set; }
-    public string FullName { get; set; }
-    public CryptoCurrencyEnum[] CryptoCurrencies { get; set; }
-    public string Phone { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
+    [property: Required] public string Cnpj { get; set; }
+    [property: Required] public string CompanyName { get; set; }
+    [property: Required] public string FullName { get; set; }
+    [property: Required] public CryptoCurrencyEnum[] CryptoCurrencies { get; set; }
+    [property: Required] public string Phone { get; set; }
+    [property: Required] public string Email { get; set; }
+    [property: Required] public string Password { get; set; }
 
     public CompanyDto(string cnpj, string companyName, CryptoCurrencyEnum[] cryptos ,string fullName, string phone, string email, string password)
     {
