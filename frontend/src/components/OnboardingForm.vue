@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
 import CryptoChip from './CryptoChip.vue'
+import { computed, onMounted, ref } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from './FormInputField.vue'
-import { CryptoCurrencyEnum, type CryptoCurrencyDto } from '@/api/backendApi'
-import { onboardingSchema, type OnboardingFormValues } from '../schemas/onboarding'
 import { getCryptoCurrencies } from '@/api/repositories/currencyRepository'
+import { CryptoCurrencyEnum, type CryptoCurrencyDto } from '@/api/backendApi'
+import { type OnboardingFormValues, onboardingSchema } from '@/domain/onboarding/onboarding.schema'
 
 
 const cryptoCurrencies = ref<CryptoCurrencyDto[]>([])

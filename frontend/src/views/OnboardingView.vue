@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import OnboardingForm from '../components/OnboardingForm.vue'
-import type { OnboardingFormValues } from '../schemas/onboarding'
+import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
+import { registerCompany } from '@/application/onboarding/registerCompanyUseCase'
+import { httpRegistryGateway } from '@/infrastructure/onboarding/HttpRegistryGateway'
 
-const onSubmit = (values: OnboardingFormValues) => {
-  // Here you would typically call an API to submit the data.
-  // For now, just log the payload.
-  console.log('Onboarding data', values)
+const onSubmit = async (values: OnboardingFormValues) => {
+  await registerCompany(httpRegistryGateway, values)
 }
 </script>
 

@@ -1,7 +1,9 @@
-import { api } from '@/api/client'
+import { api } from '@/api/apiClient'
 import type { CryptoCurrencyDto } from '@/api/backendApi'
 
-export async function getCryptoCurrencies(): Promise<CryptoCurrencyDto[]> {
-  const response = await api.currency.currencyAllCryptoCurrenciesList()
-  return response.data
+export const cryptoRepository = {
+  async getAll() {
+    const { data } = await api.currency.currencyAllCryptoCurrenciesList()
+    return data
+  },
 }

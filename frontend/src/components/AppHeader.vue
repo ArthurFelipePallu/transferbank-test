@@ -7,7 +7,7 @@ import { RouterLink } from 'vue-router'
     <div class="app-header-inner">
       <div class="brand">
         <div class="brand-logo">
-          <span class="brand-logo-mark">MB</span>
+          <img src="/bank-logo.png" alt="Mediteranian Bank logo" class="brand-logo-image" />
         </div>
         <span class="brand-name">Mediteranian Bank</span>
       </div>
@@ -55,22 +55,17 @@ import { RouterLink } from 'vue-router'
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  background: radial-gradient(
-    circle at 30% 20%,
-    var(--color-accent-teal-1),
-    var(--color-primary-teal)
-  );
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-button-primary);
 }
 
-.brand-logo-mark {
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.brand-logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand-name {

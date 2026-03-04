@@ -8,7 +8,7 @@ export const onboardingSchema = z
     fullName: z.string().min(1, 'Name is required'),
     cryptoCurrencies: z.array(z.enum(CryptoCurrencyEnum)).min(1, 'Select at least one currency'),
     phone: z.string().min(1, 'Phone is required'),
-    email: z.email('Enter a valid email address'),
+    email: z.string().email('Enter a valid email address'),
     password: z
       .string()
       .min(8, 'At least 8 characters')
@@ -24,3 +24,4 @@ export const onboardingSchema = z
   })
 
 export type OnboardingFormValues = z.infer<typeof onboardingSchema>
+
