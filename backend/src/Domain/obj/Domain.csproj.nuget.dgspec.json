@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj": {}
+    "E:\\Vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj": {
+    "E:\\Vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj",
+        "projectUniqueName": "E:\\Vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj",
+        "projectPath": "E:\\Vue\\transfer-bank-project\\backend\\src\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\Arthut Pallu\\.nuget\\packages\\",
-        "outputPath": "E:\\vue\\transfer-bank-project\\backend\\src\\Domain\\obj\\",
+        "outputPath": "E:\\Vue\\transfer-bank-project\\backend\\src\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Arthut Pallu\\AppData\\Roaming\\NuGet\\NuGet.Config"

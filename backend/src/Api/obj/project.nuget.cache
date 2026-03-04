@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SBOufRUD0nA=",
+  "dgSpecHash": "SESZBhx6+qY=",
   "success": true,
-  "projectFilePath": "E:\\vue\\transfer-bank-project\\backend\\src\\api\\Api.csproj",
+  "projectFilePath": "E:\\Vue\\transfer-bank-project\\backend\\src\\Api\\Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Arthut Pallu\\.nuget\\packages\\microsoft.extensions.apidescription.server\\9.0.0\\microsoft.extensions.apidescription.server.9.0.0.nupkg.sha512",
     "C:\\Users\\Arthut Pallu\\.nuget\\packages\\microsoft.openapi\\2.4.1\\microsoft.openapi.2.4.1.nupkg.sha512",
