@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { CryptoCurrencyDto } from '@/api/backendApi';
 import type { CryptoCurrencyEnum } from '@/api/backendApi';
+import type { CryptoCurrencyOption } from '@/domain/onboarding/interfaces/currencyInterface';
 
 
 const props = defineProps<{
     isActive: boolean,
-    currencyModel: CryptoCurrencyDto
+    currencyModel: CryptoCurrencyOption
 
 }>()
 const emit = defineEmits<{
@@ -13,7 +13,7 @@ const emit = defineEmits<{
 }>()
 
 function handleButtonClick() {
-    emit('clicked', props.currencyModel.value)
+    emit('clicked', props.currencyModel.currency)
 }
 
 </script>

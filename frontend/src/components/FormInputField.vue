@@ -1,42 +1,43 @@
 <script setup lang="ts">
 import { Field } from 'vee-validate'
 
+type InputMode =
+  | 'text'
+  | 'search'
+  | 'email'
+  | 'tel'
+  | 'url'
+  | 'none'
+  | 'numeric'
+  | 'decimal'
+
 withDefaults(
   defineProps<{
     name: string
     label: string
-    type?: string
+    type?: HTMLInputElement['type']
     placeholder?: string
     autocomplete?: string
-    inputmode?: string
+    inputmode?: InputMode
   }>(),
   {
     type: 'text',
-    placeholder: '',
-    autocomplete: '',
-    inputmode: '',
   },
 )
 </script>
 
 <template>
-  <Field v-slot="{ field, meta }" :name="name">
+  <Field v-slot="{ field, meta, errorMessage }" :name="name">
     <div class="field">
       <label :for="name">
         {{ label }}
       </label>
 
-      <input
-        v-bind="field"
-        :id="name"
-        :type="type"
-        :placeholder="placeholder"
-        :autocomplete="autocomplete || undefined"
-        :inputmode="inputmode || undefined"
-      />
+      <input v-bind="field" :id="name" :type="type" :placeholder="placeholder" :autocomplete="autocomplete"
+        :inputmode="inputmode" />
 
-      <p v-if="meta.touched && meta.error" class="error">
-        {{ meta.error }}
+      <p v-if="meta.touched && errorMessage" class="error">
+        {{ errorMessage }}
       </p>
 
       <slot name="below" :meta="meta" :value="field.value" />
@@ -85,7 +86,4 @@ input:focus {
   font-size: 0.75rem;
   color: var(--color-error);
 }
-
-
 </style>
-

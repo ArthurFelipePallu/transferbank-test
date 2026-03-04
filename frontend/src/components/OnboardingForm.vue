@@ -4,15 +4,16 @@ import { computed, onMounted, ref } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from './FormInputField.vue'
-import { getCryptoCurrencies } from '@/api/repositories/currencyRepository'
-import { CryptoCurrencyEnum, type CryptoCurrencyDto } from '@/api/backendApi'
+import { CryptoCurrencyEnum } from '@/api/backendApi'
 import { type OnboardingFormValues, onboardingSchema } from '@/domain/onboarding/onboarding.schema'
+import { loadCurrenciesWithHighlight } from '@/application/onboarding/cryptoCurrencyUseCase'
+import { httpCurrencyGateway } from '@/infrastructure/onboarding/HttpCurrencyGateway'
+import type { CryptoCurrencyOption } from '@/domain/onboarding/interfaces/currencyInterface'
 
-
-const cryptoCurrencies = ref<CryptoCurrencyDto[]>([])
+const cryptoCurrencies = ref<CryptoCurrencyOption[]>([])
 
 onMounted(async () => {
-  cryptoCurrencies.value = await getCryptoCurrencies()
+  cryptoCurrencies.value = await loadCurrenciesWithHighlight(httpCurrencyGateway)
 })
 
 const props = withDefaults(
@@ -116,7 +117,7 @@ const submit = handleSubmit((values) => {
       <label class="inline-label">Crypto currencies to operate</label>
       <div class="chips">
         <CryptoChip v-for="c in cryptoCurrencies" :key="c.alias" :currency-model="c"
-          :is-active="values.cryptoCurrencies?.includes(c.value)" @clicked="toggleCrypto" />
+          :is-active="values.cryptoCurrencies?.includes(c.currency)" @clicked="toggleCrypto" />
 
       </div>
       <p v-if="cryptoMeta.touched && cryptoError" class="error">{{ cryptoError }}</p>
