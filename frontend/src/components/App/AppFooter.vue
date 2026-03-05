@@ -50,7 +50,7 @@ const contactInformation = {
         <div class="footer-container">
 
             <!-- Bank Info -->
-            <div class="footer-section flex-center">
+            <div class="footer-section">
                 <AppBrandLogo />
                 <p>Your trusted digital banking partner.</p>
             </div>
@@ -78,8 +78,8 @@ const contactInformation = {
             <!-- Contact -->
             <div class="footer-section">
                 <h4>Contact</h4>
-                <p>Email: {{ contactInformation.email }}</p>
-                <p>Phone: {{ contactInformation.phone }}</p>
+                <p>Email: <span>{{ contactInformation.email }}</span></p>
+                <p>Phone: <span>{{ contactInformation.phone }}</span></p>
             </div>
 
         </div>
@@ -91,6 +91,15 @@ const contactInformation = {
 </template>
 
 <style scoped>
+.footer-section,
+.footer-bottom {
+    user-select: none;
+}
+
+span {
+    user-select: text;
+}
+
 .flex-center {
     display: flex;
     align-items: center;

@@ -2,7 +2,7 @@
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from './FormInputField.vue'
-import { type OnboardingFormValues, onboardingSchema } from '@/domain/onboarding/onboarding.schema'
+import { loginSchema, type LoginFormValues } from "@/domain/onboarding/login.schema"
 import BaseLucideIcon from '../BaseLucideIcon.vue';
 import { RouterLink } from 'vue-router';
 
@@ -16,22 +16,16 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-    submit: [values: OnboardingFormValues]
+    submit: [values: LoginFormValues]
 }>()
 
-const validationSchema = toTypedSchema(onboardingSchema)
+const validationSchema = toTypedSchema(loginSchema)
 
-const { handleSubmit, meta } = useForm<OnboardingFormValues>({
+const { handleSubmit, meta } = useForm<LoginFormValues>({
     validationSchema,
     initialValues: {
-        cnpj: '',
-        companyName: '',
-        fullName: '',
-        cryptoCurrencies: [],
-        phone: '',
         email: '',
         password: '',
-        passwordConfirmation: '',
     },
 })
 
