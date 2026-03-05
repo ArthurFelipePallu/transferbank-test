@@ -50,7 +50,7 @@ const contactInformation = {
         <div class="footer-container">
 
             <!-- Bank Info -->
-            <div class="footer-section">
+            <div class="footer-section flex-center">
                 <AppBrandLogo />
                 <p>Your trusted digital banking partner.</p>
             </div>
@@ -91,6 +91,12 @@ const contactInformation = {
 </template>
 
 <style scoped>
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .footer {
     background: var(--color-bg-section-darker);
     color: var(--color-text-footer);

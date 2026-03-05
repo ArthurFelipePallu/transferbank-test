@@ -16,7 +16,7 @@ import AppBrandLogo from './AppBrandLogo.vue';
         <span class="nav-separator" aria-hidden="true">|</span>
 
         <RouterLink class="nav-link nav-link--ghost" :to="{ name: 'login' }">Login</RouterLink>
-        <RouterLink class="nav-link nav-link--primary" :to="{ name: 'onboarding' }">
+        <RouterLink class="nav-link nav-link--primary" :to="{ name: 'home' }">
           Open account
         </RouterLink>
       </nav>

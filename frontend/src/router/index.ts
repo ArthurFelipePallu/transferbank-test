@@ -10,7 +10,12 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'onboarding',
+      name: 'home',
+      redirect: { name: 'register' },
+    },
+    {
+      path: '/sign-up',
+      name: 'register',
       component: OnBoardingView,
     },
     {
@@ -79,6 +84,11 @@ const router = createRouter({
         {
           path: 'contact-us',
           name: 'contact-us',
+          component: InDevelopmentView,
+        },
+        {
+          path: 'recover-password',
+          name: 'recover-password',
           component: InDevelopmentView,
         },
       ],

@@ -1,10 +1,10 @@
-<!-- <script setup lang="ts">
+<script setup lang="ts">
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from './FormInputField.vue'
 import { type OnboardingFormValues, onboardingSchema } from '@/domain/onboarding/onboarding.schema'
 import BaseLucideIcon from '../BaseLucideIcon.vue';
-
+import { RouterLink } from 'vue-router';
 
 const props = withDefaults(
     defineProps<{
@@ -48,19 +48,26 @@ const submit = handleSubmit((values) => {
 <template>
     <form class="form" @submit.prevent="submit">
 
+        <div class="field">
+            <FormInputField name="email" label="Email" type="email" placeholder="you@company.com" autocomplete="email">
+                <template #icon>
+                    <BaseLucideIcon name="Mail" :size="18" />
+                </template>
+            </FormInputField>
+        </div>
 
-        <FormInputField name="email" label="Email" type="email" placeholder="you@company.com" autocomplete="email">
-            <template>
-                <BaseLucideIcon name="Mail" :size="18" />
-            </template>
-        </FormInputField>
         <FormInputField name="password" label="Password" type="password" autocomplete="new-password"
-            placeholder="******" />
+            placeholder="******">
+            <template #icon>
+                <BaseLucideIcon name="KeyRound" :size="18" />
+            </template>
 
+        </FormInputField>
+
+        <RouterLink class="forgot-password" :to="{ name: 'recover-password' }">Forgot Password?</RouterLink>
         <button class="submit" type="submit" :disabled="!meta.valid">
             {{ props.submitLabel }}
         </button>
-
     </form>
 </template>
 
@@ -68,17 +75,7 @@ const submit = handleSubmit((values) => {
 .form {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-}
-
-.field-row {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.field-row>* {
-    flex: 1 1 0;
+    gap: 0.5rem;
 }
 
 .field {
@@ -87,74 +84,33 @@ const submit = handleSubmit((values) => {
     gap: 0.4rem;
 }
 
-.inline-label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--color-text-main);
-}
+.forgot-password {
+    text-align: end;
+    font-size: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-primary-teal);
 
-.chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-
-
-.password-strength {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.3rem;
-}
-
-.password-strength-bar {
-    flex: 1;
-    height: 0.35rem;
-    border-radius: 999px;
-    background: var(--color-surface-border);
-    overflow: hidden;
-}
-
-.password-strength-bar-fill {
-    height: 100%;
-    width: 0;
     transition:
-        width 0.2s ease,
-        background 0.2s ease;
+        color 0.2s ease,
+        text-shadow 0.2s ease,
+        transform 0.15s ease;
 }
 
-.strength-empty {
-    background: transparent;
+.forgot-password:hover {
+    text-shadow: var(--shadow-input-focus);
+    transform: translateY(-1px);
 }
 
-.strength-weak {
-    background: var(--color-error);
+.forgot-password:active {
+    transform: translateY(0);
+    text-shadow: var(--shadow-button-primary);
 }
 
-.strength-medium {
-    background: var(--color-warning);
-}
-
-.strength-strong {
-    background: var(--color-primary-teal-light);
-}
-
-.password-strength-label {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    min-width: 4.5rem;
-}
-
-.password-hints {
-    margin: 0.35rem 0 0;
-    padding-left: 1.2rem;
-    font-size: 0.72rem;
-    color: var(--color-text-muted);
-}
-
-.password-hints li+li {
-    margin-top: 0.1rem;
+.forgot-password:focus-visible {
+    outline: 2px solid var(--color-primary-teal);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
 .error {
@@ -164,7 +120,7 @@ const submit = handleSubmit((values) => {
 
 .submit {
     margin-top: 0.5rem;
-    border-radius: 999px;
+    border-radius: 0.5rem;
     border: none;
     padding: 0.85rem 1.2rem;
     font-size: 0.95rem;
@@ -203,4 +159,4 @@ const submit = handleSubmit((values) => {
         flex-direction: row;
     }
 }
-</style> -->
+</style>

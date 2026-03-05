@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue';
 import ColoredContainer from '@/components/ColoredContainer.vue';
+import LoginForm from '@/components/Form/LoginForm.vue';
+import DividerText from '@/components/DividerText.vue';
+import SocialLoginButton from '@/components/Form/SocialLoginButton.vue';
+import GoogleIcon from '@/components/icons/GoogleIcon.vue';
+import { Apple } from 'lucide-vue-next';
 </script>
 
 <template>
@@ -16,24 +21,31 @@ import ColoredContainer from '@/components/ColoredContainer.vue';
                     <h1>Welcome Back</h1>
                     <p>Please enter your details to sign in.</p>
                 </header>
-                <h1>Here comes the fogin form</h1>
-                <h2>enter</h2>
-                <h3>Or continue with</h3>
+                <LoginForm />
+
+                <DividerText text="Or continue with" />
                 <div>
-                    <h4>google button</h4>
-                    <h4>apple button</h4>
+                    <div class="social-login">
+                        <SocialLoginButton label="Google">
+                            <template #icon>
+                                <GoogleIcon />
+                            </template>
+                        </SocialLoginButton>
+
+                        <SocialLoginButton label="Apple">
+                            <template #icon>
+                                <Apple :size="18" />
+                            </template>
+                        </SocialLoginButton>
+                    </div>
                 </div>
-                <h3>Don't have an account? Sign up</h3>
+                <h3>Don't have an account?
+                    <span>
+                        <RouterLink class="sign-up-link" :to="{ name: 'home' }">Sign Up</RouterLink>
+                    </span>
+                </h3>
             </section>
         </ColoredContainer>
-        <!-- <section class="card">
-            <header class="card-header">
-                <h1>Business Onboarding</h1>
-                <p>Register your company to operate with crypto on web and mobile.</p>
-            </header>
-
-            <OnboardingForm @submit="onSubmit" />
-        </section> -->
     </main>
 </template>
 
@@ -42,9 +54,27 @@ import ColoredContainer from '@/components/ColoredContainer.vue';
     display: flex;
     align-items: center;
     justify-content: center;
-
 }
 
+h1,
+h3,
+p {
+    user-select: none;
+}
+
+h3 {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.sign-up-link {
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-accent-teal-1);
+
+}
 
 .login-page {
     max-width: var(--app-max-width);
@@ -56,11 +86,15 @@ import ColoredContainer from '@/components/ColoredContainer.vue';
 .login-card {
     width: var(--app-max-login-container-width);
     max-width: var(--app-max-container-width);
-    background: var(--color-white);
+    background: var(--color-surface);
     border-radius: 1.25rem;
     box-shadow: var(--shadow-card-weak);
     padding: 1.75rem;
     border: 1px solid var(--color-surface-border);
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
 }
 
 .card-header {
@@ -77,6 +111,11 @@ import ColoredContainer from '@/components/ColoredContainer.vue';
 .card-header p {
     font-size: 0.9rem;
     color: var(--color-text-muted);
+}
+
+.social-login {
+    display: flex;
+    gap: 1rem;
 }
 
 @media (min-width: 720px) {

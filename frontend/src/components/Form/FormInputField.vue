@@ -48,7 +48,7 @@ function togglePassword() {
       </label>
 
       <div class="input-wrapper">
-        <!-- LEFT ICON -->
+
         <span v-if="$slots.icon" class="icon">
           <slot name="icon" />
         </span>
@@ -73,16 +73,23 @@ function togglePassword() {
 </template>
 
 <style scoped>
+label,
+.error,
+.icon {
+  user-select: none;
+}
+
+
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
 }
 
 label {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--color-text-main);
+  padding-left: 5px;
 }
 
 .input-wrapper {
@@ -90,7 +97,7 @@ label {
   align-items: center;
   gap: 0.5rem;
 
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   border: 1px solid var(--color-input-border);
   background: var(--color-white);
 
@@ -137,5 +144,6 @@ label {
 .error {
   font-size: 0.75rem;
   color: var(--color-error);
+  padding-left: 10px;
 }
 </style>

@@ -5,11 +5,10 @@ import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from './FormInputField.vue'
 import { CryptoCurrencyEnum } from '@/api/backendApi'
-import { type OnboardingFormValues, onboardingSchema } from '@/domain/onboarding/onboarding.schema'
-import { loadCurrenciesWithHighlight } from '@/application/onboarding/cryptoCurrencyUseCase'
 import { httpCurrencyGateway } from '@/infrastructure/onboarding/HttpCurrencyGateway'
+import { loadCurrenciesWithHighlight } from '@/application/onboarding/cryptoCurrencyUseCase'
 import type { CryptoCurrencyOption } from '@/domain/onboarding/interfaces/currencyInterface'
-import BaseLucideIcon from '../BaseLucideIcon.vue'
+import { type OnboardingFormValues, onboardingSchema } from '@/domain/onboarding/onboarding.schema'
 
 const cryptoCurrencies = ref<CryptoCurrencyOption[]>([])
 
