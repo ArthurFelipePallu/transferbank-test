@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import AppBrandLogo from './AppBrandLogo.vue';
 </script>
 
 <template>
   <header class="app-header">
     <div class="app-header-inner">
-      <div class="brand">
-        <div class="brand-logo">
-          <img src="/bank-logo.png" alt="Mediteranian Bank logo" class="brand-logo-image" />
-        </div>
-        <span class="brand-name">Mediteranian Bank</span>
-      </div>
+      <AppBrandLogo />
 
       <nav class="nav">
         <RouterLink class="nav-link" :to="{ name: 'solutions' }">Solutions</RouterLink>
@@ -19,7 +15,7 @@ import { RouterLink } from 'vue-router'
 
         <span class="nav-separator" aria-hidden="true">|</span>
 
-        <RouterLink class="nav-link nav-link--ghost" :to="{ name: 'onboarding' }">Login</RouterLink>
+        <RouterLink class="nav-link nav-link--ghost" :to="{ name: 'login' }">Login</RouterLink>
         <RouterLink class="nav-link nav-link--primary" :to="{ name: 'onboarding' }">
           Open account
         </RouterLink>
@@ -45,34 +41,6 @@ import { RouterLink } from 'vue-router'
   gap: 1.5rem;
 }
 
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.brand-logo {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-button-primary);
-}
-
-.brand-logo-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.brand-name {
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-}
 
 .nav {
   display: inline-flex;

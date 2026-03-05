@@ -9,6 +9,7 @@ import { type OnboardingFormValues, onboardingSchema } from '@/domain/onboarding
 import { loadCurrenciesWithHighlight } from '@/application/onboarding/cryptoCurrencyUseCase'
 import { httpCurrencyGateway } from '@/infrastructure/onboarding/HttpCurrencyGateway'
 import type { CryptoCurrencyOption } from '@/domain/onboarding/interfaces/currencyInterface'
+import BaseLucideIcon from '../BaseLucideIcon.vue'
 
 const cryptoCurrencies = ref<CryptoCurrencyOption[]>([])
 
@@ -131,6 +132,9 @@ const submit = handleSubmit((values) => {
 
     <FormInputField name="password" label="Password" type="password" autocomplete="new-password"
       placeholder="Create a strong password">
+
+
+
       <template #below>
         <div class="password-strength">
           <div class="password-strength-bar">
