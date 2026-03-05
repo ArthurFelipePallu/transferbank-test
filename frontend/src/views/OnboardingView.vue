@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import OnboardingForm from '../components/OnboardingForm.vue'
+import OnboardingForm from '@/components/Form/OnboardingForm.vue'
 import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
 import { registerCompany } from '@/application/onboarding/registerCompanyUseCase'
 import { httpRegistryGateway } from '@/infrastructure/onboarding/HttpRegistryGateway'
