@@ -1,11 +1,47 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import OnboardingForm from '@/components/Form/OnboardingForm.vue'
 import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
-import { registerCompany } from '@/application/onboarding/registerCompanyUseCase'
-import { httpRegistryGateway } from '@/infrastructure/onboarding/HttpRegistryGateway'
+import { useOnboardingStore } from '@/stores/useOnboardingStore'
+import { useUiStore } from '@/stores/useUiStore'
+
+const router = useRouter()
+const onboardingStore = useOnboardingStore()
+const uiStore = useUiStore()
 
 const onSubmit = async (values: OnboardingFormValues) => {
-  await registerCompany(httpRegistryGateway, values)
+  try {
+    uiStore.startLoading('Registering your company...')
+    
+    const success = await onboardingStore.submitOnboarding(values)
+    
+    if (success) {
+      // Redirect to success page
+      router.push({ name: 'account-created' })
+    } else {
+      // Check if error is due to existing account
+      if (onboardingStore.error?.includes('already exists') || 
+          onboardingStore.error?.includes('duplicate')) {
+        router.push({ name: 'account-exists' })
+      } else {
+        uiStore.showError(onboardingStore.error || 'Registration failed')
+      }
+    }
+  } catch (error) {
+    console.error('Onboarding error:', error)
+    
+    // Check if it's a duplicate/existing account error
+    const errorMessage = error instanceof Error ? error.message : ''
+    if (errorMessage.includes('already exists') || 
+        errorMessage.includes('duplicate') ||
+        errorMessage.includes('409')) {
+      router.push({ name: 'account-exists' })
+    } else {
+      uiStore.showError('An unexpected error occurred. Please try again.')
+    }
+  } finally {
+    uiStore.stopLoading()
+  }
 }
 </script>
 

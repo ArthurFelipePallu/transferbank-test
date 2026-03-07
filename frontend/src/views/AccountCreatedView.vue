@@ -5,43 +5,39 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 </script>
 
 <template>
-  <main class="status-page">
-    <div class="status-container">
-      <div class="status-card">
+  <main class="success-page">
+    <div class="success-container">
+      <div class="success-card">
         <div class="brand-section">
           <AppBrandLogo />
         </div>
 
         <div class="icon-section">
-          <div class="icon-wrapper icon-wrapper--warning">
+          <div class="icon-wrapper">
             <BaseLucideIcon 
-              name="TriangleAlert" 
+              name="CheckCircle" 
               :size="64" 
               :stroke_width="2"
-              color="var(--color-warning)" 
+              color="var(--color-primary-teal)" 
             />
           </div>
         </div>
 
         <div class="content-section">
-          <h1 class="status-title">Account Already Exists</h1>
-          <p class="status-message">
-            An account with the provided information already exists in our system. 
-            If this is your account, please log in to access it. If you believe this is an error, 
-            please contact our support team.
+          <h1 class="success-title">Account Successfully Created!</h1>
+          <p class="success-message">
+            Congratulations! Your account has been created successfully. 
+            You can now log in to access your account and start using our services.
           </p>
         </div>
 
         <div class="action-section">
-          <RouterLink :to="{ name: 'login' }" class="action-button">
+          <RouterLink :to="{ name: 'login' }" class="login-button">
             Go to Login
           </RouterLink>
         </div>
 
         <div class="info-section">
-          <p class="info-text">
-            Forgot your password? <RouterLink :to="{ name: 'recover-password' }" class="info-link">Reset it here</RouterLink>
-          </p>
           <p class="info-text">
             Need help? <RouterLink :to="{ name: 'contact-us' }" class="info-link">Contact Support</RouterLink>
           </p>
@@ -52,7 +48,7 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 </template>
 
 <style scoped>
-.status-page {
+.success-page {
   min-height: 100vh;
   background: var(--color-surface);
   padding: var(--spacing-page);
@@ -61,13 +57,13 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
   justify-content: center;
 }
 
-.status-container {
+.success-container {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
 }
 
-.status-card {
+.success-card {
   background: var(--color-white);
   border-radius: 1rem;
   padding: var(--spacing-card);
@@ -99,24 +95,19 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(244, 194, 29, 0.1), rgba(244, 194, 29, 0.15));
-  border: 3px solid var(--color-warning);
+  background: linear-gradient(135deg, rgba(28, 156, 140, 0.1), rgba(33, 184, 166, 0.1));
+  border: 3px solid var(--color-primary-teal);
   animation: pulse 2s ease-in-out infinite;
-}
-
-.icon-wrapper--warning {
-  background: linear-gradient(135deg, rgba(244, 194, 29, 0.1), rgba(244, 194, 29, 0.15));
-  border-color: var(--color-warning);
 }
 
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(244, 194, 29, 0.4);
+    box-shadow: 0 0 0 0 rgba(28, 156, 140, 0.4);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(244, 194, 29, 0);
+    box-shadow: 0 0 0 10px rgba(28, 156, 140, 0);
   }
 }
 
@@ -127,7 +118,7 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
   max-width: 500px;
 }
 
-.status-title {
+.success-title {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-text-main);
@@ -135,7 +126,7 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
   line-height: 1.3;
 }
 
-.status-message {
+.success-message {
   font-size: 0.95rem;
   color: var(--color-text-muted);
   line-height: 1.6;
@@ -147,7 +138,7 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
   margin-top: 0.5rem;
 }
 
-.action-button {
+.login-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -166,12 +157,12 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
   -webkit-tap-highlight-color: transparent;
 }
 
-.action-button:hover {
+.login-button:hover {
   box-shadow: var(--shadow-button-primary-active);
   transform: translateY(-2px);
 }
 
-.action-button:active {
+.login-button:active {
   transform: translateY(0);
 }
 
@@ -179,9 +170,6 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
   padding-top: 0.5rem;
   border-top: 1px solid var(--color-surface-border);
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 }
 
 .info-text {
@@ -203,7 +191,7 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 }
 
 @media (min-width: 640px) {
-  .status-card {
+  .success-card {
     padding: 2.5rem 3rem;
     border-radius: 1.25rem;
     gap: 2rem;
@@ -214,15 +202,15 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
     height: 140px;
   }
 
-  .status-title {
+  .success-title {
     font-size: 1.75rem;
   }
 
-  .status-message {
+  .success-message {
     font-size: 1rem;
   }
 
-  .action-button {
+  .login-button {
     font-size: 1.05rem;
     padding: 1.1rem 2.5rem;
   }
@@ -233,7 +221,7 @@ import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 }
 
 @media (min-width: 1024px) {
-  .status-title {
+  .success-title {
     font-size: 2rem;
   }
 

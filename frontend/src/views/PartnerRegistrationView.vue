@@ -1,67 +1,33 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import StepIndicator from '@/components/Partner/StepIndicator.vue'
 import PersonalInfoStep from '@/components/Partner/PersonalInfoStep.vue'
 import AddressStep from '@/components/Partner/AddressStep.vue'
 import ShareholdingStep from '@/components/Partner/ShareholdingStep.vue'
 import DocumentsStep from '@/components/Partner/DocumentsStep.vue'
 import ReviewStep from '@/components/Partner/ReviewStep.vue'
-import { PartnerRegistrationStep, type PartnerFormStep } from '@/domain/partner/partner.types'
+import { PartnerRegistrationStep } from '@/domain/partner/partner.types'
 import type {
   PartnerPersonalInfoFormValues,
   PartnerAddressFormValues,
   PartnerShareholdingFormValues,
   PartnerDocumentsFormValues,
-  PartnerFormValues,
 } from '@/domain/partner/partner.schema'
-import { registerPartner } from '@/application/partner/registerPartnerUseCase'
-import { inMemoryPartnerRepository } from '@/infrastructure/partner/InMemoryPartnerRepository'
+import { usePartnerStore } from '@/stores/usePartnerStore'
+import { useUiStore } from '@/stores/useUiStore'
 
 const router = useRouter()
-const currentStep = ref(PartnerRegistrationStep.PERSONAL_INFO)
-const totalShareholding = ref(0)
+const partnerStore = usePartnerStore()
+const uiStore = useUiStore()
 
-const formData = ref<Partial<PartnerFormValues>>({})
-
-const steps = ref<PartnerFormStep[]>([
-  {
-    id: PartnerRegistrationStep.PERSONAL_INFO,
-    title: 'Personal Info',
-    description: 'Basic information',
-    isCompleted: false,
-  },
-  {
-    id: PartnerRegistrationStep.ADDRESS,
-    title: 'Address',
-    description: 'Location details',
-    isCompleted: false,
-  },
-  {
-    id: PartnerRegistrationStep.SHAREHOLDING,
-    title: 'Shareholding',
-    description: 'Ownership percentage',
-    isCompleted: false,
-  },
-  {
-    id: PartnerRegistrationStep.DOCUMENTS,
-    title: 'Documents',
-    description: 'Upload files',
-    isCompleted: false,
-  },
-  {
-    id: PartnerRegistrationStep.REVIEW,
-    title: 'Review',
-    description: 'Confirm details',
-    isCompleted: false,
-  },
-])
-
-const currentStepData = computed(() => {
-  return steps.value.find((s) => s.id === currentStep.value)
-})
+const { currentStep, formData, steps, totalShareholding } = storeToRefs(partnerStore)
 
 onMounted(() => {
+  // Load existing partners to calculate total shareholding
+  partnerStore.loadPartners()
+  
   // Scroll to top when component mounts
   window.scrollTo({ top: 0, behavior: 'smooth' })
 })
@@ -70,77 +36,73 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const markStepCompleted = (stepId: number) => {
-  const step = steps.value.find((s) => s.id === stepId)
-  if (step) {
-    step.isCompleted = true
-  }
-}
-
 const handlePersonalInfoNext = (values: PartnerPersonalInfoFormValues) => {
-  formData.value = { ...formData.value, ...values }
-  markStepCompleted(PartnerRegistrationStep.PERSONAL_INFO)
-  currentStep.value = PartnerRegistrationStep.ADDRESS
+  partnerStore.updateFormData(values)
+  partnerStore.markStepCompleted(PartnerRegistrationStep.PERSONAL_INFO)
+  partnerStore.nextStep()
   scrollToTop()
 }
 
 const handleAddressNext = (values: PartnerAddressFormValues) => {
-  formData.value = { ...formData.value, ...values }
-  markStepCompleted(PartnerRegistrationStep.ADDRESS)
-  currentStep.value = PartnerRegistrationStep.SHAREHOLDING
+  partnerStore.updateFormData(values)
+  partnerStore.markStepCompleted(PartnerRegistrationStep.ADDRESS)
+  partnerStore.nextStep()
   scrollToTop()
 }
 
 const handleShareholdingNext = (values: PartnerShareholdingFormValues) => {
-  formData.value = { ...formData.value, ...values }
-  markStepCompleted(PartnerRegistrationStep.SHAREHOLDING)
-  currentStep.value = PartnerRegistrationStep.DOCUMENTS
+  partnerStore.updateFormData(values)
+  partnerStore.markStepCompleted(PartnerRegistrationStep.SHAREHOLDING)
+  partnerStore.nextStep()
   scrollToTop()
 }
 
 const handleDocumentsNext = (values: PartnerDocumentsFormValues) => {
-  formData.value = { ...formData.value, ...values }
-  markStepCompleted(PartnerRegistrationStep.DOCUMENTS)
-  currentStep.value = PartnerRegistrationStep.REVIEW
+  partnerStore.updateFormData(values)
+  partnerStore.markStepCompleted(PartnerRegistrationStep.DOCUMENTS)
+  partnerStore.nextStep()
   scrollToTop()
 }
 
 const handleBack = (targetStep: number) => {
-  currentStep.value = targetStep
+  partnerStore.goToStep(targetStep)
   scrollToTop()
 }
 
 const handleSubmit = async () => {
   try {
-    const partner = {
-      fullName: formData.value.fullName!,
-      cpf: formData.value.cpf!,
-      address: {
-        street: formData.value.street!,
-        number: formData.value.number!,
-        complement: formData.value.complement,
-        neighborhood: formData.value.neighborhood!,
-        city: formData.value.city!,
-        state: formData.value.state!,
-        zipCode: formData.value.zipCode!,
-        country: formData.value.country!,
-      },
-      nationality: formData.value.nationality!,
-      shareholding: formData.value.shareholding!,
-      isPep: formData.value.isPep!,
-      documents: formData.value.documents!,
+    uiStore.startLoading('Registering partner...')
+    
+    const success = await partnerStore.submitPartner()
+    
+    if (success) {
+      uiStore.showSuccess('Partner registered successfully!')
+      partnerStore.resetForm()
+      
+      // Check if all partners are registered (shareholding = 100%)
+      const validation = await partnerStore.validateShareholding()
+      
+      if (validation.isValid) {
+        // All partners registered, redirect to success page
+        router.push({ name: 'account-created' })
+      } else {
+        // More partners needed, stay on the page or redirect to add another
+        router.push({ name: 'partner-registration' })
+      }
+    } else {
+      // Check if error is due to existing partner
+      if (partnerStore.error?.includes('already exists') || 
+          partnerStore.error?.includes('duplicate')) {
+        uiStore.showError('A partner with this CPF already exists')
+      } else {
+        uiStore.showError(partnerStore.error || 'Failed to register partner')
+      }
     }
-
-    await registerPartner(inMemoryPartnerRepository, partner)
-    
-    markStepCompleted(PartnerRegistrationStep.REVIEW)
-    
-    // Show success message and redirect
-    alert('Partner registered successfully!')
-    router.push({ name: 'home' })
   } catch (error) {
     console.error('Error registering partner:', error)
-    alert('Error registering partner. Please try again.')
+    uiStore.showError('An unexpected error occurred. Please try again.')
+  } finally {
+    uiStore.stopLoading()
   }
 }
 </script>

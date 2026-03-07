@@ -3,6 +3,7 @@ import NotFoundView from '../views/NotFoundView.vue'
 import OnBoardingView from '../views/OnboardingView.vue'
 import InDevelopmentView from '../views/InDevelopmentView.vue'
 import AlreadyExistingView from '@/views/AlreadyExistingView.vue'
+import AccountCreatedView from '@/views/AccountCreatedView.vue'
 import LoginView from '@/views/LoginView.vue'
 import PartnerRegistrationView from '@/views/PartnerRegistrationView.vue'
 
@@ -23,6 +24,16 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/account-created',
+      name: 'account-created',
+      component: AccountCreatedView,
+    },
+    {
+      path: '/account-exists',
+      name: 'account-exists',
+      component: AlreadyExistingView,
     },
     {
       path: '/partner-registration',
@@ -103,11 +114,6 @@ const router = createRouter({
       path: '/in-development',
       name: 'in-development',
       component: InDevelopmentView,
-    },
-    {
-      path: '/already-exists',
-      name: 'already-exists',
-      component: AlreadyExistingView,
     },
     {
       path: '/:pathMatch(.*)*',

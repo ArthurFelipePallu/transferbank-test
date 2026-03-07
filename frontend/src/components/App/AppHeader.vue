@@ -1,26 +1,22 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import AppBrandLogo from './AppBrandLogo.vue'
 import DesktopNav from './DesktopNav.vue'
 import MobileMenuButton from './MobileMenuButton.vue'
 import MobileMenu from './MobileMenu.vue'
 import { navigationConfig } from '@/config/navigation'
+import { useUiStore } from '@/stores/useUiStore'
 
-const isMobileMenuOpen = ref(false)
 const router = useRouter()
+const uiStore = useUiStore()
 
-const toggleMobileMenu = () => {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value
-}
-
-const closeMobileMenu = () => {
-  isMobileMenuOpen.value = false
-}
+const { isMobileMenuOpen } = storeToRefs(uiStore)
 
 // Close menu on route change
 router.afterEach(() => {
-  closeMobileMenu()
+  uiStore.closeMobileMenu()
 })
 
 // Prevent body scroll when menu is open
@@ -41,14 +37,17 @@ watch(isMobileMenuOpen, (isOpen) => {
         :main-links="navigationConfig.mainLinks" 
         :auth-links="navigationConfig.authLinks" 
       />
-      <MobileMenuButton :is-open="isMobileMenuOpen" @toggle="toggleMobileMenu" />
+      <MobileMenuButton 
+        :is-open="isMobileMenuOpen" 
+        @toggle="uiStore.toggleMobileMenu" 
+      />
     </div>
 
     <MobileMenu 
       :is-open="isMobileMenuOpen" 
       :main-links="navigationConfig.mainLinks"
       :auth-links="navigationConfig.authLinks"
-      @close="closeMobileMenu" 
+      @close="uiStore.closeMobileMenu" 
     />
   </header>
 </template>

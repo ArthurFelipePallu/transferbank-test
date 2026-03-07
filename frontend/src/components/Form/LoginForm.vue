@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from './FormInputField.vue'
 import { loginSchema, type LoginFormValues } from "@/domain/onboarding/login.schema"
-import BaseLucideIcon from '../BaseLucideIcon.vue';
-import { RouterLink } from 'vue-router';
+import BaseLucideIcon from '../BaseLucideIcon.vue'
+import { RouterLink } from 'vue-router'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useUiStore } from '@/stores/useUiStore'
 
 const props = withDefaults(
     defineProps<{
@@ -15,9 +18,9 @@ const props = withDefaults(
     },
 )
 
-const emit = defineEmits<{
-    submit: [values: LoginFormValues]
-}>()
+const router = useRouter()
+const authStore = useAuthStore()
+const uiStore = useUiStore()
 
 const validationSchema = toTypedSchema(loginSchema)
 
@@ -29,13 +32,24 @@ const { handleSubmit, meta } = useForm<LoginFormValues>({
     },
 })
 
-
-
-
-
-
-const submit = handleSubmit((values) => {
-    emit('submit', values)
+const submit = handleSubmit(async (values) => {
+    try {
+        uiStore.startLoading('Signing in...')
+        
+        const success = await authStore.login(values.email, values.password)
+        
+        if (success) {
+            uiStore.showSuccess('Welcome back!')
+            router.push({ name: 'home' })
+        } else {
+            uiStore.showError(authStore.error || 'Login failed')
+        }
+    } catch (error) {
+        console.error('Login error:', error)
+        uiStore.showError('An unexpected error occurred. Please try again.')
+    } finally {
+        uiStore.stopLoading()
+    }
 })
 </script>
 
