@@ -114,9 +114,9 @@ const submit = handleSubmit((values) => {
 
 .submit {
     margin-top: 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     border: none;
-    padding: 0.85rem 1.2rem;
+    padding: 1rem 1.2rem;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -128,6 +128,8 @@ const submit = handleSubmit((values) => {
         box-shadow 0.08s ease,
         opacity 0.15s ease;
     width: 100%;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .submit:disabled {
@@ -146,9 +148,10 @@ const submit = handleSubmit((values) => {
     font-size: 0.78rem;
     color: var(--color-text-muted);
     text-align: center;
+    line-height: 1.5;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 640px) {
     .field-row {
         flex-direction: row;
     }

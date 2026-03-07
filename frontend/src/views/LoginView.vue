@@ -79,17 +79,17 @@ h3 {
 .login-page {
     max-width: var(--app-max-width);
     min-height: 100vh;
-    padding: 1.5rem;
+    padding: var(--spacing-page);
     color: var(--color-white);
 }
 
 .login-card {
-    width: var(--app-max-login-container-width);
-    max-width: var(--app-max-container-width);
+    width: 100%;
+    max-width: 420px;
     background: var(--color-surface);
-    border-radius: 1.25rem;
+    border-radius: 1rem;
     box-shadow: var(--shadow-card-weak);
-    padding: 1.75rem;
+    padding: var(--spacing-card);
     border: 1px solid var(--color-surface-border);
 
     display: flex;
@@ -98,29 +98,54 @@ h3 {
 }
 
 .card-header {
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.25rem;
     flex-direction: column;
 }
 
 .card-header h1 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     margin-bottom: 0.4rem;
     color: var(--color-text-main);
 }
 
 .card-header p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--color-text-muted);
 }
 
 .social-login {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
-@media (min-width: 720px) {
-    .card {
-        padding: 2.25rem 2.5rem;
+@media (min-width: 640px) {
+    .login-card {
+        border-radius: 1.25rem;
+        max-width: 480px;
+    }
+
+    .card-header {
+        margin-bottom: 1.75rem;
+    }
+
+    .card-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .card-header p {
+        font-size: 0.9rem;
+    }
+
+    .social-login {
+        flex-direction: row;
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .login-card {
+        max-width: 520px;
     }
 
     .card-header h1 {

@@ -28,18 +28,24 @@ function handleButtonClick() {
 
 <style scoped>
 .chip {
-    padding: 0.4rem 0.9rem;
+    padding: 0.55rem 1rem;
     border-radius: 999px;
     border: 1px solid var(--color-chip-border);
     background: var(--color-chip-bg);
     color: var(--color-text-main);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition:
         background 0.15s ease,
         border-color 0.15s ease,
         color 0.15s ease,
         transform 0.05s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .chip--active {
@@ -52,5 +58,13 @@ function handleButtonClick() {
 .chip:focus-visible {
     outline: 2px solid var(--color-primary-teal-alt);
     outline-offset: 2px;
+}
+
+@media (min-width: 640px) {
+    .chip {
+        padding: 0.4rem 0.9rem;
+        font-size: 0.8rem;
+        min-height: auto;
+    }
 }
 </style>

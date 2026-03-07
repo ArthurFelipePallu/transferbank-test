@@ -101,7 +101,7 @@ label {
   border: 1px solid var(--color-input-border);
   background: var(--color-white);
 
-  padding: 0.7rem 0.9rem;
+  padding: 0.85rem 1rem;
 
   transition:
     border-color 0.15s ease,
@@ -117,6 +117,7 @@ label {
   display: flex;
   align-items: center;
   color: var(--color-input-placeholder);
+  flex-shrink: 0;
 }
 
 .icon-button {
@@ -126,15 +127,20 @@ label {
   border: none;
   cursor: pointer;
   color: var(--color-input-placeholder);
+  padding: 0.25rem;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
 }
 
 .input {
   border: none;
   outline: none;
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 1rem;
   background: transparent;
   color: var(--color-text-main);
+  min-width: 0;
 }
 
 .input::placeholder {
@@ -145,5 +151,15 @@ label {
   font-size: 0.75rem;
   color: var(--color-error);
   padding-left: 10px;
+}
+
+@media (min-width: 640px) {
+  .input-wrapper {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .input {
+    font-size: 0.9rem;
+  }
 }
 </style>

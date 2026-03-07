@@ -18,7 +18,13 @@ defineProps<{
 
     width: fit-content;
 
-    border-radius: 1.25rem;
+    border-radius: 1rem;
     border: 1px solid var(--color-surface-border);
+}
+
+@media (min-width: 640px) {
+    .colored-container {
+        border-radius: 1.25rem;
+    }
 }
 </style>

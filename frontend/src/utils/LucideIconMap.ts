@@ -18,6 +18,8 @@ import {
   Trash,
   TriangleAlert,
   Zap,
+  X,
+  Menu,
 } from 'lucide-vue-next'
 
 export const iconMap = {
@@ -35,10 +37,12 @@ export const iconMap = {
   Landmark,
   Lock,
   Mail,
+  Menu,
   ShieldUser,
   Save,
   Trash,
   TriangleAlert,
+  X,
   Zap,
 } as const
 

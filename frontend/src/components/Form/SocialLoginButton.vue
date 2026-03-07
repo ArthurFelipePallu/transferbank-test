@@ -24,15 +24,15 @@ defineProps<{
   gap: 0.6rem;
 
   width: 100%;
-  padding: 0.6rem 0.8rem;
+  padding: 0.85rem 1rem;
 
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   border: 1px solid var(--color-surface-border);
 
   background: var(--color-white);
   color: var(--color-text-main);
 
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
 
   cursor: pointer;
@@ -43,6 +43,9 @@ defineProps<{
     transform 0.08s ease,
     box-shadow 0.15s ease,
     background 0.15s ease;
+
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .social-button:hover {
@@ -57,10 +60,19 @@ defineProps<{
 .icon {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .label {
   display: flex;
   align-items: center;
+}
+
+@media (min-width: 640px) {
+  .social-button {
+    padding: 0.7rem 0.9rem;
+    border-radius: 1rem;
+    font-size: 0.95rem;
+  }
 }
 </style>

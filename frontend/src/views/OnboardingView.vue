@@ -29,37 +29,58 @@ const onSubmit = async (values: OnboardingFormValues) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: var(--spacing-page);
   color: var(--color-white);
 }
 
 .card {
-  width: var(--app-max-container-width);
-  max-width: var(--app-max-container-width);
+  width: 100%;
+  max-width: 100%;
   background: var(--color-white);
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   box-shadow: var(--shadow-card-strong);
-  padding: 1.75rem;
+  padding: var(--spacing-card);
   border: 1px solid var(--color-surface-border);
 }
 
 .card-header {
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .card-header h1 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   margin-bottom: 0.4rem;
   color: var(--color-text-main);
 }
 
 .card-header p {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--color-text-muted);
+  line-height: 1.5;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 640px) {
   .card {
+    border-radius: 1.25rem;
+    max-width: 600px;
+  }
+
+  .card-header {
+    margin-bottom: 1.75rem;
+  }
+
+  .card-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .card-header p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card {
+    max-width: var(--app-max-container-width);
     padding: 2.25rem 2.5rem;
   }
 

@@ -109,17 +109,25 @@ span {
 .footer {
     background: var(--color-bg-section-darker);
     color: var(--color-text-footer);
-    padding: 40px 20px 20px;
+    padding: 2rem 1rem 1.25rem;
 }
 
 .footer-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    max-width: var(--app-max-container-width);
+    margin: 0 auto;
 }
 
 .footer-section h4 {
-    margin-bottom: 10px;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.footer-section p {
+    font-size: 0.85rem;
+    line-height: 1.6;
 }
 
 .footer-section ul {
@@ -128,28 +136,73 @@ span {
 }
 
 .footer-section li {
-    margin-bottom: 6px;
+    margin-bottom: 0.5rem;
 }
 
 .footer-section a {
     color: var(--color-input-border);
     text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s ease;
 }
 
 .footer-section a:hover {
+    color: var(--color-white);
     text-decoration: underline;
 }
 
 .logo {
-    font-size: 20px;
+    font-size: 1.1rem;
     font-weight: bold;
 }
 
 .footer-bottom {
-    margin-top: 30px;
+    margin-top: 2rem;
     border-top: 1px solid var(--color-primary-teal);
-    padding-top: 10px;
+    padding-top: 1rem;
     text-align: center;
-    font-size: 14px;
+    font-size: 0.8rem;
+    max-width: var(--app-max-container-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 640px) {
+    .footer {
+        padding: 2.5rem 1.5rem 1.5rem;
+    }
+
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .footer-section h4 {
+        font-size: 1rem;
+    }
+
+    .footer-section p,
+    .footer-section a {
+        font-size: 0.9rem;
+    }
+
+    .footer-bottom {
+        font-size: 0.85rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer {
+        padding: 2.5rem 2rem 1.25rem;
+    }
+
+    .footer-container {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+    }
+
+    .logo {
+        font-size: 1.25rem;
+    }
 }
 </style>
