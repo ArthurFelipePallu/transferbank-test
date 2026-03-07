@@ -4,6 +4,7 @@ import OnBoardingView from '../views/OnboardingView.vue'
 import InDevelopmentView from '../views/InDevelopmentView.vue'
 import AlreadyExistingView from '@/views/AlreadyExistingView.vue'
 import LoginView from '@/views/LoginView.vue'
+import PartnerRegistrationView from '@/views/PartnerRegistrationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/partner-registration',
+      name: 'partner-registration',
+      component: PartnerRegistrationView,
     },
     {
       path: '/solutions',
