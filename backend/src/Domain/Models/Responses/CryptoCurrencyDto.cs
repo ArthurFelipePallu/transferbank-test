@@ -1,7 +1,7 @@
 ﻿using Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace Domain.Models;
+namespace Domain.Models.Responses;
 
 public record CryptoCurrencyDto(
     [property: Required] CryptoCurrencyEnum Value,

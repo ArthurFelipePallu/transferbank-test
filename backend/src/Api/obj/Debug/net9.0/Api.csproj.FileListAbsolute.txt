@@ -35,3 +35,8 @@ E:\vue\transfer-bank-project\backend\src\api\obj\Debug\net9.0\refint\Api.dll
 E:\vue\transfer-bank-project\backend\src\api\obj\Debug\net9.0\Api.pdb
 E:\vue\transfer-bank-project\backend\src\api\obj\Debug\net9.0\Api.genruntimeconfig.cache
 E:\vue\transfer-bank-project\backend\src\api\obj\Debug\net9.0\ref\Api.dll
+E:\Vue\transfer-bank-project\backend\src\Api\bin\Debug\net9.0\BCrypt.Net-Next.dll
+E:\Vue\transfer-bank-project\backend\src\Api\bin\Debug\net9.0\Application.dll
+E:\Vue\transfer-bank-project\backend\src\Api\bin\Debug\net9.0\Infrastructure.dll
+E:\Vue\transfer-bank-project\backend\src\Api\bin\Debug\net9.0\Application.pdb
+E:\Vue\transfer-bank-project\backend\src\Api\bin\Debug\net9.0\Infrastructure.pdb

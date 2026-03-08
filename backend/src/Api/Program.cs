@@ -1,3 +1,8 @@
+using Application.Interfaces;
+using Application.Services;
+using Domain.Interfaces;
+using Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
@@ -8,6 +13,7 @@ builder.Services
             new System.Text.Json.Serialization.JsonStringEnumConverter()
         );
     });
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
@@ -18,12 +24,21 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod();
         });
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SchemaGeneratorOptions.UseInlineDefinitionsForEnums = false;
 });
 
+// Register repositories (Infrastructure layer)
+builder.Services.AddSingleton<ICompanyRepository, InMemoryCompanyRepository>();
+builder.Services.AddSingleton<IPartnerRepository, InMemoryPartnerRepository>();
+
+// Register services (Application layer)
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IPartnerService, PartnerService>();
 
 var app = builder.Build();
 

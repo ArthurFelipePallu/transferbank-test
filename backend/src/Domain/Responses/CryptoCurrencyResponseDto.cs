@@ -1,5 +1,5 @@
 ﻿using Domain.Enums;
-using Domain.Models;
+using Domain.Models.Responses;
 
 namespace Domain.Responses;
 
