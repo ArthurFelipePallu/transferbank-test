@@ -12,6 +12,10 @@ export interface NavigationConfig {
 export const navigationConfig: NavigationConfig = {
   mainLinks: [
     {
+      label: 'Companies',
+      routeName: 'companies',
+    },
+    {
       label: 'Solutions',
       routeName: 'solutions',
     },

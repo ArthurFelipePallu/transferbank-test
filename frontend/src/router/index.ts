@@ -41,6 +41,11 @@ const router = createRouter({
       component: PartnerRegistrationView,
     },
     {
+      path: '/companies',
+      name: 'companies',
+      component: () => import('../views/CompaniesListView.vue'),
+    },
+    {
       path: '/solutions',
       name: 'solutions',
       component: InDevelopmentView,

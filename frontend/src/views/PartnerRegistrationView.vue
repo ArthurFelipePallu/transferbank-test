@@ -4,14 +4,12 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import StepIndicator from '@/components/Partner/StepIndicator.vue'
 import PersonalInfoStep from '@/components/Partner/PersonalInfoStep.vue'
-import AddressStep from '@/components/Partner/AddressStep.vue'
 import ShareholdingStep from '@/components/Partner/ShareholdingStep.vue'
 import DocumentsStep from '@/components/Partner/DocumentsStep.vue'
 import ReviewStep from '@/components/Partner/ReviewStep.vue'
 import { PartnerRegistrationStep } from '@/domain/partner/partner.types'
 import type {
   PartnerPersonalInfoFormValues,
-  PartnerAddressFormValues,
   PartnerShareholdingFormValues,
   PartnerDocumentsFormValues,
 } from '@/domain/partner/partner.schema'
@@ -39,13 +37,6 @@ const scrollToTop = () => {
 const handlePersonalInfoNext = (values: PartnerPersonalInfoFormValues) => {
   partnerStore.updateFormData(values)
   partnerStore.markStepCompleted(PartnerRegistrationStep.PERSONAL_INFO)
-  partnerStore.nextStep()
-  scrollToTop()
-}
-
-const handleAddressNext = (values: PartnerAddressFormValues) => {
-  partnerStore.updateFormData(values)
-  partnerStore.markStepCompleted(PartnerRegistrationStep.ADDRESS)
   partnerStore.nextStep()
   scrollToTop()
 }
@@ -128,21 +119,13 @@ const handleSubmit = async () => {
             @next="handlePersonalInfoNext"
           />
 
-          <AddressStep
-            v-else-if="currentStep === PartnerRegistrationStep.ADDRESS"
-            :key="PartnerRegistrationStep.ADDRESS"
-            :initial-values="formData"
-            @next="handleAddressNext"
-            @back="handleBack(PartnerRegistrationStep.PERSONAL_INFO)"
-          />
-
           <ShareholdingStep
             v-else-if="currentStep === PartnerRegistrationStep.SHAREHOLDING"
             :key="PartnerRegistrationStep.SHAREHOLDING"
             :initial-values="formData"
             :total-shareholding="totalShareholding"
             @next="handleShareholdingNext"
-            @back="handleBack(PartnerRegistrationStep.ADDRESS)"
+            @back="handleBack(PartnerRegistrationStep.PERSONAL_INFO)"
           />
 
           <DocumentsStep

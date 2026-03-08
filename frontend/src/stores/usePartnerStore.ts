@@ -3,8 +3,14 @@ import { ref, computed } from 'vue'
 import type { Partner, PartnerFormStep } from '@/domain/partner/partner.types'
 import { PartnerRegistrationStep } from '@/domain/partner/partner.types'
 import type { PartnerFormValues } from '@/domain/partner/partner.schema'
-import { registerPartner, validateTotalShareholding } from '@/application/partner/registerPartnerUseCase'
-import { inMemoryPartnerRepository } from '@/infrastructure/partner/InMemoryPartnerRepository'
+import type { PartnerRegistration } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import {
+  registerPartnerViaGateway,
+  getCompanyShareholdingInfo,
+  validateCompanyShareholding,
+} from '@/application/partner/partnerUseCases'
+import { httpPartnerGateway } from '@/infrastructure/partner/HttpPartnerGateway'
+import { useAuthStore } from './useAuthStore'
 
 export const usePartnerStore = defineStore('partner', () => {
   // State
@@ -19,12 +25,6 @@ export const usePartnerStore = defineStore('partner', () => {
       id: PartnerRegistrationStep.PERSONAL_INFO,
       title: 'Personal Info',
       description: 'Basic information',
-      isCompleted: false,
-    },
-    {
-      id: PartnerRegistrationStep.ADDRESS,
-      title: 'Address',
-      description: 'Location details',
       isCompleted: false,
     },
     {
@@ -108,32 +108,52 @@ export const usePartnerStore = defineStore('partner', () => {
       isSubmitting.value = true
       error.value = null
 
-      const partner: Partner = {
+      const authStore = useAuthStore()
+      const companyId = authStore.companyId
+
+      if (!companyId) {
+        throw new Error('Company ID not found. Please login again.')
+      }
+
+      const registration: PartnerRegistration = {
+        companyId,
         fullName: formData.value.fullName!,
         cpf: formData.value.cpf!,
-        address: {
-          street: formData.value.street!,
-          number: formData.value.number!,
-          complement: formData.value.complement,
-          neighborhood: formData.value.neighborhood!,
-          city: formData.value.city!,
-          state: formData.value.state!,
-          zipCode: formData.value.zipCode!,
-          country: formData.value.country!,
-        },
         nationality: formData.value.nationality!,
         shareholding: formData.value.shareholding!,
         isPep: formData.value.isPep!,
-        documents: formData.value.documents!,
+        documents: formData.value.documents?.map((doc) => ({
+          name: doc.name,
+          size: doc.size,
+          type: doc.type,
+        })) || [],
       }
 
-      await registerPartner(inMemoryPartnerRepository, partner)
-      
-      // Refresh partners list
-      partners.value = await inMemoryPartnerRepository.getPartners()
-      
+      const registeredPartner = await registerPartnerViaGateway(
+        httpPartnerGateway,
+        registration
+      )
+
+      // Add to local partners list
+      const partner: Partner = {
+        id: registeredPartner.id,
+        fullName: registeredPartner.fullName,
+        cpf: registeredPartner.cpf,
+        nationality: registeredPartner.nationality,
+        shareholding: registeredPartner.shareholding,
+        isPep: registeredPartner.isPep,
+        documents: registeredPartner.documents.map((doc) => ({
+          id: doc.id,
+          name: doc.name,
+          size: doc.size,
+          type: doc.type,
+        })),
+      }
+
+      partners.value.push(partner)
+
       markStepCompleted(PartnerRegistrationStep.REVIEW)
-      
+
       return true
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to register partner'
@@ -154,15 +174,58 @@ export const usePartnerStore = defineStore('partner', () => {
 
   const loadPartners = async () => {
     try {
-      partners.value = await inMemoryPartnerRepository.getPartners()
+      const authStore = useAuthStore()
+      const companyId = authStore.companyId
+
+      if (!companyId) {
+        return
+      }
+
+      // For now, we'll keep the local partners list
+      // In a real app, you'd fetch from the gateway:
+      // const registeredPartners = await getPartnersByCompanyId(httpPartnerGateway, companyId)
+      // partners.value = registeredPartners.map(...)
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to load partners'
     }
   }
 
   const validateShareholding = async () => {
-    const result = await validateTotalShareholding(inMemoryPartnerRepository)
-    return result
+    try {
+      const authStore = useAuthStore()
+      const companyId = authStore.companyId
+
+      if (!companyId) {
+        throw new Error('Company ID not found')
+      }
+
+      const result = await validateCompanyShareholding(httpPartnerGateway, companyId)
+      return result
+    } catch (err) {
+      // Fallback to local calculation
+      const total = totalShareholding.value
+      return {
+        isValid: Math.abs(total - 100) < 0.01,
+        total,
+        remaining: 100 - total,
+      }
+    }
+  }
+
+  const getRemainingShareholding = async () => {
+    try {
+      const authStore = useAuthStore()
+      const companyId = authStore.companyId
+
+      if (!companyId) {
+        return remainingShareholding.value
+      }
+
+      const info = await getCompanyShareholdingInfo(httpPartnerGateway, companyId)
+      return info.remaining
+    } catch (err) {
+      return remainingShareholding.value
+    }
   }
 
   return {
@@ -191,5 +254,6 @@ export const usePartnerStore = defineStore('partner', () => {
     resetForm,
     loadPartners,
     validateShareholding,
+    getRemainingShareholding,
   }
 })

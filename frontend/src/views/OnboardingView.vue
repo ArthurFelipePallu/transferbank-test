@@ -13,7 +13,15 @@ const onSubmit = async (values: OnboardingFormValues) => {
   try {
     uiStore.startLoading('Registering your company...')
     
-    const success = await onboardingStore.submitOnboarding(values)
+    const success = await onboardingStore.submitOnboarding(
+      values.cnpj,
+      values.companyName,
+      values.fullName,
+      values.cryptoCurrencies,
+      values.phone,
+      values.email,
+      values.password
+    )
     
     if (success) {
       // Redirect to success page
@@ -32,7 +40,8 @@ const onSubmit = async (values: OnboardingFormValues) => {
     
     // Check if it's a duplicate/existing account error
     const errorMessage = error instanceof Error ? error.message : ''
-    if (errorMessage.includes('already exists') || 
+    if (errorMessage.includes('DUPLICATE_COMPANY') ||
+        errorMessage.includes('already exists') || 
         errorMessage.includes('duplicate') ||
         errorMessage.includes('409')) {
       router.push({ name: 'account-exists' })

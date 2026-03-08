@@ -40,7 +40,6 @@ const handleLinkClick = () => {
           aria-label="Close menu"
         >
           <BaseLucideIcon name="X" :size="24" />
-                <BaseLucideIcon name="KeyRound" :size="18" />
           <!-- <X :size="24" /> -->
         </button>
       </div>

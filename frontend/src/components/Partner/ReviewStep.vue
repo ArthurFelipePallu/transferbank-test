@@ -52,40 +52,6 @@ const formatFileSize = (bytes: number): string => {
         </div>
       </div>
 
-      <!-- Address -->
-      <div class="review-section">
-        <h3 class="section-title">Address</h3>
-        <div class="review-grid">
-          <div class="review-item review-item--full">
-            <span class="review-label">Street Address</span>
-            <span class="review-value">
-              {{ formData.street }}, {{ formData.number }}
-              <span v-if="formData.complement"> - {{ formData.complement }}</span>
-            </span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Neighborhood</span>
-            <span class="review-value">{{ formData.neighborhood }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">City</span>
-            <span class="review-value">{{ formData.city }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">State</span>
-            <span class="review-value">{{ formData.state }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">ZIP Code</span>
-            <span class="review-value">{{ formData.zipCode }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Country</span>
-            <span class="review-value">{{ formData.country }}</span>
-          </div>
-        </div>
-      </div>
-
       <!-- Shareholding -->
       <div class="review-section">
         <h3 class="section-title">Shareholding</h3>

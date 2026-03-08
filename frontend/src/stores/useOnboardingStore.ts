@@ -1,16 +1,18 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
-import { registerCompany } from '@/application/onboarding/registerCompanyUseCase'
-import { httpRegistryGateway } from '@/infrastructure/onboarding/HttpRegistryGateway'
+import type { CryptoCurrencyEnum } from '@/api/backendApi'
+import type { CompanyRegistration } from '@/domain/company/interfaces/companyInterface'
+import { registerCompany } from '@/application/company/registerCompanyUseCase'
+import { httpCompanyGateway } from '@/infrastructure/company/HttpCompanyGateway'
 
 export interface CompanyData {
+  id?: string
   cnpj: string
   companyName: string
   fullName: string
   phone: string
   email: string
-  cryptoCurrencies: string[]
+  cryptoCurrencies: CryptoCurrencyEnum[]
 }
 
 export const useOnboardingStore = defineStore('onboarding', () => {
@@ -38,21 +40,40 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     companyData.value = { ...companyData.value, ...data }
   }
 
-  const submitOnboarding = async (values: OnboardingFormValues) => {
+  const submitOnboarding = async (
+    cnpj: string,
+    companyName: string,
+    fullName: string,
+    cryptoCurrencies: CryptoCurrencyEnum[],
+    phone: string,
+    email: string,
+    password: string
+  ) => {
     try {
       isSubmitting.value = true
       error.value = null
 
-      await registerCompany(httpRegistryGateway, values)
+      const registration: CompanyRegistration = {
+        cnpj,
+        companyName,
+        fullName,
+        cryptoCurrencies,
+        phone,
+        email,
+        password,
+      }
+
+      const company = await registerCompany(httpCompanyGateway, registration)
 
       // Store company data
       companyData.value = {
-        cnpj: values.cnpj,
-        companyName: values.companyName,
-        fullName: values.fullName,
-        phone: values.phone,
-        email: values.email,
-        cryptoCurrencies: values.cryptoCurrencies,
+        id: company.id,
+        cnpj: company.cnpj,
+        companyName: company.companyName,
+        fullName: company.fullName,
+        phone: company.phone,
+        email: company.email,
+        cryptoCurrencies: company.cryptoCurrencies,
       }
 
       isCompleted.value = true
@@ -63,6 +84,12 @@ export const useOnboardingStore = defineStore('onboarding', () => {
       return true
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Onboarding failed'
+      
+      // Check if it's a duplicate company error
+      if (error.value?.includes('already exists')) {
+        throw new Error('DUPLICATE_COMPANY')
+      }
+      
       return false
     } finally {
       isSubmitting.value = false

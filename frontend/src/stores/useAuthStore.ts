@@ -1,17 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import type { LoginCredentials, AuthSession } from '@/domain/auth/interfaces/authInterface'
+import { login as loginUseCase } from '@/application/auth/loginUseCase'
+import { httpAuthGateway } from '@/infrastructure/auth/HttpAuthGateway'
 
 export interface User {
   id: string
   email: string
-  fullName: string
-  companyId?: string
-}
-
-export interface AuthState {
-  user: User | null
-  token: string | null
-  isAuthenticated: boolean
+  companyName: string
+  companyId: string
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -24,7 +21,8 @@ export const useAuthStore = defineStore('auth', () => {
   // Getters
   const isAuthenticated = computed(() => !!user.value && !!token.value)
   const userEmail = computed(() => user.value?.email ?? '')
-  const userName = computed(() => user.value?.fullName ?? '')
+  const companyName = computed(() => user.value?.companyName ?? '')
+  const companyId = computed(() => user.value?.companyId ?? '')
 
   // Actions
   const login = async (email: string, password: string) => {
@@ -32,25 +30,21 @@ export const useAuthStore = defineStore('auth', () => {
       isLoading.value = true
       error.value = null
 
-      // TODO: Replace with actual API call
-      // Simulating API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const credentials: LoginCredentials = { email, password }
+      const session: AuthSession = await loginUseCase(httpAuthGateway, credentials)
 
-      // Mock response
-      const mockUser: User = {
-        id: crypto.randomUUID(),
-        email,
-        fullName: 'John Doe',
+      // Map session to user
+      user.value = {
+        id: session.companyId,
+        email: session.email,
+        companyName: session.companyName,
+        companyId: session.companyId,
       }
-
-      const mockToken = 'mock-jwt-token-' + Date.now()
-
-      user.value = mockUser
-      token.value = mockToken
+      token.value = session.token
 
       // Store in localStorage
-      localStorage.setItem('auth_token', mockToken)
-      localStorage.setItem('auth_user', JSON.stringify(mockUser))
+      localStorage.setItem('auth_token', session.token)
+      localStorage.setItem('auth_user', JSON.stringify(user.value))
 
       return true
     } catch (err) {
@@ -105,7 +99,8 @@ export const useAuthStore = defineStore('auth', () => {
     // Getters
     isAuthenticated,
     userEmail,
-    userName,
+    companyName,
+    companyId,
 
     // Actions
     login,

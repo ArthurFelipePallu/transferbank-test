@@ -22,26 +22,116 @@ export enum CryptoCurrencyEnum {
   Dogecoin = "Dogecoin",
 }
 
-export interface CompanyDto {
-  /** @minLength 1 */
-  cnpj: string;
-  /** @minLength 1 */
-  companyName: string;
-  /** @minLength 1 */
-  fullName: string;
-  cryptoCurrencies: CryptoCurrencyEnum[];
-  /** @minLength 1 */
-  phone: string;
-  /** @minLength 1 */
-  email: string;
-  /** @minLength 1 */
-  password: string;
+export interface CompanyResponse {
+  /** @format uuid */
+  id?: string;
+  cnpj?: string | null;
+  companyName?: string | null;
+  fullName?: string | null;
+  cryptoCurrencies?: CryptoCurrencyEnum[] | null;
+  phone?: string | null;
+  email?: string | null;
+  /** @format date-time */
+  createdAt?: string;
 }
 
 export interface CryptoCurrencyDto {
   value: CryptoCurrencyEnum;
   /** @minLength 1 */
   alias: string;
+}
+
+export interface DocumentRequest {
+  /** @minLength 1 */
+  name: string;
+  /** @format int64 */
+  size: number;
+  /** @minLength 1 */
+  type: string;
+}
+
+export interface DocumentResponse {
+  /** @format uuid */
+  id?: string;
+  name?: string | null;
+  /** @format int64 */
+  size?: number;
+  type?: string | null;
+  /** @format date-time */
+  uploadedAt?: string;
+}
+
+export interface LoginRequest {
+  /**
+   * @format email
+   * @minLength 1
+   */
+  email: string;
+  /** @minLength 1 */
+  password: string;
+}
+
+export interface LoginResponse {
+  /** @format uuid */
+  companyId?: string;
+  email?: string | null;
+  companyName?: string | null;
+  token?: string | null;
+}
+
+export interface PartnerResponse {
+  /** @format uuid */
+  id?: string;
+  /** @format uuid */
+  companyId?: string;
+  fullName?: string | null;
+  cpf?: string | null;
+  nationality?: string | null;
+  /** @format double */
+  shareholding?: number;
+  isPep?: boolean;
+  documents?: DocumentResponse[] | null;
+  /** @format date-time */
+  createdAt?: string;
+}
+
+export interface RegisterCompanyRequest {
+  /** @minLength 1 */
+  cnpj: string;
+  /** @minLength 1 */
+  companyName: string;
+  /** @minLength 1 */
+  fullName: string;
+  /** @minItems 1 */
+  cryptoCurrencies: CryptoCurrencyEnum[];
+  /** @minLength 1 */
+  phone: string;
+  /**
+   * @format email
+   * @minLength 1
+   */
+  email: string;
+  /** @minLength 8 */
+  password: string;
+}
+
+export interface RegisterPartnerRequest {
+  /** @format uuid */
+  companyId: string;
+  /** @minLength 1 */
+  fullName: string;
+  /** @minLength 1 */
+  cpf: string;
+  /** @minLength 1 */
+  nationality: string;
+  /**
+   * @format double
+   * @min 0.01
+   * @max 100
+   */
+  shareholding: number;
+  isPep?: boolean;
+  documents?: DocumentRequest[] | null;
 }
 
 import type {
@@ -226,6 +316,112 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
+  auth = {
+    /**
+     * No description
+     *
+     * @tags Auth
+     * @name AuthLoginCreate
+     * @request POST:/api/Auth/login
+     */
+    authLoginCreate: (data: LoginRequest, params: RequestParams = {}) =>
+      this.request<LoginResponse, any>({
+        path: `/api/Auth/login`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  company = {
+    /**
+     * No description
+     *
+     * @tags Company
+     * @name CompanyList
+     * @request GET:/api/Company
+     */
+    companyList: (params: RequestParams = {}) =>
+      this.request<CompanyResponse[], any>({
+        path: `/api/Company`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Company
+     * @name CompanyRegisterCreate
+     * @request POST:/api/Company/register
+     */
+    companyRegisterCreate: (
+      data: RegisterCompanyRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<CompanyResponse, any>({
+        path: `/api/Company/register`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Company
+     * @name CompanyDetail
+     * @request GET:/api/Company/{id}
+     */
+    companyDetail: (id: string, params: RequestParams = {}) =>
+      this.request<CompanyResponse, any>({
+        path: `/api/Company/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Company
+     * @name CompanyCnpjDetail
+     * @request GET:/api/Company/cnpj/{cnpj}
+     */
+    companyCnpjDetail: (cnpj: string, params: RequestParams = {}) =>
+      this.request<CompanyResponse, any>({
+        path: `/api/Company/cnpj/${cnpj}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Company
+     * @name CompanyExistsList
+     * @request GET:/api/Company/exists
+     */
+    companyExistsList: (
+      query?: {
+        cnpj?: string;
+        email?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<boolean, any>({
+        path: `/api/Company/exists`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+  };
   currency = {
     /**
      * No description
@@ -257,20 +453,72 @@ export class Api<
         ...params,
       }),
   };
-  registry = {
+  partner = {
     /**
      * No description
      *
-     * @tags Registry
-     * @name RegistryRegisterCreate
-     * @request POST:/api/Registry/register
+     * @tags Partner
+     * @name PartnerRegisterCreate
+     * @request POST:/api/Partner/register
      */
-    registryRegisterCreate: (data: CompanyDto, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/Registry/register`,
+    partnerRegisterCreate: (
+      data: RegisterPartnerRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<PartnerResponse, any>({
+        path: `/api/Partner/register`,
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Partner
+     * @name PartnerDetail
+     * @request GET:/api/Partner/{id}
+     */
+    partnerDetail: (id: string, params: RequestParams = {}) =>
+      this.request<PartnerResponse, any>({
+        path: `/api/Partner/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Partner
+     * @name PartnerCompanyDetail
+     * @request GET:/api/Partner/company/{companyId}
+     */
+    partnerCompanyDetail: (companyId: string, params: RequestParams = {}) =>
+      this.request<PartnerResponse[], any>({
+        path: `/api/Partner/company/${companyId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Partner
+     * @name PartnerCompanyShareholdingList
+     * @request GET:/api/Partner/company/{companyId}/shareholding
+     */
+    partnerCompanyShareholdingList: (
+      companyId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<number, any>({
+        path: `/api/Partner/company/${companyId}/shareholding`,
+        method: "GET",
+        format: "json",
         ...params,
       }),
   };
