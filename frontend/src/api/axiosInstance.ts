@@ -1,5 +1,17 @@
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
+import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
+import router from '@/router'
+
+// Import UI store dynamically to avoid circular dependencies
+let uiStore: any = null
+const getUiStore = async () => {
+  if (!uiStore) {
+    const { useUiStore } = await import('@/stores/useUiStore')
+    uiStore = useUiStore()
+  }
+  return uiStore
+}
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -7,10 +19,15 @@ export const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
+  const token = storageService.get<string>(STORAGE_KEYS.AUTH_TOKEN)
+  const locale = storageService.get<string>(STORAGE_KEYS.APP_LOCALE)
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+  }
+
+  if (locale) {
+    config.headers['Accept-Language'] = locale
   }
 
   return config
@@ -20,26 +37,58 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response
   },
-  (error) => {
+  async (error) => {
+    const ui = await getUiStore()
+
+    // Network error (no response from server)
     if (!error.response) {
-      error.message = 'Network error'
+      ui.showError('Network error. Please check your connection.')
       return Promise.reject(error)
     }
 
     const status = error.response.status
+    const errorData = error.response.data
+    const errorMessage = extractErrorMessage(error)
+    const errorCode = errorData?.errorCode
 
+    // Log error details for debugging
+    console.error('API Error:', {
+      status,
+      errorCode,
+      message: errorMessage,
+      url: error.config?.url,
+      method: error.config?.method,
+      data: errorData,
+    })
+
+    // Handle specific status codes that require special actions
     switch (status) {
       case 401:
-        console.log('Unauthorized')
+        // Unauthorized - Check if it's a login error or session expiration
+        if (errorCode !== 'Unauthorized') {
+          // Session expired - clear auth and redirect
+          storageService.remove(STORAGE_KEYS.AUTH_TOKEN)
+          storageService.remove(STORAGE_KEYS.AUTH_USER)
+          router.push({ name: 'login' })
+        }
+        // Show backend error message
+        ui.showError(errorMessage)
         break
-      case 403:
-        console.log('Forbidden')
+
+      case 409:
+        // Conflict - Check if it's a company already exists error
+        if (errorCode === 'CompanyAlreadyExists') {
+          router.push({ name: 'account-exists' })
+        }
+        // Show backend error message
+        ui.showError(errorMessage)
         break
+
       default:
-        console.log('Server error')
+        // For all other errors, just show the backend message
+        ui.showError(errorMessage)
     }
 
-    console.log(extractErrorMessage(error))
     return Promise.reject(error)
   },
 )
@@ -50,22 +99,35 @@ axiosRetry(axiosInstance, {
   retryCondition: (error) => {
     if (!axios.isAxiosError(error)) return false
 
-    console.log(extractErrorMessage(error))
-
     const status = error.response?.status
 
+    // Only retry on server errors (5xx) or network errors
     return !status || status >= 500
+  },
+  onRetry: (retryCount, error) => {
+    console.log(`Retry attempt ${retryCount} for ${error.config?.url}`)
   },
 })
 
+/**
+ * Extract error message from error response
+ * Prioritizes backend error message over generic messages
+ */
 export function extractErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    return error.response?.data?.message ?? error.message ?? 'Unexpected error'
+    // Try to get message from backend error response
+    const backendMessage = error.response?.data?.message
+    if (backendMessage && typeof backendMessage === 'string') {
+      return backendMessage
+    }
+
+    // Fallback to axios error message
+    return error.message || 'An unexpected error occurred'
   }
 
   if (error instanceof Error) {
     return error.message
   }
 
-  return 'Unexpected error'
+  return 'An unexpected error occurred'
 }
