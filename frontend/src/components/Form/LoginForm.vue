@@ -1,31 +1,30 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from './FormInputField.vue'
-import { loginSchema, type LoginFormValues } from "@/domain/onboarding/login.schema"
+import { loginSchema, type LoginFormValues } from '@/domain/onboarding/login.schema'
 import BaseLucideIcon from '../BaseLucideIcon.vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useUiStore } from '@/stores/useUiStore'
+import { useTranslation } from '@/composables/useTranslation'
 
 const props = withDefaults(
     defineProps<{
         submitLabel?: string
     }>(),
     {
-        submitLabel: 'Log in account',
+        submitLabel: undefined,
     },
 )
 
 const router = useRouter()
 const authStore = useAuthStore()
 const uiStore = useUiStore()
-
-const validationSchema = toTypedSchema(loginSchema)
+const { t } = useTranslation()
 
 const { handleSubmit, meta } = useForm<LoginFormValues>({
-    validationSchema,
+    validationSchema: loginSchema,
     initialValues: {
         email: '',
         password: '',
@@ -40,7 +39,9 @@ const submit = handleSubmit(async (values) => {
         
         if (success) {
             uiStore.showSuccess('Welcome back!')
-            router.push({ name: 'home' })
+            // Check if there's a redirect query parameter
+            const redirect = router.currentRoute.value.query.redirect as string
+            router.push(redirect || { name: 'dashboard' })
         } else {
             uiStore.showError(authStore.error || 'Login failed')
         }
@@ -57,14 +58,14 @@ const submit = handleSubmit(async (values) => {
     <form class="form" @submit.prevent="submit">
 
         <div class="field">
-            <FormInputField name="email" label="Email" type="email" placeholder="you@company.com" autocomplete="email">
+            <FormInputField name="email" :label="t('login.email')" type="email" placeholder="you@company.com" autocomplete="email">
                 <template #icon>
                     <BaseLucideIcon name="Mail" :size="18" />
                 </template>
             </FormInputField>
         </div>
 
-        <FormInputField name="password" label="Password" type="password" autocomplete="new-password"
+        <FormInputField name="password" :label="t('login.password')" type="password" autocomplete="new-password"
             placeholder="******">
             <template #icon>
                 <BaseLucideIcon name="KeyRound" :size="18" />
@@ -72,9 +73,9 @@ const submit = handleSubmit(async (values) => {
 
         </FormInputField>
 
-        <RouterLink class="forgot-password" :to="{ name: 'recover-password' }">Forgot Password?</RouterLink>
+        <RouterLink class="forgot-password" :to="{ name: 'recover-password' }">{{ t('login.forgotPassword') }}</RouterLink>
         <button class="submit" type="submit" :disabled="!meta.valid">
-            {{ props.submitLabel }}
+            {{ props.submitLabel || t('login.submit') }}
         </button>
     </form>
 </template>

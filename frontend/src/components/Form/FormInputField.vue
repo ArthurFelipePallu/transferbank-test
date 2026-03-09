@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Field } from 'vee-validate'
 import { ref, computed } from 'vue'
+import { applyCnpjMask, applyCpfMask, applyPhoneMask, applyCepMask } from '@/utils/formatters'
 
 type InputMode =
   | 'text'
@@ -12,6 +13,8 @@ type InputMode =
   | 'numeric'
   | 'decimal'
 
+type MaskType = 'cnpj' | 'cpf' | 'phone' | 'cep' | 'none'
+
 const props = withDefaults(
   defineProps<{
     name: string
@@ -20,9 +23,13 @@ const props = withDefaults(
     placeholder?: string
     autocomplete?: string
     inputmode?: InputMode
+    mask?: MaskType
+    validateOnInput?: boolean
   }>(),
   {
     type: 'text',
+    mask: 'none',
+    validateOnInput: false,
   },
 )
 
@@ -38,6 +45,26 @@ const inputType = computed(() => {
 function togglePassword() {
   showPassword.value = !showPassword.value
 }
+
+const hasMask = computed(() => props.mask && props.mask !== 'none')
+
+// Apply mask based on type
+const applyMask = (value: string): string => {
+  if (!value) return ''
+  
+  switch (props.mask) {
+    case 'cnpj':
+      return applyCnpjMask(value)
+    case 'cpf':
+      return applyCpfMask(value)
+    case 'phone':
+      return applyPhoneMask(value)
+    case 'cep':
+      return applyCepMask(value)
+    default:
+      return value
+  }
+}
 </script>
 
 <template>
@@ -48,13 +75,29 @@ function togglePassword() {
       </label>
 
       <div class="input-wrapper">
-
         <span v-if="$slots.icon" class="icon">
           <slot name="icon" />
         </span>
 
-        <input v-bind="field" :id="name" :type="inputType" :placeholder="placeholder" :autocomplete="autocomplete"
-          :inputmode="inputmode" class="input" />
+        <!-- Single input with conditional masking -->
+        <input 
+          :id="name"
+          :type="inputType"
+          :placeholder="placeholder"
+          :autocomplete="autocomplete"
+          :inputmode="inputmode"
+          :value="field.value"
+          class="input"
+          @input="(e) => {
+            const input = e.target as HTMLInputElement
+            const masked = hasMask ? applyMask(input.value) : input.value
+            field.onChange(masked)
+            if (validateOnInput) {
+              field.onBlur(e)
+            }
+          }"
+          @blur="(e) => field.onBlur(e)"
+        />
 
         <!-- PASSWORD TOGGLE -->
         <button v-if="type === 'password' && $slots.passwordVisibility" type="button" class="icon-button"
