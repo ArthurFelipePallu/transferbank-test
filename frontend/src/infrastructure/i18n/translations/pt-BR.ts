@@ -1,0 +1,188 @@
+import type { TranslationKeys } from './en'
+
+/**
+ * Portuguese (Brazil) Translations
+ */
+export const ptBR: TranslationKeys = {
+  common: {
+    loading: 'Carregando...',
+    error: 'Erro',
+    success: 'Sucesso',
+    save: 'Salvar',
+    cancel: 'Cancelar',
+    delete: 'Excluir',
+    edit: 'Editar',
+    back: 'Voltar',
+    next: 'Próximo',
+    submit: 'Enviar',
+    confirm: 'Confirmar',
+    close: 'Fechar',
+    search: 'Buscar',
+    filter: 'Filtrar',
+    clear: 'Limpar',
+    yes: 'Sim',
+    no: 'Não',
+  },
+  
+  auth: {
+    login: 'Entrar',
+    logout: 'Sair',
+    register: 'Registrar',
+    email: 'E-mail',
+    password: 'Senha',
+    passwordConfirmation: 'Confirmar Senha',
+    forgotPassword: 'Esqueceu a senha?',
+    rememberMe: 'Lembrar-me',
+    invalidCredentials: 'E-mail ou senha inválidos',
+    sessionExpired: 'Sua sessão expirou. Por favor, faça login novamente.',
+  },
+
+  navigation: {
+    dashboard: 'Painel',
+    companies: 'Empresas',
+    partners: 'Sócios',
+    services: 'Serviços',
+    support: 'Suporte',
+    settings: 'Configurações',
+    profile: 'Perfil',
+  },
+
+  company: {
+    title: 'Empresas',
+    subtitle: 'Navegue por todas as empresas registradas',
+    companyName: 'Razão Social',
+    fantasyName: 'Nome Fantasia',
+    cnpj: 'CNPJ',
+    email: 'E-mail',
+    phone: 'Telefone',
+    cryptocurrencies: 'Criptomoedas',
+    partners: 'Sócios',
+    partner: 'sócio',
+    noCompanies: 'Nenhuma empresa registrada ainda',
+    registerCompany: 'Registrar Empresa',
+  },
+
+  partner: {
+    title: 'Sócios',
+    fullName: 'Nome Completo',
+    cpf: 'CPF',
+    nationality: 'Nacionalidade',
+    shareholding: 'Participação',
+    isPep: 'Pessoa Politicamente Exposta',
+    documents: 'Documentos',
+    noPartners: 'Nenhum sócio registrado ainda',
+    registerPartner: 'Registrar Sócio',
+    totalAllocated: 'Total Alocado',
+    remaining: 'Restante',
+  },
+
+  onboarding: {
+    title: 'Cadastro de Empresa',
+    subtitle: 'Registre sua empresa para começar',
+    step1: 'Informações da Empresa',
+    step2: 'Endereço',
+    step3: 'Credenciais',
+    selectCryptocurrencies: 'Selecione Criptomoedas',
+    selectAtLeastOne: 'Selecione pelo menos uma criptomoeda',
+  },
+
+  address: {
+    cep: 'CEP',
+    street: 'Logradouro',
+    number: 'Número',
+    complement: 'Complemento',
+    neighborhood: 'Bairro',
+    city: 'Cidade',
+    state: 'Estado',
+  },
+
+  validation: {
+    required: '{field} é obrigatório',
+    email: 'Digite um endereço de e-mail válido',
+    minLength: '{field} deve ter pelo menos {min} caracteres',
+    maxLength: '{field} deve ter no máximo {max} caracteres',
+    passwordMatch: 'As senhas não coincidem',
+    invalidFormat: 'Formato de {field} inválido',
+  },
+
+  errors: {
+    networkError: 'Erro de rede. Verifique sua conexão.',
+    serverError: 'Ocorreu um erro. Por favor, tente novamente.',
+    notFound: 'Recurso não encontrado',
+    unauthorized: 'Você não está autorizado a realizar esta ação',
+    forbidden: 'Acesso negado',
+    conflict: 'Este recurso já existe',
+    validationError: 'Validação falhou. Verifique sua entrada.',
+  },
+
+  dashboard: {
+    welcomeBack: 'Bem-vindo de volta!',
+    companyInfo: 'Informações da Empresa',
+    quickActions: 'Ações Rápidas',
+    registerPartners: 'Registrar Sócios',
+    manageAccounts: 'Gerenciar Contas',
+    makeTransfer: 'Fazer Transferência',
+    getSupport: 'Obter Suporte',
+    addPartners: 'Adicionar sócios e acionistas da empresa',
+    viewAccounts: 'Visualizar e gerenciar suas contas',
+    transferFunds: 'Transferir fundos com segurança',
+    accessHelp: 'Acessar central de ajuda e recursos',
+  },
+
+  partnersList: {
+    companyPartners: 'Sócios da Empresa',
+    partner: 'sócio',
+    partners: 'sócios',
+    allocated: 'alocado',
+    noPartnersYet: 'Nenhum sócio registrado ainda',
+  },
+
+  login: {
+    title: 'Entrar na conta',
+    email: 'E-mail',
+    password: 'Senha',
+    forgotPassword: 'Esqueceu a senha?',
+    submit: 'Entrar na conta',
+  },
+
+  onboardingForm: {
+    cnpj: 'CNPJ',
+    companyName: 'Razão social',
+    fantasyName: 'Nome fantasia',
+    cryptoCurrencies: 'Criptomoedas para operar',
+    phone: 'Telefone',
+    email: 'E-mail',
+    cep: 'CEP',
+    street: 'Logradouro',
+    number: 'Número',
+    complement: 'Complemento',
+    neighborhood: 'Bairro',
+    city: 'Cidade',
+    state: 'Estado',
+    password: 'Senha',
+    confirmPassword: 'Confirmar senha',
+    createAccount: 'Criar conta',
+    searching: 'Buscando...',
+    companyStatusError: 'Erro de Status da Empresa',
+    passwordStrength: {
+      enterPassword: 'Digite uma senha',
+      weak: 'Fraca',
+      medium: 'Média',
+      strong: 'Forte',
+    },
+    passwordHints: {
+      minLength: 'Pelo menos 8 caracteres',
+      caseLetters: 'Use letras maiúsculas e minúsculas',
+      numbersSymbols: 'Inclua números e um símbolo',
+    },
+    hint: 'Este cadastro é otimizado para web e mobile. Você pode continuar de qualquer dispositivo usando as mesmas credenciais.',
+  },
+
+  companyCard: {
+    cnpj: 'CNPJ',
+    cryptocurrencies: 'Criptomoedas',
+    partners: 'Sócios',
+    partner: 'sócio',
+    unnamedCompany: 'Empresa sem nome',
+  },
+}
