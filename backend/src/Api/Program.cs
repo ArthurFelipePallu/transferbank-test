@@ -2,6 +2,8 @@ using Application.Interfaces;
 using Application.Services;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
+using Infrastructure.Localization;
+using Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,9 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddSingleton<ICompanyRepository, InMemoryCompanyRepository>();
 builder.Services.AddSingleton<IPartnerRepository, InMemoryPartnerRepository>();
 
+// Register localization service
+builder.Services.AddScoped<ILocalizationService, LocalizationService>();
+
 // Register services (Application layer)
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
@@ -49,6 +54,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
+
+// Add localization middleware
+app.UseMiddleware<LocalizationMiddleware>();
+
 app.UseHttpsRedirection();
 app.MapControllers(); 
 

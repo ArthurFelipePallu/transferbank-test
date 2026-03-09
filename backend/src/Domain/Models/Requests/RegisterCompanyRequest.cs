@@ -11,8 +11,8 @@ public class RegisterCompanyRequest
     [Required(ErrorMessage = "Company name is required")]
     public string CompanyName { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Full name is required")]
-    public string FullName { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Fantasy name is required")]
+    public string FantasyName { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "At least one cryptocurrency is required")]
     [MinLength(1, ErrorMessage = "At least one cryptocurrency must be selected")]

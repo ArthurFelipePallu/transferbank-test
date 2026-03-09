@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Domain.Interfaces;
 using Domain.Models.Requests;
 using Domain.Models.Responses;
 using Domain.Responses;
@@ -11,15 +12,33 @@ namespace Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ILocalizationService _localization;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, ILocalizationService localization)
     {
         _authService = authService;
+        _localization = localization;
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
     {
+        // Check model state for validation errors
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            
+            var errorResponse = new ErrorResponseDto(
+                message: string.Join("; ", errors),
+                errorCode: "ValidationError",
+                statusCode: 400
+            );
+            return BadRequest(errorResponse);
+        }
+
         try
         {
             var response = await _authService.LoginAsync(request);
@@ -28,7 +47,7 @@ public class AuthController : ControllerBase
         catch (UnauthorizedAccessException ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: ex.Message,
+                message: _localization.GetString("Auth.InvalidCredentials"),
                 errorCode: "Unauthorized",
                 statusCode: 401
             );
@@ -37,7 +56,7 @@ public class AuthController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred during login",
+                message: _localization.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );

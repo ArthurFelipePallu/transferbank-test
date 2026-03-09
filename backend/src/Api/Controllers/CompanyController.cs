@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Domain.Interfaces;
 using Domain.Models.Requests;
 using Domain.Models.Responses;
 using Domain.Responses;
@@ -11,10 +12,12 @@ namespace Api.Controllers;
 public class CompanyController : ControllerBase
 {
     private readonly ICompanyService _companyService;
+    private readonly ILocalizationService _localizationService;
 
-    public CompanyController(ICompanyService companyService)
+    public CompanyController(ICompanyService companyService, ILocalizationService localizationService)
     {
         _companyService = companyService;
+        _localizationService = localizationService;
     }
 
     [HttpGet]
@@ -28,7 +31,7 @@ public class CompanyController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred while retrieving companies",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );
@@ -39,6 +42,22 @@ public class CompanyController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<CompanyResponse>> Register([FromBody] RegisterCompanyRequest request)
     {
+        // Check model state for validation errors
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            
+            var errorResponse = new ErrorResponseDto(
+                message: string.Join("; ", errors),
+                errorCode: "ValidationError",
+                statusCode: 400
+            );
+            return BadRequest(errorResponse);
+        }
+
         try
         {
             var response = await _companyService.RegisterAsync(request);
@@ -47,7 +66,7 @@ public class CompanyController : ControllerBase
         catch (InvalidOperationException ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: ex.Message,
+                message: _localizationService.GetString("Company.AlreadyExists"),
                 errorCode: "CompanyAlreadyExists",
                 statusCode: 409
             );
@@ -56,7 +75,7 @@ public class CompanyController : ControllerBase
         catch (ArgumentException ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: ex.Message,
+                message: _localizationService.GetString("Error.BadRequest"),
                 errorCode: "InvalidData",
                 statusCode: 400
             );
@@ -65,7 +84,7 @@ public class CompanyController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred during registration",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );
@@ -82,7 +101,7 @@ public class CompanyController : ControllerBase
             if (company == null)
             {
                 var errorResponse = new ErrorResponseDto(
-                    message: "Company not found",
+                    message: _localizationService.GetString("Company.NotFound"),
                     errorCode: "NotFound",
                     statusCode: 404
                 );
@@ -94,7 +113,7 @@ public class CompanyController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred while retrieving company",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );
@@ -111,7 +130,7 @@ public class CompanyController : ControllerBase
             if (company == null)
             {
                 var errorResponse = new ErrorResponseDto(
-                    message: "Company not found",
+                    message: _localizationService.GetString("Company.NotFound"),
                     errorCode: "NotFound",
                     statusCode: 404
                 );
@@ -123,7 +142,7 @@ public class CompanyController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred while retrieving company",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );
@@ -142,7 +161,7 @@ public class CompanyController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred while checking company existence",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );

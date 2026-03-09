@@ -9,11 +9,16 @@ namespace Application.Services;
 public class CompanyService : ICompanyService
 {
     private readonly ICompanyRepository _companyRepository;
+    private readonly IPartnerRepository _partnerRepository;
     private readonly IAuthService _authService;
 
-    public CompanyService(ICompanyRepository companyRepository, IAuthService authService)
+    public CompanyService(
+        ICompanyRepository companyRepository, 
+        IPartnerRepository partnerRepository,
+        IAuthService authService)
     {
         _companyRepository = companyRepository;
+        _partnerRepository = partnerRepository;
         _authService = authService;
     }
 
@@ -29,7 +34,7 @@ public class CompanyService : ICompanyService
         var company = new Company(
             request.Cnpj,
             request.CompanyName,
-            request.FullName,
+            request.FantasyName,
             request.CryptoCurrencies,
             request.Phone,
             request.Email,
@@ -38,25 +43,32 @@ public class CompanyService : ICompanyService
 
         var savedCompany = await _companyRepository.AddAsync(company);
 
-        return MapToResponse(savedCompany);
+        return await MapToResponseAsync(savedCompany);
     }
 
     public async Task<CompanyResponse?> GetByIdAsync(Guid id)
     {
         var company = await _companyRepository.GetByIdAsync(id);
-        return company != null ? MapToResponse(company) : null;
+        return company != null ? await MapToResponseAsync(company) : null;
     }
 
     public async Task<CompanyResponse?> GetByCnpjAsync(string cnpj)
     {
         var company = await _companyRepository.GetByCnpjAsync(cnpj);
-        return company != null ? MapToResponse(company) : null;
+        return company != null ? await MapToResponseAsync(company) : null;
     }
 
     public async Task<IEnumerable<CompanyResponse>> GetAllAsync()
     {
         var companies = await _companyRepository.GetAllAsync();
-        return companies.Select(MapToResponse);
+        var responses = new List<CompanyResponse>();
+        
+        foreach (var company in companies)
+        {
+            responses.Add(await MapToResponseAsync(company));
+        }
+        
+        return responses;
     }
 
 
@@ -65,17 +77,23 @@ public class CompanyService : ICompanyService
         return await _companyRepository.ExistsAsync(cnpj, email);
     }
 
-    private static CompanyResponse MapToResponse(Company company)
+    private async Task<CompanyResponse> MapToResponseAsync(Company company)
     {
+        var partners = await _partnerRepository.GetByCompanyIdAsync(company.Id);
+        var partnerCount = partners.Count();
+        
+        Console.WriteLine($"Company {company.CompanyName} (ID: {company.Id}) has {partnerCount} partners");
+        
         return new CompanyResponse
         {
             Id = company.Id,
             Cnpj = company.Cnpj,
             CompanyName = company.CompanyName,
-            FullName = company.FullName,
+            FantasyName = company.FantasyName,
             CryptoCurrencies = company.CryptoCurrencies,
             Phone = company.Phone,
             Email = company.Email,
+            PartnerCount = partnerCount,
             CreatedAt = company.CreatedAt
         };
     }

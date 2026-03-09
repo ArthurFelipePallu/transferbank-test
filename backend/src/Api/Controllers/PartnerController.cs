@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Domain.Interfaces;
 using Domain.Models.Requests;
 using Domain.Models.Responses;
 using Domain.Responses;
@@ -11,15 +12,33 @@ namespace Api.Controllers;
 public class PartnerController : ControllerBase
 {
     private readonly IPartnerService _partnerService;
+    private readonly ILocalizationService _localizationService;
 
-    public PartnerController(IPartnerService partnerService)
+    public PartnerController(IPartnerService partnerService, ILocalizationService localizationService)
     {
         _partnerService = partnerService;
+        _localizationService = localizationService;
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<PartnerResponse>> Register([FromBody] RegisterPartnerRequest request)
     {
+        // Check model state for validation errors
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            
+            var errorResponse = new ErrorResponseDto(
+                message: string.Join("; ", errors),
+                errorCode: "ValidationError",
+                statusCode: 400
+            );
+            return BadRequest(errorResponse);
+        }
+
         try
         {
             var response = await _partnerService.RegisterAsync(request);
@@ -28,7 +47,7 @@ public class PartnerController : ControllerBase
         catch (InvalidOperationException ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: ex.Message,
+                message: _localizationService.GetString("Partner.ShareholdingExceeded"),
                 errorCode: "InvalidOperation",
                 statusCode: 400
             );
@@ -37,7 +56,7 @@ public class PartnerController : ControllerBase
         catch (ArgumentException ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: ex.Message,
+                message: _localizationService.GetString("Error.BadRequest"),
                 errorCode: "InvalidData",
                 statusCode: 400
             );
@@ -46,7 +65,7 @@ public class PartnerController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred during partner registration",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );
@@ -63,7 +82,7 @@ public class PartnerController : ControllerBase
             if (partner == null)
             {
                 var errorResponse = new ErrorResponseDto(
-                    message: "Partner not found",
+                    message: _localizationService.GetString("Partner.NotFound"),
                     errorCode: "NotFound",
                     statusCode: 404
                 );
@@ -75,7 +94,7 @@ public class PartnerController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred while retrieving partner",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );
@@ -94,7 +113,7 @@ public class PartnerController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred while retrieving partners",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );
@@ -113,7 +132,7 @@ public class PartnerController : ControllerBase
         catch (Exception ex)
         {
             var errorResponse = new ErrorResponseDto(
-                message: "An error occurred while calculating shareholding",
+                message: _localizationService.GetString("Error.InternalServer"),
                 errorCode: "InternalError",
                 statusCode: 500
             );

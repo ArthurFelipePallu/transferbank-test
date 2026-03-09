@@ -12,21 +12,21 @@ public class CompanyTests
         // Arrange
         var cnpj = "12345678000190";
         var companyName = "Test Company";
-        var fullName = "Test Company LTDA";
+        var fantasyName = "Test Company LTDA";
         var cryptoCurrencies = new[] { CryptoCurrencyEnum.Bitcoin, CryptoCurrencyEnum.Ethereum };
         var phone = "+5511999999999";
         var email = "test@company.com";
         var passwordHash = "hashedPassword123";
 
         // Act
-        var company = new Company(cnpj, companyName, fullName, cryptoCurrencies, phone, email, passwordHash);
+        var company = new Company(cnpj, companyName, fantasyName, cryptoCurrencies, phone, email, passwordHash);
 
         // Assert
         company.Should().NotBeNull();
         company.Id.Should().NotBeEmpty();
         company.Cnpj.Should().Be(cnpj);
         company.CompanyName.Should().Be(companyName);
-        company.FullName.Should().Be(fullName);
+        company.FantasyName.Should().Be(fantasyName);
         company.CryptoCurrencies.Should().BeEquivalentTo(cryptoCurrencies);
         company.Phone.Should().Be(phone);
         company.Email.Should().Be(email);
@@ -40,7 +40,7 @@ public class CompanyTests
     public void Constructor_WithNullCnpj_ShouldThrowArgumentNullException()
     {
         // Arrange & Act
-        var act = () => new Company(null!, "Company", "Full Name", 
+        var act = () => new Company(null!, "Company", "Fantasy Name", 
             new[] { CryptoCurrencyEnum.Bitcoin }, "+5511999999999", "test@test.com", "hash");
 
         // Assert
@@ -51,7 +51,7 @@ public class CompanyTests
     public void Constructor_WithEmptyCnpj_ShouldThrowArgumentException()
     {
         // Arrange & Act
-        var act = () => new Company("", "Company", "Full Name", 
+        var act = () => new Company("", "Company", "Fantasy Name", 
             new[] { CryptoCurrencyEnum.Bitcoin }, "+5511999999999", "test@test.com", "hash");
 
         // Assert
@@ -62,7 +62,7 @@ public class CompanyTests
     public void Constructor_WithNullEmail_ShouldThrowArgumentNullException()
     {
         // Arrange & Act
-        var act = () => new Company("12345678000190", "Company", "Full Name", 
+        var act = () => new Company("12345678000190", "Company", "Fantasy Name", 
             new[] { CryptoCurrencyEnum.Bitcoin }, "+5511999999999", null!, "hash");
 
         // Assert
@@ -73,7 +73,7 @@ public class CompanyTests
     public void Constructor_WithEmptyEmail_ShouldThrowArgumentException()
     {
         // Arrange & Act
-        var act = () => new Company("12345678000190", "Company", "Full Name", 
+        var act = () => new Company("12345678000190", "Company", "Fantasy Name", 
             new[] { CryptoCurrencyEnum.Bitcoin }, "+5511999999999", "", "hash");
 
         // Assert
@@ -84,7 +84,7 @@ public class CompanyTests
     public void Constructor_WithNullCryptoCurrencies_ShouldThrowArgumentNullException()
     {
         // Arrange & Act
-        var act = () => new Company("12345678000190", "Company", "Full Name", 
+        var act = () => new Company("12345678000190", "Company", "Fantasy Name", 
             null!, "+5511999999999", "test@test.com", "hash");
 
         // Assert
@@ -95,7 +95,7 @@ public class CompanyTests
     public void Constructor_WithEmptyCryptoCurrencies_ShouldThrowArgumentException()
     {
         // Arrange & Act
-        var act = () => new Company("12345678000190", "Company", "Full Name", 
+        var act = () => new Company("12345678000190", "Company", "Fantasy Name", 
             Array.Empty<CryptoCurrencyEnum>(), "+5511999999999", "test@test.com", "hash");
 
         // Assert

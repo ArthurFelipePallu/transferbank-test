@@ -7,7 +7,7 @@ public class Company
     public Guid Id { get; private set; }
     public string Cnpj { get; private set; }
     public string CompanyName { get; private set; }
-    public string FullName { get; private set; }
+    public string FantasyName { get; private set; }
     public CryptoCurrencyEnum[] CryptoCurrencies { get; private set; }
     public string Phone { get; private set; }
     public string Email { get; private set; }
@@ -24,7 +24,7 @@ public class Company
     public Company(
         string cnpj,
         string companyName,
-        string fullName,
+        string fantasyName,
         CryptoCurrencyEnum[] cryptoCurrencies,
         string phone,
         string email,
@@ -33,7 +33,7 @@ public class Company
         Id = Guid.NewGuid();
         Cnpj = cnpj ?? throw new ArgumentNullException(nameof(cnpj));
         CompanyName = companyName ?? throw new ArgumentNullException(nameof(companyName));
-        FullName = fullName ?? throw new ArgumentNullException(nameof(fullName));
+        FantasyName = fantasyName ?? throw new ArgumentNullException(nameof(fantasyName));
         CryptoCurrencies = cryptoCurrencies ?? throw new ArgumentNullException(nameof(cryptoCurrencies));
         Phone = phone ?? throw new ArgumentNullException(nameof(phone));
         Email = email ?? throw new ArgumentNullException(nameof(email));
