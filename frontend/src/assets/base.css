@@ -4,6 +4,7 @@
   --color-primary-bg-start: #440f47;
   --color-primary-bg-end: #3e0c3f;
   --color-primary-teal: #1c9c8c;
+  --color-primary-teal-rgb: 28, 156, 140;
   --color-primary-teal-light: #19a596;
   --color-primary-teal-alt: #0f8e7f;
 
@@ -27,6 +28,7 @@
 
   /* small accent variations */
   --color-accent-teal-1: #21b8a6;
+  --color-accent-teal-1-rgb: 33, 184, 166;
   --color-accent-teal-2: #158a7d;
 
   /* shadows */

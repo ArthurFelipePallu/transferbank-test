@@ -10,7 +10,7 @@ import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
 const mapToRegisterRequest = (data: CompanyRegistration): RegisterCompanyRequest => ({
   cnpj: data.cnpj,
   companyName: data.companyName,
-  fullName: data.fullName,
+  fantasyName: data.fantasyName,
   cryptoCurrencies: data.cryptoCurrencies,
   phone: data.phone,
   email: data.email,
@@ -21,10 +21,11 @@ const mapToCompany = (response: CompanyResponse): Company => ({
   id: response.id || '',
   cnpj: response.cnpj || '',
   companyName: response.companyName || '',
-  fullName: response.fullName || '',
+  fantasyName: response.fantasyName || '',
   cryptoCurrencies: response.cryptoCurrencies || [],
   phone: response.phone || '',
   email: response.email || '',
+  partnerCount: response.partnerCount || 0,
   createdAt: response.createdAt || '',
 })
 
@@ -32,10 +33,10 @@ const mapToCompanyListItem = (response: CompanyResponse): CompanyListItem => ({
   id: response.id || '',
   cnpj: response.cnpj || '',
   companyName: response.companyName || '',
-  fullName: response.fullName || '',
+  fantasyName: response.fantasyName || '',
   cryptoCurrencies: response.cryptoCurrencies || [],
   email: response.email || '',
-  partnerCount: 0, // TODO: Backend should provide this
+  partnerCount: response.partnerCount || 0,
   createdAt: response.createdAt || '',
 })
 

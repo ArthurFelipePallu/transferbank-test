@@ -27,10 +27,12 @@ export interface CompanyResponse {
   id?: string;
   cnpj?: string | null;
   companyName?: string | null;
-  fullName?: string | null;
+  fantasyName?: string | null;
   cryptoCurrencies?: CryptoCurrencyEnum[] | null;
   phone?: string | null;
   email?: string | null;
+  /** @format int32 */
+  partnerCount?: number;
   /** @format date-time */
   createdAt?: string;
 }
@@ -101,7 +103,7 @@ export interface RegisterCompanyRequest {
   /** @minLength 1 */
   companyName: string;
   /** @minLength 1 */
-  fullName: string;
+  fantasyName: string;
   /** @minItems 1 */
   cryptoCurrencies: CryptoCurrencyEnum[];
   /** @minLength 1 */

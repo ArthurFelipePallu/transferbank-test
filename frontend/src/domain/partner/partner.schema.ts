@@ -1,50 +1,55 @@
-import { z } from 'zod'
+import * as yup from 'yup'
 
 // CPF validation (simplified - checks format and basic validation)
 const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
 
-export const partnerPersonalInfoSchema = z.object({
-  fullName: z
+export const partnerPersonalInfoSchema = yup.object({
+  fullName: yup
     .string()
+    .required('Full name is required')
     .min(3, 'Full name must have at least 3 characters')
     .max(100, 'Full name is too long'),
-  cpf: z
+  cpf: yup
     .string()
-    .regex(cpfRegex, 'CPF must be in format: 000.000.000-00')
-    .refine((cpf) => {
-      // Remove formatting
-      const numbers = cpf.replace(/\D/g, '')
+    .required('CPF is required')
+    .matches(cpfRegex, 'CPF must be in format: 000.000.000-00')
+    .test('cpf-length', 'Invalid CPF', (value) => {
+      if (!value) return false
+      const numbers = value.replace(/\D/g, '')
       return numbers.length === 11
-    }, 'Invalid CPF'),
-  nationality: z.string().min(2, 'Nationality is required'),
-  isPep: z.boolean(),
+    }),
+  nationality: yup.string().required('Nationality is required').min(2, 'Nationality is required'),
+  isPep: yup.boolean().required(),
 })
 
-export const partnerShareholdingSchema = z.object({
-  shareholding: z
+export const partnerShareholdingSchema = yup.object({
+  shareholding: yup
     .number()
+    .required('Shareholding is required')
     .min(0.01, 'Shareholding must be greater than 0')
     .max(100, 'Shareholding cannot exceed 100%'),
 })
 
-export const partnerDocumentsSchema = z.object({
-  documents: z
-    .array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        size: z.number(),
-        type: z.string(),
+export const partnerDocumentsSchema = yup.object({
+  documents: yup
+    .array()
+    .of(
+      yup.object({
+        id: yup.string().required(),
+        name: yup.string().required(),
+        size: yup.number().required(),
+        type: yup.string().required(),
       }),
     )
-    .min(1, 'At least one document is required'),
+    .min(1, 'At least one document is required')
+    .required('At least one document is required'),
 })
 
 export const partnerSchema = partnerPersonalInfoSchema
-  .merge(partnerShareholdingSchema)
-  .merge(partnerDocumentsSchema)
+  .concat(partnerShareholdingSchema)
+  .concat(partnerDocumentsSchema)
 
-export type PartnerPersonalInfoFormValues = z.infer<typeof partnerPersonalInfoSchema>
-export type PartnerShareholdingFormValues = z.infer<typeof partnerShareholdingSchema>
-export type PartnerDocumentsFormValues = z.infer<typeof partnerDocumentsSchema>
-export type PartnerFormValues = z.infer<typeof partnerSchema>
+export type PartnerPersonalInfoFormValues = yup.InferType<typeof partnerPersonalInfoSchema>
+export type PartnerShareholdingFormValues = yup.InferType<typeof partnerShareholdingSchema>
+export type PartnerDocumentsFormValues = yup.InferType<typeof partnerDocumentsSchema>
+export type PartnerFormValues = yup.InferType<typeof partnerSchema>

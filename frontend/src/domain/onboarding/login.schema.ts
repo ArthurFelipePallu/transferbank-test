@@ -1,9 +1,13 @@
-import { z } from 'zod'
+import * as yup from 'yup'
 
-export const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Enter a valid email address'),
-
-  password: z.string().min(1, 'Password is required'),
+export const loginSchema = yup.object({
+  email: yup
+    .string()
+    .required('Email is required')
+    .email('Enter a valid email address'),
+  password: yup
+    .string()
+    .required('Password is required'),
 })
 
-export type LoginFormValues = z.infer<typeof loginSchema>
+export type LoginFormValues = yup.InferType<typeof loginSchema>

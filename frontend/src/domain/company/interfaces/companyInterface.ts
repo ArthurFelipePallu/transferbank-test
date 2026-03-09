@@ -3,7 +3,7 @@ import type { CryptoCurrencyEnum } from '@/api/backendApi'
 export interface CompanyRegistration {
   cnpj: string
   companyName: string
-  fullName: string
+  fantasyName: string
   cryptoCurrencies: CryptoCurrencyEnum[]
   phone: string
   email: string
@@ -14,10 +14,11 @@ export interface Company {
   id: string
   cnpj: string
   companyName: string
-  fullName: string
+  fantasyName: string
   cryptoCurrencies: CryptoCurrencyEnum[]
   phone: string
   email: string
+  partnerCount?: number
   createdAt: string
 }
 
@@ -25,9 +26,9 @@ export interface CompanyListItem {
   id: string
   cnpj: string
   companyName: string
-  fullName: string
+  fantasyName: string
   cryptoCurrencies: CryptoCurrencyEnum[]
   email: string
-  partnerCount?: number
+  partnerCount: number
   createdAt: string
 }
