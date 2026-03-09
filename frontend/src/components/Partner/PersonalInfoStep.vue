@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from '@/components/Form/FormInputField.vue'
 import { partnerPersonalInfoSchema, type PartnerPersonalInfoFormValues } from '@/domain/partner/partner.schema'
 
@@ -12,10 +11,8 @@ const emit = defineEmits<{
   next: [values: PartnerPersonalInfoFormValues]
 }>()
 
-const validationSchema = toTypedSchema(partnerPersonalInfoSchema)
-
 const { handleSubmit, meta, values, setFieldValue } = useForm<PartnerPersonalInfoFormValues>({
-  validationSchema,
+  validationSchema: partnerPersonalInfoSchema,
   initialValues: props.initialValues || {
     fullName: '',
     cpf: '',
@@ -47,6 +44,7 @@ const submit = handleSubmit((values) => {
         label="CPF"
         placeholder="000.000.000-00"
         inputmode="numeric"
+        mask="cpf"
       />
 
       <FormInputField

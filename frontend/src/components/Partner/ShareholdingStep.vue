@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
 import FormInputField from '@/components/Form/FormInputField.vue'
 import { partnerShareholdingSchema, type PartnerShareholdingFormValues } from '@/domain/partner/partner.schema'
 
@@ -14,10 +13,8 @@ const emit = defineEmits<{
   back: []
 }>()
 
-const validationSchema = toTypedSchema(partnerShareholdingSchema)
-
 const { handleSubmit, meta, values } = useForm<PartnerShareholdingFormValues>({
-  validationSchema,
+  validationSchema: partnerShareholdingSchema,
   initialValues: props.initialValues || {
     shareholding: 0,
   },

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
 import FileUpload from './FileUpload.vue'
 import { partnerDocumentsSchema, type PartnerDocumentsFormValues } from '@/domain/partner/partner.schema'
 import type { PartnerDocument } from '@/domain/partner/partner.types'
@@ -15,10 +14,8 @@ const emit = defineEmits<{
   back: []
 }>()
 
-const validationSchema = toTypedSchema(partnerDocumentsSchema)
-
 const { handleSubmit, meta, setFieldValue, errors } = useForm<PartnerDocumentsFormValues>({
-  validationSchema,
+  validationSchema: partnerDocumentsSchema,
   initialValues: props.initialValues || {
     documents: [],
   },
