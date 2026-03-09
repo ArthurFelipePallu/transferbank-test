@@ -5,10 +5,40 @@ import InDevelopmentView from '../views/InDevelopmentView.vue'
 import AlreadyExistingView from '@/views/AlreadyExistingView.vue'
 import AccountCreatedView from '@/views/AccountCreatedView.vue'
 import LoginView from '@/views/LoginView.vue'
+import DashboardView from '@/views/DashboardView.vue'
 import PartnerRegistrationView from '@/views/PartnerRegistrationView.vue'
+import { browserScrollService } from '@/infrastructure/scroll/BrowserScrollService'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useUiStore } from '@/stores/useUiStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    // If there's a saved position (browser back/forward), use it
+    if (savedPosition) {
+      browserScrollService.scrollTo({
+        ...savedPosition,
+        behavior: 'smooth',
+      })
+      return savedPosition
+    }
+    
+    // If navigating to a hash (anchor), scroll to it
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth',
+        top: 80, // Offset for fixed header
+      }
+    }
+    
+    // Default: scroll to top with smooth animation
+    browserScrollService.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+    return { top: 0 }
+  },
   routes: [
     {
       path: '/',
@@ -24,6 +54,13 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: { requiresGuest: true },
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/account-created',
@@ -39,6 +76,7 @@ const router = createRouter({
       path: '/partner-registration',
       name: 'partner-registration',
       component: PartnerRegistrationView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/companies',
@@ -67,21 +105,25 @@ const router = createRouter({
           path: 'accounts',
           name: 'accounts',
           component: InDevelopmentView,
+          meta: { requiresAuth: true },
         },
         {
           path: 'transfers',
           name: 'transfers',
           component: InDevelopmentView,
+          meta: { requiresAuth: true },
         },
         {
           path: 'loans',
           name: 'loans',
           component: InDevelopmentView,
+          meta: { requiresAuth: true },
         },
         {
           path: 'investments',
           name: 'investments',
           component: InDevelopmentView,
+          meta: { requiresAuth: true },
         },
       ],
     },
@@ -126,6 +168,30 @@ const router = createRouter({
       component: NotFoundView,
     },
   ],
+})
+
+// Navigation Guards
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  const uiStore = useUiStore()
+  
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const requiresGuest = to.matched.some(record => record.meta.requiresGuest)
+  
+  // Check if route requires authentication
+  if (requiresAuth && !authStore.isAuthenticated) {
+    uiStore.showError('Please login to access this page', 5000)
+    next({ name: 'login', query: { redirect: to.fullPath } })
+    return
+  }
+  
+  // Check if route requires guest (redirect authenticated users)
+  if (requiresGuest && authStore.isAuthenticated) {
+    next({ name: 'dashboard' })
+    return
+  }
+  
+  next()
 })
 
 export default router
