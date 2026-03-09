@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { LoginCredentials, AuthSession } from '@/domain/auth/interfaces/authInterface'
 import { login as loginUseCase } from '@/application/auth/loginUseCase'
 import { httpAuthGateway } from '@/infrastructure/auth/HttpAuthGateway'
+import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
 
 export interface User {
   id: string
@@ -42,9 +43,9 @@ export const useAuthStore = defineStore('auth', () => {
       }
       token.value = session.token
 
-      // Store in localStorage
-      localStorage.setItem('auth_token', session.token)
-      localStorage.setItem('auth_user', JSON.stringify(user.value))
+      // Store in storage service
+      storageService.set(STORAGE_KEYS.AUTH_TOKEN, session.token)
+      storageService.set(STORAGE_KEYS.AUTH_USER, user.value)
 
       return true
     } catch (err) {
@@ -60,19 +61,19 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
     error.value = null
 
-    // Clear localStorage
-    localStorage.removeItem('auth_token')
-    localStorage.removeItem('auth_user')
+    // Clear storage
+    storageService.remove(STORAGE_KEYS.AUTH_TOKEN)
+    storageService.remove(STORAGE_KEYS.AUTH_USER)
   }
 
   const restoreSession = () => {
     try {
-      const storedToken = localStorage.getItem('auth_token')
-      const storedUser = localStorage.getItem('auth_user')
+      const storedToken = storageService.get<string>(STORAGE_KEYS.AUTH_TOKEN)
+      const storedUser = storageService.get<User>(STORAGE_KEYS.AUTH_USER)
 
       if (storedToken && storedUser) {
         token.value = storedToken
-        user.value = JSON.parse(storedUser)
+        user.value = storedUser
         return true
       }
       return false
@@ -85,7 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
   const updateUser = (updates: Partial<User>) => {
     if (user.value) {
       user.value = { ...user.value, ...updates }
-      localStorage.setItem('auth_user', JSON.stringify(user.value))
+      storageService.set(STORAGE_KEYS.AUTH_USER, user.value)
     }
   }
 

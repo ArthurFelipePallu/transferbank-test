@@ -39,7 +39,7 @@ describe('useOnboardingStore', () => {
         id: 'company-123',
         cnpj: '12345678000190',
         companyName: 'Test Company',
-        fullName: 'John Doe',
+        fantasyName: 'Test Fantasy Name',
         cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin],
         phone: '+5511999999999',
         email: 'test@example.com',
@@ -51,7 +51,7 @@ describe('useOnboardingStore', () => {
       const result = await store.submitOnboarding(
         '12345678000190',
         'Test Company',
-        'John Doe',
+        'Test Fantasy Name',
         [CryptoCurrencyEnum.Bitcoin],
         '+5511999999999',
         'test@example.com',
@@ -60,8 +60,8 @@ describe('useOnboardingStore', () => {
 
       expect(result).toBe(true)
       expect(store.isCompleted).toBe(true)
-      expect(store.companyData.id).toBe('company-123')
-      expect(store.companyData.cnpj).toBe('12345678000190')
+      expect(store.registeredCompany?.id).toBe('company-123')
+      expect(store.registeredCompany?.cnpj).toBe('12345678000190')
       expect(store.error).toBeNull()
     })
 
@@ -71,7 +71,7 @@ describe('useOnboardingStore', () => {
         id: 'company-123',
         cnpj: '12345678000190',
         companyName: 'Test Company',
-        fullName: 'John Doe',
+        fantasyName: 'Test Fantasy Name',
         cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin],
         phone: '+5511999999999',
         email: 'test@example.com',
@@ -83,7 +83,7 @@ describe('useOnboardingStore', () => {
       await store.submitOnboarding(
         '12345678000190',
         'Test Company',
-        'John Doe',
+        'Test Fantasy Name',
         [CryptoCurrencyEnum.Bitcoin],
         '+5511999999999',
         'test@example.com',
@@ -103,7 +103,7 @@ describe('useOnboardingStore', () => {
         store.submitOnboarding(
           '12345678000190',
           'Test Company',
-          'John Doe',
+          'Test Fantasy Name',
           [CryptoCurrencyEnum.Bitcoin],
           '+5511999999999',
           'test@example.com',
@@ -121,7 +121,7 @@ describe('useOnboardingStore', () => {
       const result = await store.submitOnboarding(
         '12345678000190',
         'Test Company',
-        'John Doe',
+        'Test Fantasy Name',
         [CryptoCurrencyEnum.Bitcoin],
         '+5511999999999',
         'test@example.com',
@@ -140,7 +140,7 @@ describe('useOnboardingStore', () => {
         id: 'company-123',
         cnpj: '12345678000190',
         companyName: 'Test Company',
-        fullName: 'John Doe',
+        fantasyName: 'Test Fantasy Name',
         cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin],
         phone: '+5511999999999',
         email: 'test@example.com',
@@ -151,7 +151,7 @@ describe('useOnboardingStore', () => {
       await store.submitOnboarding(
         '12345678000190',
         'Test Company',
-        'John Doe',
+        'Test Fantasy Name',
         [CryptoCurrencyEnum.Bitcoin],
         '+5511999999999',
         'test@example.com',
@@ -174,7 +174,7 @@ describe('useOnboardingStore', () => {
         id: 'company-123',
         cnpj: '12345678000190',
         companyName: 'Test Company',
-        fullName: 'John Doe',
+        fantasyName: 'Test Fantasy Name',
         cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin],
         phone: '+5511999999999',
         email: 'test@example.com',

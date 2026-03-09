@@ -11,6 +11,8 @@ import {
 } from '@/application/partner/partnerUseCases'
 import { httpPartnerGateway } from '@/infrastructure/partner/HttpPartnerGateway'
 import { useAuthStore } from './useAuthStore'
+import { sanitizeCpf } from '@/utils/formatters'
+import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
 
 export const usePartnerStore = defineStore('partner', () => {
   // State
@@ -115,10 +117,13 @@ export const usePartnerStore = defineStore('partner', () => {
         throw new Error('Company ID not found. Please login again.')
       }
 
+      // Sanitize CPF before sending to backend
+      const sanitizedCpf = sanitizeCpf(formData.value.cpf!)
+
       const registration: PartnerRegistration = {
         companyId,
         fullName: formData.value.fullName!,
-        cpf: formData.value.cpf!,
+        cpf: sanitizedCpf,
         nationality: formData.value.nationality!,
         shareholding: formData.value.shareholding!,
         isPep: formData.value.isPep!,
@@ -152,7 +157,16 @@ export const usePartnerStore = defineStore('partner', () => {
 
       partners.value.push(partner)
 
-      markStepCompleted(PartnerRegistrationStep.REVIEW)
+      // Clear form cache IMMEDIATELY after successful registration
+      // Do this BEFORE marking step complete to prevent persistence plugin from saving
+      storageService.remove(STORAGE_KEYS.PARTNER_FORM_CACHE)
+      
+      // Reset form data immediately
+      formData.value = {}
+      currentStep.value = PartnerRegistrationStep.PERSONAL_INFO
+      steps.value.forEach((step) => {
+        step.isCompleted = false
+      })
 
       return true
     } catch (err) {
@@ -163,6 +177,15 @@ export const usePartnerStore = defineStore('partner', () => {
     }
   }
 
+  const clearFormCache = () => {
+    storageService.remove(STORAGE_KEYS.PARTNER_FORM_CACHE)
+    formData.value = {}
+    currentStep.value = PartnerRegistrationStep.PERSONAL_INFO
+    steps.value.forEach((step) => {
+      step.isCompleted = false
+    })
+  }
+
   const resetForm = () => {
     formData.value = {}
     currentStep.value = PartnerRegistrationStep.PERSONAL_INFO
@@ -170,6 +193,7 @@ export const usePartnerStore = defineStore('partner', () => {
       step.isCompleted = false
     })
     error.value = null
+    clearFormCache()
   }
 
   const loadPartners = async () => {
@@ -255,5 +279,6 @@ export const usePartnerStore = defineStore('partner', () => {
     loadPartners,
     validateShareholding,
     getRemainingShareholding,
+    clearFormCache,
   }
 })
