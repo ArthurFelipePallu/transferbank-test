@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import OnboardingForm from '@/components/Form/OnboardingForm.vue'
 import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
 import { useOnboardingStore } from '@/stores/useOnboardingStore'
 import { useUiStore } from '@/stores/useUiStore'
 
 const router = useRouter()
+const route = useRoute()
 const onboardingStore = useOnboardingStore()
 const uiStore = useUiStore()
+
+onMounted(() => {
+  // Clear cache if user is returning to form after successful registration
+  if (onboardingStore.isCompleted) {
+    onboardingStore.clearFormCache()
+  }
+})
 
 const onSubmit = async (values: OnboardingFormValues) => {
   try {
@@ -16,7 +25,7 @@ const onSubmit = async (values: OnboardingFormValues) => {
     const success = await onboardingStore.submitOnboarding(
       values.cnpj,
       values.companyName,
-      values.fullName,
+      values.fantasyName,
       values.cryptoCurrencies,
       values.phone,
       values.email,
@@ -27,27 +36,14 @@ const onSubmit = async (values: OnboardingFormValues) => {
       // Redirect to success page
       router.push({ name: 'account-created' })
     } else {
-      // Check if error is due to existing account
-      if (onboardingStore.error?.includes('already exists') || 
-          onboardingStore.error?.includes('duplicate')) {
-        router.push({ name: 'account-exists' })
-      } else {
-        uiStore.showError(onboardingStore.error || 'Registration failed')
-      }
+      // Show error message
+      uiStore.showError(onboardingStore.error || 'Registration failed')
     }
   } catch (error) {
     console.error('Onboarding error:', error)
-    
-    // Check if it's a duplicate/existing account error
-    const errorMessage = error instanceof Error ? error.message : ''
-    if (errorMessage.includes('DUPLICATE_COMPANY') ||
-        errorMessage.includes('already exists') || 
-        errorMessage.includes('duplicate') ||
-        errorMessage.includes('409')) {
-      router.push({ name: 'account-exists' })
-    } else {
-      uiStore.showError('An unexpected error occurred. Please try again.')
-    }
+    // 409 errors are handled by axios interceptor
+    // Other errors show generic message
+    uiStore.showError('An unexpected error occurred. Please try again.')
   } finally {
     uiStore.stopLoading()
   }

@@ -1,12 +1,12 @@
 <template>
   <div class="companies-list-view">
     <div class="header">
-      <h1>Companies</h1>
-      <p class="subtitle">Browse all registered companies</p>
+      <h1>{{ t('company.title') }}</h1>
+      <p class="subtitle">{{ t('company.subtitle') }}</p>
     </div>
 
     <div v-if="loading" class="loading">
-      <p>Loading companies...</p>
+      <p>{{ t('common.loading') }}</p>
     </div>
 
     <div v-else-if="error" class="error">
@@ -14,7 +14,7 @@
     </div>
 
     <div v-else-if="companies.length === 0" class="empty">
-      <p>No companies registered yet</p>
+      <p>{{ t('company.noCompanies') }}</p>
     </div>
 
     <div v-else class="companies-grid">
@@ -31,11 +31,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useTranslation } from '@/composables/useTranslation'
 import CompanyCard from '@/components/Company/CompanyCard.vue'
 import { getAllCompanies } from '@/application/company/companyUseCases'
 import type { CompanyListItem } from '@/domain/company/interfaces/companyInterface'
 
 const router = useRouter()
+const { t } = useTranslation()
 const companies = ref<CompanyListItem[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -43,6 +45,10 @@ const error = ref<string | null>(null)
 onMounted(async () => {
   try {
     companies.value = await getAllCompanies()
+    console.log('Companies loaded:', companies.value.map(c => ({
+      name: c.fantasyName || c.companyName,
+      partnerCount: c.partnerCount
+    })))
   } catch (err) {
     error.value = 'Failed to load companies'
     console.error('Error loading companies:', err)
@@ -84,7 +90,7 @@ const handleCompanyClick = (companyId: string) => {
 
 .companies-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
@@ -98,6 +104,12 @@ const handleCompanyClick = (companyId: string) => {
 
 .error {
   color: var(--color-error);
+}
+
+@media (max-width: 1024px) {
+  .companies-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {

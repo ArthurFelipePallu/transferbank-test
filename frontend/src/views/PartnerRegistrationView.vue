@@ -15,29 +15,25 @@ import type {
 } from '@/domain/partner/partner.schema'
 import { usePartnerStore } from '@/stores/usePartnerStore'
 import { useUiStore } from '@/stores/useUiStore'
+import { useScrollToTop } from '@/composables/useScrollToTop'
 
 const router = useRouter()
 const partnerStore = usePartnerStore()
 const uiStore = useUiStore()
+const { scrollToTop } = useScrollToTop()
 
 const { currentStep, formData, steps, totalShareholding } = storeToRefs(partnerStore)
 
 onMounted(() => {
   // Load existing partners to calculate total shareholding
   partnerStore.loadPartners()
-  
-  // Scroll to top when component mounts
-  window.scrollTo({ top: 0, behavior: 'smooth' })
 })
-
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
 
 const handlePersonalInfoNext = (values: PartnerPersonalInfoFormValues) => {
   partnerStore.updateFormData(values)
   partnerStore.markStepCompleted(PartnerRegistrationStep.PERSONAL_INFO)
   partnerStore.nextStep()
+  scrollToTop()
   scrollToTop()
 }
 
