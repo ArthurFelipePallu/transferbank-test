@@ -1,62 +1,39 @@
 /**
  * CNPJ Lookup Composable - Presentation Layer
  * Vue composable for CNPJ lookup functionality
+ * Uses generic useAsyncLookup to avoid duplication
  */
 
-import { ref } from 'vue'
+import { computed } from 'vue'
 import type { ICnpjGateway } from '@/domain/cnpj/ports/ICnpjGateway'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
 import { httpCnpjGateway } from '@/infrastructure/cnpj/HttpCnpjGateway'
 import { lookupCompanyByCnpj } from '@/application/cnpj/lookupCnpjUseCase'
 import { CompanyStatusError } from '@/domain/cnpj/errors/CompanyStatusError'
+import { useAsyncLookup } from './useAsyncLookup'
 
 export function useCnpjLookup(gateway: ICnpjGateway = httpCnpjGateway) {
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
-  const statusError = ref<CompanyStatusError | null>(null)
-  const companyInfo = ref<CompanyInfo | null>(null)
+  const asyncLookup = useAsyncLookup<CompanyInfo, CompanyStatusError>({
+    logPrefix: 'useCnpjLookup',
+  })
+
+  const statusError = computed(() => asyncLookup.specificError.value)
+  const companyInfo = computed(() => asyncLookup.result.value)
 
   const lookup = async (cnpj: string): Promise<CompanyInfo | null> => {
-    isLoading.value = true
-    error.value = null
-    statusError.value = null
-    companyInfo.value = null
-
     console.log('[useCnpjLookup] Starting lookup for:', cnpj)
-
-    try {
-      const result = await lookupCompanyByCnpj(gateway, cnpj)
-      companyInfo.value = result
-      console.log('[useCnpjLookup] Lookup successful:', result)
-      return result
-    } catch (err) {
-      console.error('[useCnpjLookup] Lookup error:', err)
-      if (err instanceof CompanyStatusError) {
-        statusError.value = err
-        error.value = err.message
-        console.log('[useCnpjLookup] Status error:', err.message)
-      } else {
-        error.value = err instanceof Error ? err.message : 'Failed to lookup CNPJ'
-      }
-      return null
-    } finally {
-      isLoading.value = false
-    }
-  }
-
-  const reset = () => {
-    isLoading.value = false
-    error.value = null
-    statusError.value = null
-    companyInfo.value = null
+    return asyncLookup.lookup(
+      () => lookupCompanyByCnpj(gateway, cnpj),
+      CompanyStatusError
+    )
   }
 
   return {
-    isLoading,
-    error,
+    isLoading: asyncLookup.isLoading,
+    error: asyncLookup.error,
     statusError,
     companyInfo,
     lookup,
-    reset,
+    reset: asyncLookup.reset,
   }
 }
