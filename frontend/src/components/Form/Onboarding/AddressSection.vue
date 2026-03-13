@@ -58,51 +58,63 @@ watch(() => props.cep, async (newCep, oldCep) => {
 
 <template>
   <div class="address-section">
-    <div class="field-row">
-      <div class="field-with-indicator">
-        <FormInputField 
-          name="cep" 
-          :label="t('onboardingForm.cep')" 
-          placeholder="00000-000" 
-          inputmode="numeric" 
-          mask="cep" 
-        />
-        <span v-if="isCepLoading" class="loading-indicator">
-          {{ t('onboardingForm.searching') }}
-        </span>
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-6">
+        <div class="position-relative">
+          <FormInputField 
+            name="cep" 
+            :label="t('onboardingForm.cep')" 
+            placeholder="00000-000" 
+            inputmode="numeric" 
+            mask="cep" 
+          />
+          <span v-if="isCepLoading" class="position-absolute top-50 end-0 translate-middle-y me-3 small text-primary fw-medium pulse">
+            {{ t('onboardingForm.searching') }}
+          </span>
+        </div>
       </div>
       
-      <FormInputField 
-        name="logradouro" 
-        :label="t('onboardingForm.street')" 
-        placeholder="Rua Example" 
-      />
+      <div class="col-12 col-md-6">
+        <FormInputField 
+          name="logradouro" 
+          :label="t('onboardingForm.street')" 
+          placeholder="Rua Example" 
+        />
+      </div>
     </div>
 
-    <div class="field-row">
-      <FormInputField 
-        name="numero" 
-        :label="t('onboardingForm.number')" 
-        placeholder="123" 
-      />
-      <FormInputField 
-        name="complemento" 
-        :label="t('onboardingForm.complement')" 
-        placeholder="Apt 45 (optional)" 
-      />
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-6">
+        <FormInputField 
+          name="numero" 
+          :label="t('onboardingForm.number')" 
+          placeholder="123" 
+        />
+      </div>
+      <div class="col-12 col-md-6">
+        <FormInputField 
+          name="complemento" 
+          :label="t('onboardingForm.complement')" 
+          placeholder="Apt 45 (optional)" 
+        />
+      </div>
     </div>
 
-    <div class="field-row">
-      <FormInputField 
-        name="bairro" 
-        :label="t('onboardingForm.neighborhood')" 
-        placeholder="Centro" 
-      />
-      <FormInputField 
-        name="cidade" 
-        :label="t('onboardingForm.city')" 
-        placeholder="São Paulo" 
-      />
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-6">
+        <FormInputField 
+          name="bairro" 
+          :label="t('onboardingForm.neighborhood')" 
+          placeholder="Centro" 
+        />
+      </div>
+      <div class="col-12 col-md-6">
+        <FormInputField 
+          name="cidade" 
+          :label="t('onboardingForm.city')" 
+          placeholder="São Paulo" 
+        />
+      </div>
     </div>
 
     <FormInputField 
@@ -115,54 +127,5 @@ watch(() => props.cep, async (newCep, oldCep) => {
 </template>
 
 <style scoped>
-.address-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.field-row {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.field-row > * {
-  flex: 1 1 0;
-}
-
-.field-with-indicator {
-  position: relative;
-  flex: 1;
-}
-
-.loading-indicator {
-  position: absolute;
-  right: 0.75rem;
-  top: 2.5rem;
-  font-size: 0.75rem;
-  color: var(--color-primary-teal);
-  font-weight: 500;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@media (min-width: 640px) {
-  .address-section {
-    gap: 1.25rem;
-  }
-
-  .field-row {
-    flex-direction: row;
-    gap: 1.25rem;
-  }
-}
+/* Styles removed - using utility class .pulse from base.css */
 </style>

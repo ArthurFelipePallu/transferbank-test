@@ -4,7 +4,7 @@ import { useField } from 'vee-validate'
 import CryptoChip from '../CryptoChip.vue'
 import { CryptoCurrencyEnum } from '@/api/backendApi'
 import { httpCurrencyGateway } from '@/infrastructure/onboarding/HttpCurrencyGateway'
-import { loadCurrenciesWithHighlight } from '@/application/onboarding/cryptoCurrencyUseCase'
+import { loadAllCryptoCurrenciesOrdered } from '@/application/onboarding/cryptoCurrencyUseCase'
 import type { CryptoCurrencyOption } from '@/domain/onboarding/interfaces/currencyInterface'
 import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
 import { useTranslation } from '@/composables/useTranslation'
@@ -29,7 +29,7 @@ const {
 } = useField<OnboardingFormValues['cryptoCurrencies']>('cryptoCurrencies')
 
 onMounted(async () => {
-  cryptoCurrencies.value = await loadCurrenciesWithHighlight(httpCurrencyGateway)
+  cryptoCurrencies.value = await loadAllCryptoCurrenciesOrdered(httpCurrencyGateway)
 })
 
 const handleToggle = (currency: CryptoCurrencyEnum) => {
@@ -39,9 +39,9 @@ const handleToggle = (currency: CryptoCurrencyEnum) => {
 </script>
 
 <template>
-  <div class="crypto-selector">
-    <label class="inline-label">{{ t('onboardingForm.cryptoCurrencies') }}</label>
-    <div class="chips">
+  <div class="mb-3">
+    <label class="form-label">{{ t('onboardingForm.cryptoCurrencies') }}</label>
+    <div class="d-flex flex-wrap gap-2">
       <CryptoChip 
         v-for="c in cryptoCurrencies" 
         :key="c.alias" 
@@ -50,31 +50,12 @@ const handleToggle = (currency: CryptoCurrencyEnum) => {
         @clicked="handleToggle" 
       />
     </div>
-    <p v-if="cryptoMeta.touched && cryptoError" class="error">{{ cryptoError }}</p>
+    <div v-if="cryptoMeta.touched && cryptoError" class="invalid-feedback d-block">
+      {{ cryptoError }}
+    </div>
   </div>
 </template>
 
 <style scoped>
-.crypto-selector {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.inline-label {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--color-text-main);
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.error {
-  font-size: 0.75rem;
-  color: var(--color-error);
-}
+/* No additional styles needed - using Bootstrap classes */
 </style>

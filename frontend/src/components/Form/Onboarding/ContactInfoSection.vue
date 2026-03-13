@@ -1,58 +1,58 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import FormInputField from '../FormInputField.vue'
+import PhoneInputField from '../PhoneInputField.vue'
 import { useTranslation } from '@/composables/useTranslation'
 
 const { t } = useTranslation()
+
+// Store dial code separately
+const phoneDialCode = ref('+55')
+const phoneInputRef = ref<InstanceType<typeof PhoneInputField> | null>(null)
+
+// Handle dial code changes
+const handleDialCodeChange = (dialCode: string) => {
+  phoneDialCode.value = dialCode
+}
+
+// Expose method to get full phone number for form submission
+const getFullPhoneNumber = () => {
+  if (phoneInputRef.value) {
+    return phoneInputRef.value.fullPhoneNumber
+  }
+  return phoneDialCode.value
+}
+
+defineExpose({
+  getFullPhoneNumber,
+  dialCode: phoneDialCode
+})
 </script>
 
 <template>
   <div class="contact-info-section">
-    <div class="field-row">
-      <FormInputField 
-        name="phone" 
-        :label="t('onboardingForm.phone')" 
-        type="tel" 
-        placeholder="+55 (11) 99999-9999" 
-        inputmode="tel"
-        mask="phone" 
-      />
+    <!-- Mobile: stack vertically, Tablet+: side by side -->
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <PhoneInputField 
+          ref="phoneInputRef"
+          name="phone" 
+          :label="t('onboardingForm.phone')" 
+          placeholder="(11) 99999-9999"
+          @dial-code-change="handleDialCodeChange"
+        />
+      </div>
 
-      <FormInputField 
-        name="email" 
-        :label="t('onboardingForm.email')" 
-        type="email" 
-        placeholder="you@company.com" 
-        autocomplete="email" 
-      />
+      <div class="col-12 col-md-6">
+        <FormInputField 
+          name="email" 
+          :label="t('onboardingForm.email')" 
+          type="email" 
+          placeholder="you@company.com" 
+          autocomplete="email" 
+          inputmode="email"
+        />
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.contact-info-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.field-row {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.field-row > * {
-  flex: 1 1 0;
-}
-
-@media (min-width: 640px) {
-  .contact-info-section {
-    gap: 1.25rem;
-  }
-
-  .field-row {
-    flex-direction: row;
-    gap: 1.25rem;
-  }
-}
-</style>

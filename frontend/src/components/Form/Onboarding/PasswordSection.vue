@@ -44,111 +44,71 @@ const passwordStrengthClass = computed(() => {
 </script>
 
 <template>
-  <div class="password-section">
-    <FormInputField 
-      name="password" 
-      :label="t('onboardingForm.password')" 
-      type="password" 
-      autocomplete="new-password"
-      placeholder="Create a strong password"
-    >
-      <template #below>
-        <div class="password-strength">
-          <div class="password-strength-bar">
-            <div 
-              class="password-strength-bar-fill" 
-              :class="passwordStrengthClass"
-              :style="{ width: passwordStrengthPercent + '%' }" 
-            />
+  <div class="row g-3">
+    <div class="col-12">
+      <FormInputField 
+        name="password" 
+        :label="t('onboardingForm.password')" 
+        type="password" 
+        autocomplete="new-password"
+        placeholder="Create a strong password"
+      >
+        <template #below>
+          <div class="d-flex align-items-center gap-2 mt-2">
+            <div class="progress flex-grow-1" style="height: 6px;">
+              <div 
+                class="progress-bar" 
+                :class="passwordStrengthClass"
+                :style="{ width: passwordStrengthPercent + '%' }" 
+                role="progressbar"
+                :aria-valuenow="passwordScore"
+                aria-valuemin="0"
+                aria-valuemax="5"
+              />
+            </div>
+            <span class="text-muted small" style="min-width: 4.5rem;">{{ passwordStrengthLabel }}</span>
           </div>
-          <span class="password-strength-label">{{ passwordStrengthLabel }}</span>
-        </div>
 
-        <ul class="password-hints">
-          <li>{{ t('onboardingForm.passwordHints.minLength') }}</li>
-          <li>{{ t('onboardingForm.passwordHints.caseLetters') }}</li>
-          <li>{{ t('onboardingForm.passwordHints.numbersSymbols') }}</li>
-        </ul>
-      </template>
-    </FormInputField>
+          <ul class="small text-muted mt-2 mb-0 ps-3">
+            <li>{{ t('onboardingForm.passwordHints.minLength') }}</li>
+            <li>{{ t('onboardingForm.passwordHints.caseLetters') }}</li>
+            <li>{{ t('onboardingForm.passwordHints.numbersSymbols') }}</li>
+          </ul>
+        </template>
+      </FormInputField>
+    </div>
 
-    <FormInputField 
-      name="passwordConfirmation" 
-      :label="t('onboardingForm.confirmPassword')" 
-      type="password" 
-      autocomplete="new-password"
-      placeholder="Repeat your password" 
-      :validate-on-input="true" 
-    />
+    <div class="col-12">
+      <FormInputField 
+        name="passwordConfirmation" 
+        :label="t('onboardingForm.confirmPassword')" 
+        type="password" 
+        autocomplete="new-password"
+        placeholder="Repeat your password" 
+        :validate-on-input="true" 
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
-.password-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.password-strength {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.3rem;
-}
-
-.password-strength-bar {
-  flex: 1;
-  height: 0.35rem;
-  border-radius: 999px;
-  background: var(--color-surface-border);
-  overflow: hidden;
-}
-
-.password-strength-bar-fill {
-  height: 100%;
-  width: 0;
-  transition:
-    width 0.2s ease,
-    background 0.2s ease;
+.progress-bar {
+  transition: width 0.2s ease, background-color 0.2s ease;
 }
 
 .strength-empty {
-  background: transparent;
+  background-color: transparent;
 }
 
 .strength-weak {
-  background: var(--color-error);
+  background-color: var(--bs-danger);
 }
 
 .strength-medium {
-  background: var(--color-warning);
+  background-color: var(--bs-warning);
 }
 
 .strength-strong {
-  background: var(--color-primary-teal-light);
-}
-
-.password-strength-label {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  min-width: 4.5rem;
-}
-
-.password-hints {
-  margin: 0.35rem 0 0;
-  padding-left: 1.2rem;
-  font-size: 0.72rem;
-  color: var(--color-text-muted);
-}
-
-.password-hints li + li {
-  margin-top: 0.1rem;
-}
-
-@media (min-width: 640px) {
-  .password-section {
-    gap: 1.25rem;
-  }
+  background-color: var(--bs-success);
 }
 </style>

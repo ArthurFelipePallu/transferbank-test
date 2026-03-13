@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
 import FormInputField from '../FormInputField.vue'
-import StatusErrorAlert from './StatusErrorAlert.vue'
 import { useTranslation } from '@/composables/useTranslation'
 import { useCnpjLookup } from '@/composables/useCnpjLookup'
 import { sanitizeCnpj, formatPhone, formatCep } from '@/utils/formatters'
@@ -29,17 +28,37 @@ const { t } = useTranslation()
 const uiStore = useUiStore()
 const { isLoading: isCnpjLoading, statusError, lookup: lookupCnpj, reset: resetCnpjLookup } = useCnpjLookup()
 
+const cnpjNotFoundMessage = ref<string | null>(null)
+const isTestCnpj = ref(false)
+
+// Check if CNPJ is a test CNPJ (all same digits)
+const checkIfTestCnpj = (cnpj: string): boolean => {
+  const sanitized = cnpj.replace(/\D/g, '')
+  if (sanitized.length !== 14) return false
+  
+  const firstDigit = sanitized[0]
+  return sanitized.split('').every(digit => digit === firstDigit)
+}
+
 // Watch CNPJ field and auto-fill form when valid CNPJ is entered
 watch(() => props.cnpj, async (newCnpj, oldCnpj) => {
   const sanitized = sanitizeCnpj(newCnpj)
   const oldSanitized = sanitizeCnpj(oldCnpj || '')
   
-  // Reset status error when CNPJ changes
+  // Reset status error and messages when CNPJ changes
   emit('status-error', null)
+  cnpjNotFoundMessage.value = null
+  isTestCnpj.value = false
   resetCnpjLookup()
   
   // Only lookup if CNPJ has 14 digits and actually changed
   if (sanitized.length === 14 && sanitized !== oldSanitized) {
+    // Check if it's a test CNPJ
+    if (checkIfTestCnpj(sanitized)) {
+      isTestCnpj.value = true
+      return
+    }
+    
     const companyInfo = await lookupCnpj(sanitized)
     
     // Check for status error
@@ -49,14 +68,17 @@ watch(() => props.cnpj, async (newCnpj, oldCnpj) => {
       return
     }
     
+    // Check if CNPJ was not found
+    if (companyInfo === null) {
+      cnpjNotFoundMessage.value = t('onboardingForm.cnpjNotFound')
+      return
+    }
+    
     if (companyInfo) {
-      // Auto-fill form with retrieved data (only if fields are empty)
-      if (!props.companyName) {
-        emit('update:companyName', companyInfo.razaoSocial || '')
-      }
-      if (!props.fantasyName) {
-        emit('update:fantasyName', companyInfo.nomeFantasia || companyInfo.razaoSocial || '')
-      }
+      // Auto-fill form with retrieved data (always update when CNPJ changes)
+      emit('update:companyName', companyInfo.razaoSocial || '')
+      emit('update:fantasyName', companyInfo.nomeFantasia || companyInfo.razaoSocial || '')
+      
       if (companyInfo.telefone) {
         emit('update:phone', formatPhone(companyInfo.telefone))
       }
@@ -75,25 +97,36 @@ watch(() => props.cnpj, async (newCnpj, oldCnpj) => {
 
 <template>
   <div class="company-info-section">
-    <div class="field-row">
-      <div class="field-with-indicator">
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
         <FormInputField 
           name="cnpj" 
           :label="t('onboardingForm.cnpj')" 
           placeholder="00.000.000/0000-00" 
           inputmode="numeric" 
           mask="cnpj" 
-        />
-        <span v-if="isCnpjLoading" class="loading-indicator">
-          {{ t('onboardingForm.searching') }}
-        </span>
+        >
+          <template #below>
+            <div v-if="isCnpjLoading" class="small text-primary fw-medium mt-1">
+              <span class="pulse">{{ t('onboardingForm.searching') }}</span>
+            </div>
+            <div v-else-if="isTestCnpj" class="small fw-medium mt-1" style="color: var(--bs-warning);">
+              ⚠️ {{ t('onboardingForm.testCnpjWarning') }}
+            </div>
+            <div v-else-if="cnpjNotFoundMessage" class="small fw-medium mt-1" style="color: var(--bs-danger);">
+              ❌ {{ cnpjNotFoundMessage }}
+            </div>
+          </template>
+        </FormInputField>
       </div>
 
-      <FormInputField 
-        name="companyName" 
-        :label="t('onboardingForm.companyName')" 
-        placeholder="Your company LTDA" 
-      />
+      <div class="col-12 col-md-6">
+        <FormInputField 
+          name="companyName" 
+          :label="t('onboardingForm.companyName')" 
+          placeholder="Your company LTDA" 
+        />
+      </div>
     </div>
 
     <FormInputField 
@@ -105,54 +138,5 @@ watch(() => props.cnpj, async (newCnpj, oldCnpj) => {
 </template>
 
 <style scoped>
-.company-info-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.field-row {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.field-row > * {
-  flex: 1 1 0;
-}
-
-.field-with-indicator {
-  position: relative;
-  flex: 1;
-}
-
-.loading-indicator {
-  position: absolute;
-  right: 0.75rem;
-  top: 2.5rem;
-  font-size: 0.75rem;
-  color: var(--color-primary-teal);
-  font-weight: 500;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@media (min-width: 640px) {
-  .company-info-section {
-    gap: 1.25rem;
-  }
-
-  .field-row {
-    flex-direction: row;
-    gap: 1.25rem;
-  }
-}
+/* Styles removed - using utility class .pulse from base.css */
 </style>
