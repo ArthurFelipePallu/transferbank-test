@@ -1,12 +1,15 @@
 /**
  * Bootstrap 5 Custom Configuration
  * Integrates Bootstrap with existing TransferBank color scheme
+ *
+ * NOTE: Bootstrap 5.x still uses @import internally. Deprecation warnings
+ * from Dart Sass are suppressed in vite.config.ts via css.preprocessorOptions.
  */
 
-// 1. Import Bootstrap functions first
+// 1. Bootstrap functions first
 @import 'bootstrap/scss/functions';
 
-// 2. Custom color variables matching TransferBank theme
+// 2. Custom variable overrides (must be before variables import)
 $primary: #1c9c8c;
 $secondary: #6c757d;
 $success: #14b8a6;
@@ -16,7 +19,6 @@ $danger: #ef4444;
 $light: #f8f9fa;
 $dark: #212529;
 
-// Custom theme colors
 $theme-colors: (
   'primary': $primary,
   'secondary': $secondary,
@@ -30,56 +32,48 @@ $theme-colors: (
   'teal-light': #14b8a6,
 );
 
-// Typography
 $font-family-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-$font-size-base: 1rem; // 16px
+$font-size-base: 1rem;
 $line-height-base: 1.5;
 
-// Mobile-first font sizes
-$h1-font-size: 1.5rem;   // 24px mobile
-$h2-font-size: 1.25rem;  // 20px mobile
-$h3-font-size: 1.125rem; // 18px mobile
-$h4-font-size: 1rem;     // 16px mobile
-$h5-font-size: 0.875rem; // 14px mobile
-$h6-font-size: 0.75rem;  // 12px mobile
+$h1-font-size: 1.5rem;
+$h2-font-size: 1.25rem;
+$h3-font-size: 1.125rem;
+$h4-font-size: 1rem;
+$h5-font-size: 0.875rem;
+$h6-font-size: 0.75rem;
 
-// Spacing
 $spacer: 1rem;
 $spacers: (
   0: 0,
-  1: $spacer * 0.25,  // 4px
-  2: $spacer * 0.5,   // 8px
-  3: $spacer,         // 16px
-  4: $spacer * 1.5,   // 24px
-  5: $spacer * 3,     // 48px
-  6: $spacer * 4,     // 64px
+  1: $spacer * 0.25,
+  2: $spacer * 0.5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+  6: $spacer * 4,
 );
 
-// Border radius
 $border-radius: 0.5rem;
 $border-radius-sm: 0.375rem;
 $border-radius-lg: 0.75rem;
 $border-radius-xl: 1rem;
 $border-radius-2xl: 1.5rem;
 
-// Touch-friendly sizing (44px minimum per Apple/Google guidelines)
-$input-height: 2.75rem;        // 44px
-$input-height-sm: 2.5rem;      // 40px
-$input-height-lg: 3.5rem;      // 56px
+$input-height: 2.75rem;
+$input-height-sm: 2.5rem;
+$input-height-lg: 3.5rem;
 
-$btn-padding-y: 0.75rem;       // 12px
-$btn-padding-x: 1.5rem;        // 24px
-$btn-padding-y-sm: 0.5rem;     // 8px
-$btn-padding-x-sm: 1rem;       // 16px
-$btn-padding-y-lg: 1rem;       // 16px
-$btn-padding-x-lg: 2rem;       // 32px
+$btn-padding-y: 0.75rem;
+$btn-padding-x: 1.5rem;
+$btn-padding-y-sm: 0.5rem;
+$btn-padding-x-sm: 1rem;
+$btn-padding-y-lg: 1rem;
+$btn-padding-x-lg: 2rem;
 $btn-font-weight: 600;
 $btn-border-radius: $border-radius;
-
-// Ensure buttons meet touch target minimum
 $btn-line-height: 1.5;
 
-// Cards
 $card-border-radius: $border-radius-lg;
 $card-border-width: 1px;
 $card-border-color: rgba(0, 0, 0, 0.08);
@@ -87,29 +81,25 @@ $card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 $card-spacer-y: 1rem;
 $card-spacer-x: 1rem;
 
-// Forms - Touch friendly
-$input-padding-y: 0.75rem;     // 12px
-$input-padding-x: 1rem;        // 16px
-$input-padding-y-sm: 0.5rem;   // 8px
-$input-padding-x-sm: 0.75rem;  // 12px
-$input-padding-y-lg: 1rem;     // 16px
-$input-padding-x-lg: 1.25rem;  // 20px
+$input-padding-y: 0.75rem;
+$input-padding-x: 1rem;
+$input-padding-y-sm: 0.5rem;
+$input-padding-x-sm: 0.75rem;
+$input-padding-y-lg: 1rem;
+$input-padding-x-lg: 1.25rem;
 $input-border-radius: $border-radius;
 $input-border-color: rgba(0, 0, 0, 0.15);
 $input-focus-border-color: $primary;
 $input-focus-box-shadow: 0 0 0 0.2rem rgba(28, 156, 140, 0.25);
-$input-font-size: 1rem;        // 16px (prevents zoom on iOS)
+$input-font-size: 1rem;
 
-// Form labels
 $form-label-margin-bottom: 0.5rem;
 $form-label-font-size: 0.875rem;
 $form-label-font-weight: 500;
 
-// Modals
 $modal-content-border-radius: $border-radius-lg;
 $modal-backdrop-opacity: 0.5;
 
-// Navbar - Mobile friendly
 $navbar-padding-y: 0.75rem;
 $navbar-padding-x: 1rem;
 $navbar-nav-link-padding-x: 1rem;
@@ -117,19 +107,18 @@ $navbar-toggler-padding-y: 0.5rem;
 $navbar-toggler-padding-x: 0.75rem;
 $navbar-toggler-font-size: 1.25rem;
 
-// Offcanvas - For mobile menu
 $offcanvas-horizontal-width: 280px;
 $offcanvas-padding-y: 1rem;
 $offcanvas-padding-x: 1rem;
 
-// 3. Import Bootstrap variables and maps
+// 3. Bootstrap core
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/variables-dark';
 @import 'bootstrap/scss/maps';
 @import 'bootstrap/scss/mixins';
 @import 'bootstrap/scss/utilities';
 
-// 4. Import Bootstrap layout & components
+// 4. Bootstrap components
 @import 'bootstrap/scss/root';
 @import 'bootstrap/scss/reboot';
 @import 'bootstrap/scss/type';
@@ -162,26 +151,23 @@ $offcanvas-padding-x: 1rem;
 @import 'bootstrap/scss/offcanvas';
 @import 'bootstrap/scss/placeholders';
 
-// 5. Import utilities API (must be last)
+// 5. Helpers and utilities API (must be last)
 @import 'bootstrap/scss/helpers';
 @import 'bootstrap/scss/utilities/api';
 
-// Custom Bootstrap overrides
+// ─── Custom overrides ─────────────────────────────────────────────────────────
+
 .btn-primary {
   background: linear-gradient(135deg, #1c9c8c, #14b8a6);
   border: none;
   box-shadow: 0 4px 6px rgba(28, 156, 140, 0.3);
-  min-height: 44px; // Touch target
-  
+  min-height: 44px;
+
   &:hover {
     background: linear-gradient(135deg, #14b8a6, #1c9c8c);
     box-shadow: 0 6px 12px rgba(28, 156, 140, 0.4);
   }
-  
-  &:active {
-    transform: translateY(1px);
-  }
-  
+  &:active { transform: translateY(1px); }
   &:focus-visible {
     outline: 2px solid $primary;
     outline-offset: 2px;
@@ -189,41 +175,33 @@ $offcanvas-padding-x: 1rem;
 }
 
 .btn {
-  min-height: 44px; // Ensure all buttons meet touch target
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .card {
   transition: all 0.2s ease;
-  
-  &:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  }
+  &:hover { box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); }
 }
 
 .form-control,
 .form-select {
-  min-height: 44px; // Touch target
-  font-size: 1rem; // Prevents zoom on iOS
-  
+  min-height: 44px;
+  font-size: 1rem;
   &:focus {
     border-color: $primary;
     box-shadow: 0 0 0 0.2rem rgba(28, 156, 140, 0.25);
   }
 }
 
-.form-control-lg {
-  min-height: 56px;
-}
+.form-control-lg { min-height: 56px; }
+.form-control-sm { min-height: 40px; }
 
-.form-control-sm {
-  min-height: 40px;
-}
-
-// Better focus states for accessibility
 a:focus-visible,
 button:focus-visible,
 .btn:focus-visible {
@@ -232,79 +210,26 @@ button:focus-visible,
   border-radius: $border-radius-sm;
 }
 
-// Mobile-first responsive utilities
-@media (max-width: 575.98px) {
-  // Full-width buttons on mobile
-  .btn-mobile-block {
-    width: 100%;
-    display: block;
-  }
-  
-  // Larger touch targets on mobile
-  .form-control,
-  .form-select,
-  .btn {
-    min-height: 48px;
-  }
-  
-  // Better spacing on mobile
-  .card-body {
-    padding: 1rem;
-  }
-  
-  // Stack form groups on mobile
-  .row > [class*='col-'] {
-    margin-bottom: 1rem;
-  }
-}
-
-@media (min-width: 576px) {
-  .card-body {
-    padding: 1.5rem;
-  }
-}
-
-@media (min-width: 992px) {
-  .card-body {
-    padding: 2rem;
-  }
-}
-
-// Offcanvas mobile menu styling
-.offcanvas {
-  &.offcanvas-start {
-    width: 280px;
-  }
-}
-
+.offcanvas.offcanvas-start { width: 280px; }
 .offcanvas-header {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
+.offcanvas-body { padding: 1rem; }
 
-.offcanvas-body {
-  padding: 1rem;
-}
+* { -webkit-tap-highlight-color: rgba(28, 156, 140, 0.1); }
+html { scroll-behavior: smooth; }
 
-// Better tap highlighting
-* {
-  -webkit-tap-highlight-color: rgba(28, 156, 140, 0.1);
-}
-
-// Prevent text selection on buttons
-.btn {
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-// Smooth scrolling
-html {
-  scroll-behavior: smooth;
-}
-
-// Better mobile viewport
 @supports (height: 100dvh) {
-  .min-vh-100 {
-    min-height: 100dvh;
-  }
+  .min-vh-100 { min-height: 100dvh; }
 }
+
+@media (max-width: 575.98px) {
+  .btn-mobile-block { width: 100%; display: block; }
+  .form-control, .form-select, .btn { min-height: 48px; }
+  .card-body { padding: 1rem; }
+  .row > [class*='col-'] { margin-bottom: 1rem; }
+}
+
+@media (min-width: 576px) { .card-body { padding: 1.5rem; } }
+@media (min-width: 992px) { .card-body { padding: 2rem; } }
