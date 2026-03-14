@@ -19,7 +19,7 @@ export const partnerPersonalInfoSchema = yup.object({
       return numbers.length === 11
     }),
   nationality: yup.string().required('Nationality is required').min(2, 'Nationality is required'),
-  isPep: yup.boolean().required(),
+  isPep: yup.boolean().default(false),
 })
 
 export const partnerShareholdingSchema = yup.object({
