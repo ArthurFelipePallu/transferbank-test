@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import ActionCard from './ActionCard.vue'
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 
 export interface QuickAction {
+  title: TranslationKey
+  description: TranslationKey
+  route: string
+  variant?: 'default' | 'primary'
+}
+
+export interface TranslatedAction {
   title: string
   description: string
   route: string
@@ -10,7 +18,7 @@ export interface QuickAction {
 
 defineProps<{
   title: string
-  actions: QuickAction[]
+  actions: TranslatedAction[]
 }>()
 
 const emit = defineEmits<{

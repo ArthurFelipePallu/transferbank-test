@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useTranslation } from '@/composables/useTranslation'
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 import { useDashboard } from '@/composables/useDashboard'
 import { dashboardActionsConfig } from '@/config/dashboardActions'
 import WelcomeCard from '@/components/Dashboard/WelcomeCard.vue'
 import CompanyInfoCard from '@/components/Dashboard/CompanyInfoCard.vue'
 import QuickActionsCard from '@/components/Dashboard/QuickActionsCard.vue'
+import type { TranslatedAction } from '@/components/Dashboard/QuickActionsCard.vue'
 import PartnersListCard from '@/components/Partner/PartnersListCard.vue'
 
 const { t } = useTranslation()
@@ -19,11 +21,11 @@ const companyInfo = computed(() => ({
 }))
 
 // Translate action titles and descriptions
-const translatedActions = computed(() =>
+const translatedActions = computed<TranslatedAction[]>(() =>
   dashboardActionsConfig.map(action => ({
     ...action,
-    title: t(action.title),
-    description: t(action.description),
+    title: t(action.title as TranslationKey),
+    description: t(action.description as TranslationKey),
   }))
 )
 </script>
