@@ -1,35 +1,31 @@
 <template>
-  <div class="company-card" @click="$emit('click')">
-    <!-- Fantasy Name (Top) -->
-    <div class="card-header">
-      <h3 class="fantasy-name">{{ displayName }}</h3>
+  <div class="card h-100 company-card" @click="$emit('click')">
+    <div class="card-header border-bottom-2 pb-3">
+      <h3 class="h5 fw-bold mb-0">{{ displayName }}</h3>
     </div>
 
-    <div class="card-body">
-      <!-- CNPJ -->
+    <div class="card-body d-flex flex-column gap-3">
       <div class="info-row">
-        <span class="label">{{ t('companyCard.cnpj') }}</span>
-        <span class="value">{{ formattedCnpj }}</span>
+        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('companyCard.cnpj') }}</span>
+        <span class="fw-medium">{{ formattedCnpj }}</span>
       </div>
 
-      <!-- Cryptocurrencies -->
       <div class="info-row">
-        <span class="label">{{ t('companyCard.cryptocurrencies') }}</span>
-        <div class="crypto-badges">
+        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('companyCard.cryptocurrencies') }}</span>
+        <div class="d-flex flex-wrap gap-2">
           <span
             v-for="crypto in company.cryptoCurrencies"
             :key="crypto"
-            class="crypto-badge"
+            class="badge rounded-pill crypto-badge"
           >
             {{ formatCrypto(crypto) }}
           </span>
         </div>
       </div>
 
-      <!-- Partner Count -->
       <div class="info-row">
-        <span class="label">{{ t('companyCard.partners') }}</span>
-        <span class="value partner-value">
+        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('companyCard.partners') }}</span>
+        <span class="fw-semibold partner-count">
           {{ partnerCount }} {{ partnerLabel }}
         </span>
       </div>
@@ -83,12 +79,9 @@ const formatCrypto = (crypto: string): string => {
 
 <style scoped>
 .company-card {
-  background: var(--color-white);
-  border: 2px solid var(--color-border);
-  border-radius: 1rem;
-  padding: 1.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 2px solid var(--bs-border-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -99,79 +92,23 @@ const formatCrypto = (crypto: string): string => {
 }
 
 .card-header {
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid var(--color-border);
-}
-
-.fantasy-name {
-  font-size: 1.375rem;
-  font-weight: 700;
-  color: var(--color-text-main);
-  margin: 0;
-  line-height: 1.3;
-}
-
-.card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.info-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
-.label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.value {
-  font-size: 1rem;
-  color: var(--color-text);
-  font-weight: 500;
-  word-break: break-word;
-}
-
-.partner-value {
-  color: var(--color-primary-teal);
-  font-weight: 600;
-}
-
-.crypto-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  border-bottom-width: 2px !important;
 }
 
 .crypto-badge {
   background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
   color: white;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.8125rem;
   font-weight: 600;
-  border: none;
   box-shadow: 0 2px 4px rgba(28, 156, 140, 0.2);
 }
 
+.partner-count {
+  color: var(--color-primary-teal);
+}
+
 @media (max-width: 640px) {
-  .company-card {
-    padding: 1.25rem;
-  }
-
-  .fantasy-name {
-    font-size: 1.25rem;
-  }
-
-  .value {
-    font-size: 0.9375rem;
+  .card-body {
+    padding: 1rem;
   }
 }
 </style>

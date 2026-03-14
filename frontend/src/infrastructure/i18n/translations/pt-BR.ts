@@ -163,6 +163,8 @@ export const ptBR: TranslationKeys = {
     confirmPassword: 'Confirmar senha',
     createAccount: 'Criar conta',
     searching: 'Buscando...',
+    cnpjNotFound: 'CNPJ não encontrado na base de dados. Por favor, verifique o número.',
+    testCnpjWarning: 'CNPJ de teste detectado. Apenas para fins de teste.',
     companyStatusError: 'Erro de Status da Empresa',
     passwordStrength: {
       enterPassword: 'Digite uma senha',

@@ -12,11 +12,14 @@ import CryptoCurrencySelector from './Onboarding/CryptoCurrencySelector.vue'
 import ContactInfoSection from './Onboarding/ContactInfoSection.vue'
 import AddressSection from './Onboarding/AddressSection.vue'
 import PasswordSection from './Onboarding/PasswordSection.vue'
+import FormValidationFeedback from './Onboarding/FormValidationFeedback.vue'
+import AccountSetupCost from '@/components/Pricing/AccountSetupCost.vue'
 
 const onboardingStore = useOnboardingStore()
 const uiStore = useUiStore()
 const { t } = useTranslation()
 const cnpjStatusError = ref<string | null>(null)
+const contactInfoRef = ref<InstanceType<typeof ContactInfoSection> | null>(null)
 
 onMounted(() => {
   // Restore cached form data if available
@@ -128,109 +131,91 @@ const submit = handleSubmit((values) => {
     return
   }
   
-  emit('submit', values)
+  // Get full phone number with dial code
+  const fullPhone = contactInfoRef.value?.getFullPhoneNumber() || values.phone
+  
+  // Submit with full phone number
+  emit('submit', {
+    ...values,
+    phone: fullPhone
+  })
 })
 </script>
 
 <template>
-  <form class="form" @submit.prevent="submit">
-    <CompanyInfoSection
-      :cnpj="values.cnpj"
-      :company-name="values.companyName"
-      :fantasy-name="values.fantasyName"
-      @status-error="handleStatusError"
-      @update:company-name="(val) => handleCompanyDataUpdate('companyName', val)"
-      @update:fantasy-name="(val) => handleCompanyDataUpdate('fantasyName', val)"
-      @update:phone="(val) => handleCompanyDataUpdate('phone', val)"
-      @update:email="(val) => handleCompanyDataUpdate('email', val)"
-      @update:cep="(val) => handleCompanyDataUpdate('cep', val)"
-    />
+  <form @submit.prevent="submit">
+    <div class="mb-3">
+      <CompanyInfoSection
+        :cnpj="values.cnpj"
+        :company-name="values.companyName"
+        :fantasy-name="values.fantasyName"
+        @status-error="handleStatusError"
+        @update:company-name="(val) => handleCompanyDataUpdate('companyName', val)"
+        @update:fantasy-name="(val) => handleCompanyDataUpdate('fantasyName', val)"
+        @update:phone="(val) => handleCompanyDataUpdate('phone', val)"
+        @update:email="(val) => handleCompanyDataUpdate('email', val)"
+        @update:cep="(val) => handleCompanyDataUpdate('cep', val)"
+      />
+    </div>
 
-    <StatusErrorAlert v-if="cnpjStatusError" :message="cnpjStatusError" />
+    <StatusErrorAlert v-if="cnpjStatusError" :message="cnpjStatusError" class="mb-3" />
 
-    <CryptoCurrencySelector
-      :selected-currencies="values.cryptoCurrencies"
-      @toggle="toggleCrypto"
-    />
+    <div class="mb-3">
+      <CryptoCurrencySelector
+        :selected-currencies="values.cryptoCurrencies"
+        @toggle="toggleCrypto"
+      />
+    </div>
 
-    <ContactInfoSection />
+    <div class="mb-3">
+      <ContactInfoSection ref="contactInfoRef" />
+    </div>
 
-    <AddressSection
-      :cep="values.cep"
-      :logradouro="values.logradouro"
-      :bairro="values.bairro"
-      :cidade="values.cidade"
-      :uf="values.uf"
-      @update:logradouro="(val) => handleAddressUpdate('logradouro', val)"
-      @update:bairro="(val) => handleAddressUpdate('bairro', val)"
-      @update:cidade="(val) => handleAddressUpdate('cidade', val)"
-      @update:uf="(val) => handleAddressUpdate('uf', val)"
-    />
+    <div class="mb-3">
+      <AddressSection
+        :cep="values.cep"
+        :logradouro="values.logradouro"
+        :bairro="values.bairro"
+        :cidade="values.cidade"
+        :uf="values.uf"
+        @update:logradouro="(val) => handleAddressUpdate('logradouro', val)"
+        @update:bairro="(val) => handleAddressUpdate('bairro', val)"
+        @update:cidade="(val) => handleAddressUpdate('cidade', val)"
+        @update:uf="(val) => handleAddressUpdate('uf', val)"
+      />
+    </div>
 
-    <PasswordSection :password="values.password" />
+    <div class="mb-4">
+      <PasswordSection :password="values.password" />
+    </div>
 
-    <button class="submit" type="submit" :disabled="!meta.valid || !!cnpjStatusError">
-      {{ props.submitLabel || t('onboardingForm.createAccount') }}
-    </button>
+    <!-- Account Setup Cost -->
+    <AccountSetupCost />
 
-    <p v-if="props.hintText || t('onboardingForm.hint')" class="hint">
+    <!-- Validation Feedback -->
+    <FormValidationFeedback />
+
+    <div class="d-grid mb-3">
+      <button type="submit" class="btn btn-primary btn-lg" :disabled="!meta.valid || !!cnpjStatusError">
+        {{ props.submitLabel || t('onboardingForm.createAccount') }}
+      </button>
+    </div>
+
+    <p v-if="props.hintText || t('onboardingForm.hint')" class="text-center text-muted small mb-0">
       {{ props.hintText || t('onboardingForm.hint') }}
     </p>
   </form>
 </template>
 
 <style scoped>
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.submit {
-  margin-top: 0.5rem;
+.btn-primary {
   border-radius: 0.75rem;
-  border: none;
-  padding: 1rem 1.2rem;
-  font-size: 0.95rem;
   font-weight: 600;
-  cursor: pointer;
-  background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
-  color: var(--color-white);
-  box-shadow: var(--shadow-button-primary);
-  transition:
-    transform 0.08s ease,
-    box-shadow 0.08s ease,
-    opacity 0.15s ease;
-  width: 100%;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.submit:not(:disabled):active {
-  transform: translateY(1px);
-  box-shadow: var(--shadow-button-primary-active);
-}
-
-.hint {
-  margin-top: 0.6rem;
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-  text-align: center;
-  line-height: 1.5;
+  transition: all 0.2s ease;
 }
 
 @media (min-width: 640px) {
-  .form {
-    gap: 1.25rem;
-  }
-
-  .submit {
+  .btn-primary {
     border-radius: 999px;
   }
 }

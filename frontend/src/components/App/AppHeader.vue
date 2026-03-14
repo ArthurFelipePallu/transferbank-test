@@ -62,7 +62,8 @@ watch(isMobileMenuOpen, (isOpen) => {
 }
 
 .app-header-inner {
-  max-width: var(--app-max-container-width);
+  /* Mobile: full width */
+  width: 100%;
   margin: 0 auto;
   padding: 0.75rem 1rem;
   display: flex;
@@ -80,8 +81,17 @@ watch(isMobileMenuOpen, (isOpen) => {
 
 @media (min-width: 1024px) {
   .app-header-inner {
+    /* Desktop: constrain to 80% */
+    max-width: 80%;
     padding: 0.9rem 1.5rem;
     gap: 1.5rem;
+  }
+}
+
+/* Ensure content doesn't go to extremes on very large screens */
+@media (min-width: 1920px) {
+  .app-header-inner {
+    max-width: 1536px; /* 80% of 1920px */
   }
 }
 </style>

@@ -1,7 +1,6 @@
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
-import router from '@/router'
 
 // Import UI store dynamically to avoid circular dependencies
 let uiStore: any = null
@@ -11,6 +10,16 @@ const getUiStore = async () => {
     uiStore = useUiStore()
   }
   return uiStore
+}
+
+// Import router dynamically to avoid circular dependencies
+let router: any = null
+const getRouter = async () => {
+  if (!router) {
+    const routerModule = await import('@/router')
+    router = routerModule.default
+  }
+  return router
 }
 
 export const axiosInstance = axios.create({
@@ -69,7 +78,8 @@ axiosInstance.interceptors.response.use(
           // Session expired - clear auth and redirect
           storageService.remove(STORAGE_KEYS.AUTH_TOKEN)
           storageService.remove(STORAGE_KEYS.AUTH_USER)
-          router.push({ name: 'login' })
+          const routerInstance = await getRouter()
+          routerInstance.push({ name: 'login' })
         }
         // Show backend error message
         ui.showError(errorMessage)
@@ -78,7 +88,8 @@ axiosInstance.interceptors.response.use(
       case 409:
         // Conflict - Check if it's a company already exists error
         if (errorCode === 'CompanyAlreadyExists') {
-          router.push({ name: 'account-exists' })
+          const routerInstance = await getRouter()
+          routerInstance.push({ name: 'account-exists' })
         }
         // Show backend error message
         ui.showError(errorMessage)

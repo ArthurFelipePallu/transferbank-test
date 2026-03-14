@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ChevronDown } from 'lucide-vue-next'
+import { ChevronLeft } from 'lucide-vue-next'
 import type { MenuItem } from '@/domain/navigation/types/MenuItem'
 
 const props = defineProps<{
@@ -30,12 +30,12 @@ const itemClasses = computed(() => ({
     @mouseleave="emit('mouseleave')"
   >
     <slot name="icon" />
-    <span class="item-label">{{ item.label }}</span>
-    <ChevronDown 
+    <ChevronLeft 
       v-if="hasSubmenu" 
       :size="16" 
       class="submenu-arrow" 
     />
+    <span class="item-label">{{ item.label }}</span>
     <slot name="submenu" />
   </button>
 </template>
@@ -79,14 +79,13 @@ const itemClasses = computed(() => ({
 }
 
 .submenu-arrow {
-  transform: rotate(-90deg);
   color: rgba(255, 255, 255, 0.6);
   flex-shrink: 0;
-  transition: transform 0.2s ease;
-  margin-left: auto;
+  transition: all 0.2s ease;
 }
 
 .dropdown-parent:hover .submenu-arrow {
-  transform: rotate(-90deg) translateX(2px);
+  transform: translateX(-2px);
+  color: rgba(255, 255, 255, 0.9);
 }
 </style>

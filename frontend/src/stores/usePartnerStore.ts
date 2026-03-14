@@ -4,12 +4,15 @@ import type { Partner, PartnerFormStep } from '@/domain/partner/partner.types'
 import { PartnerRegistrationStep } from '@/domain/partner/partner.types'
 import type { PartnerFormValues } from '@/domain/partner/partner.schema'
 import type { PartnerRegistration } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
 import {
   registerPartnerViaGateway,
   getCompanyShareholdingInfo,
   validateCompanyShareholding,
 } from '@/application/partner/partnerUseCases'
+import { fetchPartnersCollection } from '@/application/partner/partnerListUseCases'
 import { httpPartnerGateway } from '@/infrastructure/partner/HttpPartnerGateway'
+import { httpPartnerListGateway } from '@/infrastructure/partner/HttpPartnerListGateway'
 import { useAuthStore } from './useAuthStore'
 import { sanitizeCpf } from '@/utils/formatters'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
@@ -17,6 +20,9 @@ import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageSe
 export const usePartnerStore = defineStore('partner', () => {
   // State
   const partners = ref<Partner[]>([])
+  const partnersCollection = ref<PartnersCollection | null>(null)
+  const isLoadingList = ref(false)
+  const listError = ref<string | null>(null)
   const currentStep = ref(PartnerRegistrationStep.PERSONAL_INFO)
   const formData = ref<Partial<PartnerFormValues>>({})
   const isSubmitting = ref(false)
@@ -52,6 +58,10 @@ export const usePartnerStore = defineStore('partner', () => {
   // Getters
   const totalShareholding = computed(() => {
     return partners.value.reduce((sum, partner) => sum + partner.shareholding, 0)
+  })
+
+  const hasPartners = computed(() => {
+    return partnersCollection.value !== null && partnersCollection.value.totalCount > 0
   })
 
   const currentStepData = computed(() => {
@@ -197,20 +207,26 @@ export const usePartnerStore = defineStore('partner', () => {
   }
 
   const loadPartners = async () => {
+    const authStore = useAuthStore()
+    const companyId = authStore.companyId
+
+    if (!companyId) {
+      listError.value = 'Company ID is required'
+      return
+    }
+
     try {
-      const authStore = useAuthStore()
-      const companyId = authStore.companyId
-
-      if (!companyId) {
-        return
-      }
-
-      // For now, we'll keep the local partners list
-      // In a real app, you'd fetch from the gateway:
-      // const registeredPartners = await getPartnersByCompanyId(httpPartnerGateway, companyId)
-      // partners.value = registeredPartners.map(...)
+      isLoadingList.value = true
+      listError.value = null
+      partnersCollection.value = await fetchPartnersCollection(
+        httpPartnerListGateway,
+        companyId
+      )
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to load partners'
+      listError.value = err instanceof Error ? err.message : 'Failed to load partners'
+      partnersCollection.value = null
+    } finally {
+      isLoadingList.value = false
     }
   }
 
@@ -255,6 +271,9 @@ export const usePartnerStore = defineStore('partner', () => {
   return {
     // State
     partners,
+    partnersCollection,
+    isLoadingList,
+    listError,
     currentStep,
     formData,
     isSubmitting,
@@ -263,6 +282,7 @@ export const usePartnerStore = defineStore('partner', () => {
 
     // Getters
     totalShareholding,
+    hasPartners,
     currentStepData,
     isShareholdingValid,
     remainingShareholding,

@@ -37,7 +37,7 @@ const handleNavigation = (route: string) => {
 
 <template>
   <Transition name="dropdown">
-    <div v-if="isVisible" class="dropdown-menu" @mousedown.prevent>
+    <div v-if="isVisible" class="user-dropdown-menu">
       <!-- Dashboard -->
       <div class="dropdown-section">
         <DropdownMenuItem 
@@ -108,7 +108,7 @@ const handleNavigation = (route: string) => {
 </template>
 
 <style scoped>
-.dropdown-menu {
+.user-dropdown-menu {
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
@@ -119,6 +119,7 @@ const handleNavigation = (route: string) => {
   border-radius: 0.75rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
   overflow: visible;
+  z-index: 1000;
 }
 
 .dropdown-section {
@@ -145,7 +146,7 @@ const handleNavigation = (route: string) => {
 
 /* Tablet and up */
 @media (min-width: 768px) {
-  .dropdown-menu {
+  .user-dropdown-menu {
     min-width: 220px;
   }
 }

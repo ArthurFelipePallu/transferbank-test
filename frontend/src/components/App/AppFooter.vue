@@ -46,163 +46,132 @@ const contactInformation = {
 </script>
 
 <template>
-    <footer class="footer">
+    <footer class="py-4 py-md-5 footer-bg">
         <div class="footer-container">
+            <!-- Mobile: 2 columns, Tablet+: 4 columns -->
+            <div class="row g-4 g-md-5">
+                <!-- Bank Info - Full width on mobile -->
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <AppBrandLogo />
+                    <p class="mt-3 small text-muted user-select-none">Your trusted digital banking partner.</p>
+                </div>
 
-            <!-- Bank Info -->
-            <div class="footer-section">
-                <AppBrandLogo />
-                <p>Your trusted digital banking partner.</p>
+                <!-- Services -->
+                <div class="col-6 col-sm-6 col-lg-3">
+                    <h4 class="h6 fw-semibold mb-3 user-select-none">Services</h4>
+                    <ul class="list-unstyled footer-links">
+                        <li v-for="service in servicesLinks" :key="service.name" class="mb-2">
+                            <RouterLink :to="{ name: service.name }" class="text-decoration-none footer-link">
+                                {{ service.Title }}
+                            </RouterLink>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="col-6 col-sm-6 col-lg-3">
+                    <h4 class="h6 fw-semibold mb-3 user-select-none">Support</h4>
+                    <ul class="list-unstyled footer-links">
+                        <li v-for="support in supportLinks" :key="support.name" class="mb-2">
+                            <RouterLink :to="{ name: support.name }" class="text-decoration-none footer-link">
+                                {{ support.Title }}
+                            </RouterLink>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact - Full width on mobile, shares row with others on tablet+ -->
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <h4 class="h6 fw-semibold mb-3 user-select-none">Contact</h4>
+                    <p class="small mb-2 user-select-none">
+                        Email: <a :href="`mailto:${contactInformation.email}`" class="footer-link user-select-text">{{ contactInformation.email }}</a>
+                    </p>
+                    <p class="small mb-0 user-select-none">
+                        Phone: <a :href="`tel:${contactInformation.phone}`" class="footer-link user-select-text">{{ contactInformation.phone }}</a>
+                    </p>
+                </div>
             </div>
 
-            <!-- Navigation -->
-            <div class="footer-section">
-                <h4>Services</h4>
-                <ul>
-                    <li v-for="service in servicesLinks" :key="service.name">
-                        <RouterLink :to="{ name: service.name }">{{ service.Title }}</RouterLink>
-                    </li>
-                </ul>
+            <div class="border-top border-primary mt-4 pt-3 text-center">
+                <p class="small mb-0 user-select-none">© {{ year }} SafeBank. All rights reserved.</p>
             </div>
-
-            <!-- Help -->
-            <div class="footer-section">
-                <h4>Support</h4>
-                <ul>
-                    <li v-for="support in supportLinks" :key="support.name">
-                        <RouterLink :to="{ name: support.name }">{{ support.Title }}</RouterLink>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Contact -->
-            <div class="footer-section">
-                <h4>Contact</h4>
-                <p>Email: <span>{{ contactInformation.email }}</span></p>
-                <p>Phone: <span>{{ contactInformation.phone }}</span></p>
-            </div>
-
-        </div>
-
-        <div class="footer-bottom">
-            © {{ year }} SafeBank. All rights reserved.
         </div>
     </footer>
 </template>
 
 <style scoped>
-.footer-section,
-.footer-bottom {
-    user-select: none;
-}
-
-span {
-    user-select: text;
-}
-
-.flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.footer {
+.footer-bg {
     background: var(--color-bg-section-darker);
     color: var(--color-text-footer);
-    padding: 2rem 1rem 1.25rem;
 }
 
 .footer-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.75rem;
-    max-width: var(--app-max-container-width);
+    /* Mobile: full width with padding */
+    width: 100%;
     margin: 0 auto;
+    padding: 0 1rem;
 }
 
-.footer-section h4 {
-    margin-bottom: 0.75rem;
-    font-size: 0.95rem;
+.footer-links {
+    /* Touch-friendly spacing on mobile */
+    margin-bottom: 0;
 }
 
-.footer-section p {
-    font-size: 0.85rem;
-    line-height: 1.6;
-}
-
-.footer-section ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-section li {
-    margin-bottom: 0.5rem;
-}
-
-.footer-section a {
+.footer-link {
     color: var(--color-input-border);
-    text-decoration: none;
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     transition: color 0.2s ease;
+    /* Touch-friendly target on mobile */
+    display: inline-block;
+    padding: 0.25rem 0;
 }
 
-.footer-section a:hover {
-    color: var(--color-white);
-    text-decoration: underline;
+.footer-link:hover {
+    color: var(--bs-white);
+    text-decoration: underline !important;
 }
 
-.logo {
-    font-size: 1.1rem;
-    font-weight: bold;
+.footer-link:focus-visible {
+    outline: 2px solid var(--color-primary-teal);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
 }
 
-.footer-bottom {
-    margin-top: 2rem;
-    border-top: 1px solid var(--color-primary-teal);
-    padding-top: 1rem;
-    text-align: center;
-    font-size: 0.8rem;
-    max-width: var(--app-max-container-width);
-    margin-left: auto;
-    margin-right: auto;
-}
-
-@media (min-width: 640px) {
-    .footer {
-        padding: 2.5rem 1.5rem 1.5rem;
+/* Reduce vertical spacing on mobile */
+@media (max-width: 767px) {
+    .footer-bg {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
     }
-
-    .footer-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
-    }
-
-    .footer-section h4 {
-        font-size: 1rem;
-    }
-
-    .footer-section p,
-    .footer-section a {
-        font-size: 0.9rem;
-    }
-
-    .footer-bottom {
-        font-size: 0.85rem;
+    
+    .footer-link {
+        min-height: 36px;
+        line-height: 36px;
+        padding: 0;
     }
 }
 
+/* Tablet and up: normal spacing */
+@media (min-width: 768px) {
+    .footer-link {
+        min-height: auto;
+        line-height: 1.5;
+        padding: 0.125rem 0;
+    }
+}
+
+/* Desktop: constrain to 80% like header */
 @media (min-width: 1024px) {
-    .footer {
-        padding: 2.5rem 2rem 1.25rem;
-    }
-
     .footer-container {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 2rem;
+        max-width: 80%;
+        padding: 0 1.5rem;
     }
+}
 
-    .logo {
-        font-size: 1.25rem;
+/* Ensure content doesn't go to extremes on very large screens */
+@media (min-width: 1920px) {
+    .footer-container {
+        max-width: 1536px; /* 80% of 1920px */
     }
 }
 </style>

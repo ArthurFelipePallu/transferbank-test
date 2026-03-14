@@ -69,17 +69,16 @@ const applyMask = (value: string): string => {
 
 <template>
   <Field v-slot="{ field, meta, errorMessage }" :name="name">
-    <div class="field">
-      <label :for="name">
+    <div class="mb-3">
+      <label :for="name" class="form-label">
         {{ label }}
       </label>
 
-      <div class="input-wrapper">
-        <span v-if="$slots.icon" class="icon">
+      <div class="input-group" :class="{ 'is-invalid': meta.touched && errorMessage }">
+        <span v-if="$slots.icon" class="input-group-text bg-white border-end-0">
           <slot name="icon" />
         </span>
 
-        <!-- Single input with conditional masking -->
         <input 
           :id="name"
           :type="inputType"
@@ -87,7 +86,11 @@ const applyMask = (value: string): string => {
           :autocomplete="autocomplete"
           :inputmode="inputmode"
           :value="field.value"
-          class="input"
+          class="form-control"
+          :class="{ 
+            'border-start-0': $slots.icon,
+            'is-invalid': meta.touched && errorMessage 
+          }"
           @input="(e) => {
             const input = e.target as HTMLInputElement
             const masked = hasMask ? applyMask(input.value) : input.value
@@ -99,16 +102,17 @@ const applyMask = (value: string): string => {
           @blur="(e) => field.onBlur(e)"
         />
 
-        <!-- PASSWORD TOGGLE -->
-        <button v-if="type === 'password' && $slots.passwordVisibility" type="button" class="icon-button"
-          @click="togglePassword">
+        <button v-if="type === 'password' && $slots.passwordVisibility" 
+                type="button" 
+                class="btn btn-outline-secondary border-start-0"
+                @click="togglePassword">
           <slot name="passwordVisibility" :visible="showPassword" />
         </button>
       </div>
 
-      <p v-if="meta.touched && errorMessage" class="error">
+      <div v-if="meta.touched && errorMessage" class="invalid-feedback d-block">
         {{ errorMessage }}
-      </p>
+      </div>
 
       <slot name="below" :meta="meta" :value="field.value" />
     </div>
@@ -116,93 +120,16 @@ const applyMask = (value: string): string => {
 </template>
 
 <style scoped>
-label,
-.error,
-.icon {
-  user-select: none;
+.input-group-text {
+  color: var(--color-input-placeholder);
 }
 
-
-.field {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--color-text-main);
-  padding-left: 5px;
-}
-
-.input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  border-radius: 0.5rem;
-  border: 1px solid var(--color-input-border);
-  background: var(--color-white);
-
-  padding: 0.85rem 1rem;
-
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.input-wrapper:focus-within {
+.form-control:focus {
   border-color: var(--color-primary-teal);
-  box-shadow: var(--shadow-input-focus);
+  box-shadow: 0 0 0 0.2rem rgba(28, 156, 140, 0.25);
 }
 
-.icon {
-  display: flex;
-  align-items: center;
-  color: var(--color-input-placeholder);
-  flex-shrink: 0;
-}
-
-.icon-button {
-  display: flex;
-  align-items: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--color-input-placeholder);
-  padding: 0.25rem;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  flex-shrink: 0;
-}
-
-.input {
-  border: none;
-  outline: none;
-  flex: 1;
-  font-size: 1rem;
-  background: transparent;
-  color: var(--color-text-main);
-  min-width: 0;
-}
-
-.input::placeholder {
-  color: var(--color-input-placeholder);
-}
-
-.error {
-  font-size: 0.75rem;
-  color: var(--color-error);
-  padding-left: 10px;
-}
-
-@media (min-width: 640px) {
-  .input-wrapper {
-    padding: 0.7rem 0.9rem;
-  }
-
-  .input {
-    font-size: 0.9rem;
-  }
+.input-group-text + .form-control:focus {
+  border-left-color: var(--color-primary-teal);
 }
 </style>

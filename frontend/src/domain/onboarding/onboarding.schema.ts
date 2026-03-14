@@ -11,7 +11,10 @@ export const onboardingSchema = yup.object({
     .min(1, 'Select at least one currency')
     .required('Select at least one currency')
     .default([]),
-  phone: yup.string().required('Phone is required'),
+  phone: yup
+    .string()
+    .required('Phone is required')
+    .matches(/^\d{10,11}$/, 'Enter a valid phone number (10-11 digits)'),
   email: yup.string().email('Enter a valid email address').required('Email is required'),
   cep: yup.string().required('CEP is required'),
   logradouro: yup.string().required('Street is required'),

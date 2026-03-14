@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useAuthStore } from '@/stores/useAuthStore'
 import type { NavLink } from '@/config/navigation'
+import UserMenu from './UserMenu.vue'
 
 defineProps<{
   mainLinks: NavLink[]
   authLinks: NavLink[]
 }>()
+
+const authStore = useAuthStore()
 </script>
 
 <template>
@@ -21,18 +25,23 @@ defineProps<{
 
     <span class="nav-separator" aria-hidden="true">|</span>
 
-    <RouterLink 
-      v-for="link in authLinks" 
-      :key="link.routeName"
-      class="nav-link"
-      :class="{
-        'nav-link--ghost': link.variant === 'ghost',
-        'nav-link--primary': link.variant === 'primary'
-      }"
-      :to="{ name: link.routeName }"
-    >
-      {{ link.label }}
-    </RouterLink>
+    <!-- Show user menu if authenticated, otherwise show auth links -->
+    <UserMenu v-if="authStore.isAuthenticated" />
+    
+    <template v-else>
+      <RouterLink 
+        v-for="link in authLinks" 
+        :key="link.routeName"
+        class="nav-link"
+        :class="{
+          'nav-link--ghost': link.variant === 'ghost',
+          'nav-link--primary': link.variant === 'primary'
+        }"
+        :to="{ name: link.routeName }"
+      >
+        {{ link.label }}
+      </RouterLink>
+    </template>
   </nav>
 </template>
 
@@ -54,15 +63,18 @@ defineProps<{
     color: var(--color-white);
     font-size: 0.8rem;
     font-weight: 500;
-    padding: 0.35rem 0.55rem;
+    padding: 0.5rem 0.75rem;
     cursor: pointer;
-    border-radius: 999px;
+    border-radius: 0.375rem;
     text-decoration: none;
     white-space: nowrap;
     transition:
       background-color 0.15s ease,
       color 0.15s ease,
       box-shadow 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .nav-link:hover {
@@ -70,11 +82,11 @@ defineProps<{
   }
 
   .nav-link--ghost {
-    padding-inline: 0.8rem;
+    padding: 0.5rem 1rem;
   }
 
   .nav-link--primary {
-    padding-inline: 0.9rem;
+    padding: 0.5rem 1.25rem;
     background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
     box-shadow: var(--shadow-button-primary);
   }
@@ -96,15 +108,15 @@ defineProps<{
 
   .nav-link {
     font-size: 0.87rem;
-    padding: 0.3rem 0.55rem;
+    padding: 0.5rem 0.85rem;
   }
 
   .nav-link--ghost {
-    padding-inline: 0.9rem;
+    padding: 0.5rem 1.1rem;
   }
 
   .nav-link--primary {
-    padding-inline: 1rem;
+    padding: 0.5rem 1.4rem;
   }
 
   .nav-separator {

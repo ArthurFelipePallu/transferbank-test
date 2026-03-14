@@ -20,16 +20,20 @@ const toggleExpanded = () => {
 </script>
 
 <template>
-  <div class="partners-card">
+  <div class="card mb-4">
     <!-- Header - Always Visible -->
-    <button class="partners-header" @click="toggleExpanded" :disabled="isLoading">
-      <div class="header-icon">
+    <button 
+      class="btn w-100 text-start d-flex align-items-center gap-3 p-4 border-0 rounded-0 partners-header" 
+      @click="toggleExpanded" 
+      :disabled="isLoading"
+    >
+      <div class="d-flex align-items-center justify-content-center flex-shrink-0 header-icon">
         <Users :size="24" />
       </div>
       
-      <div class="header-content">
-        <h3 class="header-title">{{ t('partnersList.companyPartners') }}</h3>
-        <p class="header-subtitle">
+      <div class="flex-grow-1 min-w-0">
+        <h3 class="h5 fw-semibold mb-1">{{ t('partnersList.companyPartners') }}</h3>
+        <p class="small text-muted mb-0">
           {{ collection.totalCount }} 
           {{ collection.totalCount === 1 ? t('partnersList.partner') : t('partnersList.partners') }}
           • {{ collection.totalShareholding.toFixed(2) }}% {{ t('partnersList.allocated') }}
@@ -38,56 +42,38 @@ const toggleExpanded = () => {
 
       <ChevronDown 
         :size="20" 
-        class="expand-icon"
+        class="flex-shrink-0 text-muted expand-icon"
         :class="{ 'expanded': isExpanded }"
       />
     </button>
 
     <!-- Partners List - Expandable -->
     <Transition name="expand">
-      <div v-if="isExpanded" class="partners-list">
-        <div v-if="collection.totalCount === 0" class="empty-state">
-          <p>{{ t('partnersList.noPartnersYet') }}</p>
+      <div v-if="isExpanded" class="card-body pt-0 px-4 pb-4">
+        <div v-if="collection.totalCount === 0" class="text-center py-5">
+          <p class="text-muted mb-0">{{ t('partnersList.noPartnersYet') }}</p>
         </div>
         
-        <div v-else class="partners-grid">
+        <div v-else class="d-flex flex-column gap-3">
           <PartnerListItem 
             v-for="partner in collection.partners" 
             :key="partner.id"
             :partner="partner"
           />
         </div>
-
-        
       </div>
     </Transition>
   </div>
 </template>
 
 <style scoped>
-.partners-card {
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: 1rem;
-  overflow: hidden;
-}
-
-/* Header */
 .partners-header {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
   background: transparent;
-  border: none;
-  cursor: pointer;
   transition: background-color 0.2s ease;
-  text-align: left;
 }
 
-.partners-header:hover {
-  background: var(--color-background-soft);
+.partners-header:hover:not(:disabled) {
+  background: var(--bs-light);
 }
 
 .partners-header:disabled {
@@ -96,101 +82,19 @@ const toggleExpanded = () => {
 }
 
 .header-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 3rem;
   height: 3rem;
   background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
   border-radius: 0.75rem;
   color: white;
-  flex-shrink: 0;
-}
-
-.header-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.header-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  margin: 0 0 0.25rem 0;
-}
-
-.header-subtitle {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  margin: 0;
 }
 
 .expand-icon {
-  flex-shrink: 0;
-  color: var(--color-text-muted);
   transition: transform 0.3s ease;
 }
 
 .expand-icon.expanded {
   transform: rotate(180deg);
-}
-
-/* Partners List */
-.partners-list {
-  padding: 0 1.5rem 1.5rem;
-}
-
-.empty-state {
-  padding: 2rem;
-  text-align: center;
-  color: var(--color-text-muted);
-}
-
-.partners-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-/* Shareholding Summary */
-.shareholding-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-border);
-}
-
-.summary-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.summary-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.summary-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.summary-value.allocated {
-  color: var(--color-primary-teal);
-}
-
-.summary-value.remaining {
-  color: var(--color-warning);
-}
-
-.summary-value.remaining.complete {
-  color: var(--color-primary-teal);
 }
 
 /* Expand Transition */
@@ -210,16 +114,5 @@ const toggleExpanded = () => {
 .expand-leave-from {
   opacity: 1;
   max-height: 2000px;
-}
-
-/* Tablet and up */
-@media (min-width: 640px) {
-  .header-title {
-    font-size: 1.5rem;
-  }
-
-  .header-subtitle {
-    font-size: 1rem;
-  }
 }
 </style>

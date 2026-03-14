@@ -161,6 +161,8 @@ export const en = {
     confirmPassword: 'Confirm password',
     createAccount: 'Create account',
     searching: 'Searching...',
+    cnpjNotFound: 'CNPJ not found in the database. Please verify the number.',
+    testCnpjWarning: 'Test CNPJ detected. This is for testing purposes only.',
     companyStatusError: 'Company Status Error',
     passwordStrength: {
       enterPassword: 'Enter a password',

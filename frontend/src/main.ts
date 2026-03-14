@@ -1,3 +1,7 @@
+// Bootstrap 5 with custom configuration
+import './assets/bootstrap-custom.scss'
+
+// Custom styles (loaded after Bootstrap to allow overrides)
 import './assets/main.css'
 
 import { createApp } from 'vue'
