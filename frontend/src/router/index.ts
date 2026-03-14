@@ -4,6 +4,7 @@ import OnBoardingView from '../views/OnboardingView.vue'
 import InDevelopmentView from '../views/InDevelopmentView.vue'
 import AlreadyExistingView from '@/views/AlreadyExistingView.vue'
 import AccountCreatedView from '@/views/AccountCreatedView.vue'
+import PartnerRegisteredView from '@/views/PartnerRegisteredView.vue'
 import LoginView from '@/views/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import PartnerRegistrationView from '@/views/PartnerRegistrationView.vue'
@@ -76,6 +77,12 @@ const router = createRouter({
       path: '/partner-registration',
       name: 'partner-registration',
       component: PartnerRegistrationView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/partner-registered',
+      name: 'partner-registered',
+      component: PartnerRegisteredView,
       meta: { requiresAuth: true },
     },
     {
