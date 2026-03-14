@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next'
+import BaseButton from '@/components/UI/BaseButton.vue'
 import type { PartnerFormValues } from '@/domain/partner/partner.schema'
 
 defineProps<{
@@ -81,12 +82,12 @@ const formatFileSize = (bytes: number): string => {
     </div>
 
     <div class="form-actions">
-      <button type="button" class="btn btn--secondary" @click="$emit('back')">
+      <BaseButton variant="outline" @click="$emit('back')">
         Back
-      </button>
-      <button type="button" class="btn btn--primary" @click="$emit('submit')">
+      </BaseButton>
+      <BaseButton variant="primary" @click="$emit('submit')">
         Submit Partner
-      </button>
+      </BaseButton>
     </div>
   </div>
 </template>
@@ -250,47 +251,6 @@ const formatFileSize = (bytes: number): string => {
   margin-top: 1rem;
 }
 
-.btn {
-  padding: 1rem 1.5rem;
-  border-radius: 0.75rem;
-  border: none;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  flex: 1;
-}
-
-.btn--secondary {
-  background: var(--color-chip-bg);
-  color: var(--color-text-main);
-  border: 1px solid var(--color-chip-border);
-}
-
-.btn--secondary:hover {
-  background: var(--color-surface);
-}
-
-.btn--secondary:active {
-  transform: translateY(1px);
-}
-
-.btn--primary {
-  background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
-  color: var(--color-white);
-  box-shadow: var(--shadow-button-primary);
-}
-
-.btn--primary:hover {
-  box-shadow: var(--shadow-button-primary-active);
-}
-
-.btn--primary:active {
-  transform: translateY(1px);
-}
-
 @media (min-width: 640px) {
   .form-title {
     font-size: 1.6rem;
@@ -302,11 +262,6 @@ const formatFileSize = (bytes: number): string => {
 
   .form-actions {
     justify-content: flex-end;
-  }
-
-  .btn {
-    flex: 0;
-    min-width: 150px;
   }
 }
 </style>
