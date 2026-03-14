@@ -33,21 +33,21 @@ const { handleSubmit, meta } = useForm<LoginFormValues>({
 
 const submit = handleSubmit(async (values) => {
     try {
-        uiStore.startLoading('Signing in...')
+        uiStore.startLoading(t('auth.signingIn'))
         
         const success = await authStore.login(values.email, values.password)
         
         if (success) {
-            uiStore.showSuccess('Welcome back!')
+            uiStore.showSuccess(t('auth.welcomeBack'))
             // Check if there's a redirect query parameter
             const redirect = router.currentRoute.value.query.redirect as string
             router.push(redirect || { name: 'dashboard' })
         } else {
-            uiStore.showError(authStore.error || 'Login failed')
+            uiStore.showError(authStore.error || t('auth.loginFailed'))
         }
     } catch (error) {
         console.error('Login error:', error)
-        uiStore.showError('An unexpected error occurred. Please try again.')
+        uiStore.showError(t('errors.unexpectedError'))
     } finally {
         uiStore.stopLoading()
     }
@@ -60,7 +60,7 @@ const submit = handleSubmit(async (values) => {
         <div class="mb-3">
             <FormInputField 
                 name="email" 
-                :label="t('login.email')" 
+                :label="t('auth.email')" 
                 type="email" 
                 placeholder="you@company.com" 
                 autocomplete="email"
@@ -75,7 +75,7 @@ const submit = handleSubmit(async (values) => {
         <div class="mb-3">
             <FormInputField 
                 name="password" 
-                :label="t('login.password')" 
+                :label="t('auth.password')" 
                 type="password" 
                 autocomplete="current-password"
                 placeholder="••••••••"
@@ -91,7 +91,7 @@ const submit = handleSubmit(async (values) => {
                     class="small fw-semibold text-decoration-none forgot-password" 
                     :to="{ name: 'in-development' }"
                 >
-                    {{ t('login.forgotPassword') }}
+                    {{ t('auth.forgotPassword') }}
                 </RouterLink>
             </div>
         </div>
@@ -102,7 +102,7 @@ const submit = handleSubmit(async (values) => {
             type="submit" 
             :disabled="!meta.valid"
         >
-            {{ props.submitLabel || t('login.submit') }}
+            {{ props.submitLabel || t('auth.loginSubmit') }}
         </button>
     </form>
 </template>

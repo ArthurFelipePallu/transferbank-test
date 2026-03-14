@@ -2,6 +2,7 @@
 import { X, User, LogOut } from 'lucide-vue-next'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import LanguageSwitcher from '@/components/Language/LanguageSwitcher.vue'
+import { useTranslation } from '@/composables/useTranslation'
 import type { MenuItem } from '@/domain/navigation/types/MenuItem'
 import { ref } from 'vue'
 
@@ -19,6 +20,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
+const { t } = useTranslation()
 const expandedSection = ref<string | null>(null)
 
 const toggleSection = (section: string) => {
@@ -50,7 +52,7 @@ const handleLogout = () => {
   <Transition name="slide">
     <nav v-if="isOpen" class="mobile-menu">
       <div class="mobile-menu-header">
-        <span class="mobile-menu-title">Menu</span>
+        <span class="mobile-menu-title">{{ t('navigation.menu') }}</span>
         <button 
           class="mobile-menu-close" 
           @click="$emit('close')"
@@ -87,7 +89,7 @@ const handleLogout = () => {
             class="section-header"
             @click="toggleSection('services')"
           >
-            <span>Services</span>
+            <span>{{ t('navigation.services') }}</span>
             <BaseLucideIcon 
               name="ChevronDown" 
               :size="18" 
@@ -103,7 +105,7 @@ const handleLogout = () => {
                 class="menu-item"
                 @click="handleNavigation(item.route!)"
               >
-                {{ item.label }}
+                {{ t(item.label as any) }}
               </button>
             </div>
           </Transition>
@@ -115,7 +117,7 @@ const handleLogout = () => {
             class="section-header"
             @click="toggleSection('support')"
           >
-            <span>Support</span>
+            <span>{{ t('navigation.support') }}</span>
             <BaseLucideIcon 
               name="ChevronDown" 
               :size="18" 
@@ -131,7 +133,7 @@ const handleLogout = () => {
                 class="menu-item"
                 @click="handleNavigation(item.route!)"
               >
-                {{ item.label }}
+                {{ t(item.label as any) }}
               </button>
             </div>
           </Transition>
@@ -142,7 +144,7 @@ const handleLogout = () => {
         <!-- Logout -->
         <button class="logout-button" @click="handleLogout">
           <LogOut :size="18" />
-          <span>Logout</span>
+          <span>{{ t('navigation.logout') }}</span>
         </button>
       </div>
     </nav>

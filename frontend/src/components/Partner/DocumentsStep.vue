@@ -7,6 +7,7 @@ import FormNavigation from '@/components/UI/FormNavigation.vue'
 import AlertCard from '@/components/UI/AlertCard.vue'
 import { partnerDocumentsSchema, type PartnerDocumentsFormValues } from '@/domain/partner/partner.schema'
 import type { PartnerDocument } from '@/domain/partner/partner.types'
+import { useTranslation } from '@/composables/useTranslation'
 
 const props = defineProps<{
   initialValues?: Partial<PartnerDocumentsFormValues>
@@ -16,6 +17,8 @@ const emit = defineEmits<{
   next: [values: PartnerDocumentsFormValues]
   back: []
 }>()
+
+const { t } = useTranslation()
 
 const { handleSubmit, meta, setFieldValue, errors } = useForm<PartnerDocumentsFormValues>({
   validationSchema: partnerDocumentsSchema,
@@ -39,15 +42,15 @@ const submit = handleSubmit((values) => {
 <template>
   <form @submit.prevent="submit">
     <FormStepHeader
-      title="Documents"
-      description="Upload identification documents"
+      :title="t('partner.registration.documents.stepTitle')"
+      :description="t('partner.registration.documents.stepDescription')"
     />
 
     <div class="row g-3">
       <div class="col-12">
         <FileUpload
           :model-value="documents"
-          label="Upload Documents"
+          :label="t('partner.registration.documents.uploadLabel')"
           :error="errors.documents"
           @update:model-value="updateDocuments"
         />
@@ -55,18 +58,18 @@ const submit = handleSubmit((values) => {
 
       <div class="col-12">
         <AlertCard variant="info">
-          <p class="fw-semibold mb-2">📄 Required Documents:</p>
+          <p class="fw-semibold mb-2">📄 {{ t('partner.registration.documents.requiredTitle') }}</p>
           <ul class="mb-0 ps-3">
-            <li>ID Card (front and back)</li>
-            <li>Driver's License (front and back)</li>
-            <li>Proof of Address</li>
+            <li>{{ t('partner.registration.documents.idCard') }}</li>
+            <li>{{ t('partner.registration.documents.driversLicense') }}</li>
+            <li>{{ t('partner.registration.documents.proofOfAddress') }}</li>
           </ul>
         </AlertCard>
       </div>
     </div>
 
     <FormNavigation
-      next-label="Review & Submit"
+      :next-label="t('partner.registration.documents.reviewAndSubmit')"
       :next-disabled="!meta.valid"
       @back="$emit('back')"
     />

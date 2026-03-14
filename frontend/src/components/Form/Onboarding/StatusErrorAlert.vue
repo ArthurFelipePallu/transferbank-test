@@ -27,7 +27,7 @@ const { t } = useTranslation()
       <line x1="12" y1="16" x2="12.01" y2="16"></line>
     </svg>
     <div class="flex-grow-1">
-      <strong class="d-block mb-1">{{ t('onboardingForm.companyStatusError') }}</strong>
+      <strong class="d-block mb-1">{{ t('onboarding.companyStatusError') }}</strong>
       <p class="mb-0 small">{{ message }}</p>
     </div>
   </div>

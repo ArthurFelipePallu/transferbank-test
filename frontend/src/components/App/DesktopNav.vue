@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { useTranslation } from '@/composables/useTranslation'
 import type { NavLink } from '@/config/navigation'
 import UserMenu from './UserMenu.vue'
 
@@ -10,6 +11,7 @@ defineProps<{
 }>()
 
 const authStore = useAuthStore()
+const { t } = useTranslation()
 </script>
 
 <template>
@@ -20,12 +22,11 @@ const authStore = useAuthStore()
       class="nav-link" 
       :to="{ name: link.routeName }"
     >
-      {{ link.label }}
+      {{ t(link.label as any) }}
     </RouterLink>
 
     <span class="nav-separator" aria-hidden="true">|</span>
 
-    <!-- Show user menu if authenticated, otherwise show auth links -->
     <UserMenu v-if="authStore.isAuthenticated" />
     
     <template v-else>
@@ -39,7 +40,7 @@ const authStore = useAuthStore()
         }"
         :to="{ name: link.routeName }"
       >
-        {{ link.label }}
+        {{ t(link.label as any) }}
       </RouterLink>
     </template>
   </nav>

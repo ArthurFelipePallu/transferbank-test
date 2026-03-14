@@ -2,17 +2,16 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useCurrencyStore } from '@/stores/useCurrencyStore'
 import { CurrencyDisplayService } from '@/application/currency/CurrencyDisplayService'
+import { useTranslation } from '@/composables/useTranslation'
 import CurrencyPanelHeader from '@/components/Currency/CurrencyPanelHeader.vue'
 import CurrencyRateCard from '@/components/Currency/CurrencyRateCard.vue'
 import MarketStatusBadge from '@/components/Currency/MarketStatusBadge.vue'
 import CurrencyPanelFooter from '@/components/Currency/CurrencyPanelFooter.vue'
 import ErrorState from '@/components/UI/ErrorState.vue'
 
-// Use centralized currency store
 const currencyStore = useCurrencyStore()
-
-// Get centralized currency display configuration
 const currencyDisplays = CurrencyDisplayService.getDisplayCurrencies()
+const { t } = useTranslation()
 
 onMounted(() => {
   // Start auto-updating rates when component mounts
@@ -29,8 +28,8 @@ onUnmounted(() => {
   <div class="currency-info-panel h-100 d-flex flex-column">
     <!-- Header -->
     <CurrencyPanelHeader 
-      title="Market Information"
-      subtitle="Real-time currency rates"
+      :title="t('currency.marketInformation')"
+      :subtitle="t('currency.realTimeCurrencyRates')"
       icon-name="TrendingUp"
     />
 
@@ -62,14 +61,14 @@ onUnmounted(() => {
         <!-- Market Status -->
         <MarketStatusBadge 
           :is-active="true"
-          status-text="Market Active"
-          description="Real-time data from CoinGecko API"
+          :status-text="t('currency.marketActive')"
+          :description="t('currency.realTimeDataSource')"
         />
       </div>
     </div>
 
     <!-- Footer -->
-    <CurrencyPanelFooter message="Rates update automatically" />
+    <CurrencyPanelFooter :message="t('currency.ratesUpdateAutomatically')" />
   </div>
 </template>
 

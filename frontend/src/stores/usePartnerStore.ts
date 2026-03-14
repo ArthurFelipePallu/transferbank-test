@@ -31,26 +31,26 @@ export const usePartnerStore = defineStore('partner', () => {
   const steps = ref<PartnerFormStep[]>([
     {
       id: PartnerRegistrationStep.PERSONAL_INFO,
-      title: 'Personal Info',
-      description: 'Basic information',
+      title: 'partner.registration.steps.personalInfo.title',
+      description: 'partner.registration.steps.personalInfo.description',
       isCompleted: false,
     },
     {
       id: PartnerRegistrationStep.SHAREHOLDING,
-      title: 'Shareholding',
-      description: 'Ownership percentage',
+      title: 'partner.registration.steps.shareholding.title',
+      description: 'partner.registration.steps.shareholding.description',
       isCompleted: false,
     },
     {
       id: PartnerRegistrationStep.DOCUMENTS,
-      title: 'Documents',
-      description: 'Upload files',
+      title: 'partner.registration.steps.documents.title',
+      description: 'partner.registration.steps.documents.description',
       isCompleted: false,
     },
     {
       id: PartnerRegistrationStep.REVIEW,
-      title: 'Review',
-      description: 'Confirm details',
+      title: 'partner.registration.steps.review.title',
+      description: 'partner.registration.steps.review.description',
       isCompleted: false,
     },
   ])

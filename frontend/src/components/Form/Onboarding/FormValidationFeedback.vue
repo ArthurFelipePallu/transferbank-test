@@ -55,58 +55,43 @@ const totalErrors = computed(() => {
     <div class="feedback-header">
       <BaseLucideIcon name="alert-circle" :size="20" />
       <span class="feedback-title">
-        {{ totalErrors }} {{ totalErrors === 1 ? 'issue' : 'issues' }} preventing submission
+        {{ totalErrors }} {{ totalErrors === 1 ? t('onboarding.validation.issuesSingular') : t('onboarding.validation.issuesPlural') }}
       </span>
     </div>
     
     <div class="feedback-sections">
-      <!-- Company Info -->
       <div v-if="errorsBySection.company.length > 0" class="feedback-section">
-        <div class="section-title">Company Information</div>
+        <div class="section-title">{{ t('onboarding.validation.sectionCompany') }}</div>
         <ul class="error-list">
-          <li v-for="(error, index) in errorsBySection.company" :key="`company-${index}`">
-            {{ error }}
-          </li>
+          <li v-for="(error, index) in errorsBySection.company" :key="`company-${index}`">{{ error }}</li>
         </ul>
       </div>
       
-      <!-- Crypto Currencies -->
       <div v-if="errorsBySection.crypto.length > 0" class="feedback-section">
-        <div class="section-title">Cryptocurrency Selection</div>
+        <div class="section-title">{{ t('onboarding.validation.sectionCrypto') }}</div>
         <ul class="error-list">
-          <li v-for="(error, index) in errorsBySection.crypto" :key="`crypto-${index}`">
-            {{ error }}
-          </li>
+          <li v-for="(error, index) in errorsBySection.crypto" :key="`crypto-${index}`">{{ error }}</li>
         </ul>
       </div>
       
-      <!-- Contact Info -->
       <div v-if="errorsBySection.contact.length > 0" class="feedback-section">
-        <div class="section-title">Contact Information</div>
+        <div class="section-title">{{ t('onboarding.validation.sectionContact') }}</div>
         <ul class="error-list">
-          <li v-for="(error, index) in errorsBySection.contact" :key="`contact-${index}`">
-            {{ error }}
-          </li>
+          <li v-for="(error, index) in errorsBySection.contact" :key="`contact-${index}`">{{ error }}</li>
         </ul>
       </div>
       
-      <!-- Address -->
       <div v-if="errorsBySection.address.length > 0" class="feedback-section">
-        <div class="section-title">Address</div>
+        <div class="section-title">{{ t('onboarding.validation.sectionAddress') }}</div>
         <ul class="error-list">
-          <li v-for="(error, index) in errorsBySection.address" :key="`address-${index}`">
-            {{ error }}
-          </li>
+          <li v-for="(error, index) in errorsBySection.address" :key="`address-${index}`">{{ error }}</li>
         </ul>
       </div>
       
-      <!-- Password -->
       <div v-if="errorsBySection.password.length > 0" class="feedback-section">
-        <div class="section-title">Password</div>
+        <div class="section-title">{{ t('onboarding.validation.sectionPassword') }}</div>
         <ul class="error-list">
-          <li v-for="(error, index) in errorsBySection.password" :key="`password-${index}`">
-            {{ error }}
-          </li>
+          <li v-for="(error, index) in errorsBySection.password" :key="`password-${index}`">{{ error }}</li>
         </ul>
       </div>
     </div>

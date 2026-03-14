@@ -69,7 +69,7 @@ const iconWrapperStyle = computed(() => {
 </script>
 
 <template>
-  <main class="d-flex align-items-center justify-content-center min-vh-100 py-4 status-page">
+  <main class="d-flex align-items-center justify-content-center py-5 status-page">
     <div class="standard-container">
       <div class="card border-0 shadow-lg mx-auto rounded-3" style="max-width: 600px;">
         <div class="card-body p-4 p-sm-5 text-center">
@@ -136,6 +136,7 @@ const iconWrapperStyle = computed(() => {
 <style scoped>
 .status-page {
   background: var(--color-surface);
+  min-height: calc(100vh - 80px);
 }
 
 .icon-wrapper {

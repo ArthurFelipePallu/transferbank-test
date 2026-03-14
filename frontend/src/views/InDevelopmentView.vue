@@ -2,18 +2,23 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from 'lucide-vue-next'
+import { useTranslation } from '@/composables/useTranslation'
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 
 const router = useRouter()
+const { t } = useTranslation()
 
-// Get the previous route name from history
-const previousRoute = computed(() => {
-  const history = router.options.history.state.back as string | null
-  if (history) {
-    // Extract route name from path (e.g., '/login' -> 'Login')
-    const path = history.split('/').filter(Boolean).pop() || 'home'
-    return path.charAt(0).toUpperCase() + path.slice(1)
+const previousRouteLabel = computed(() => {
+  const backPath = router.options.history.state.back as string | null
+  if (!backPath) return t('navigation.dashboard')
+
+  // Find the matching route and read its titleKey meta
+  const matched = router.resolve(backPath)
+  const titleKey = matched?.meta?.titleKey
+  if (titleKey && typeof titleKey === 'string') {
+    return t(titleKey as TranslationKey)
   }
-  return 'Home'
+  return t('navigation.dashboard')
 })
 
 const goBack = () => {
@@ -31,15 +36,12 @@ const goBack = () => {
       <section class="status-card">
         <button @click="goBack" class="back-button">
           <ArrowLeft :size="20" />
-          <span>Go back to {{ previousRoute }}</span>
+          <span>{{ t('pages.inDevelopment.goBackTo') }} {{ previousRouteLabel }}</span>
         </button>
         
         <div class="status-content">
-          <h1>Page in development</h1>
-          <p>
-            The feature you tried to access is currently being built. Please check back soon while we
-            finish polishing it for you.
-          </p>
+          <h1>{{ t('pages.inDevelopment.title') }}</h1>
+          <p>{{ t('pages.inDevelopment.message') }}</p>
         </div>
       </section>
     </div>

@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next'
 import type { PartnerFormStep } from '@/domain/partner/partner.types'
+import { useTranslation } from '@/composables/useTranslation'
 
 defineProps<{
   steps: PartnerFormStep[]
   currentStep: number
 }>()
+
+const { t } = useTranslation()
 </script>
 
 <template>
@@ -25,11 +28,9 @@ defineProps<{
       </div>
       
       <div class="step-content">
-        <h3 class="step-title">{{ step.title }}</h3>
-        <p class="step-description">{{ step.description }}</p>
+        <h3 class="step-title">{{ t(step.title) }}</h3>
+        <p class="step-description">{{ t(step.description) }}</p>
       </div>
-
-      <!-- <div v-if="index < steps.length - 1" class="step-line" /> -->
     </div>
   </div>
 </template>

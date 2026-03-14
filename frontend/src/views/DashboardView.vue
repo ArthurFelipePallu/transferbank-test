@@ -15,7 +15,7 @@ const { authStore, partnerStore, navigateTo } = useDashboard()
 const companyInfo = computed(() => ({
   name: authStore.companyName || '',
   email: authStore.userEmail || '',
-  status: 'Active',
+  status: t('company.active'),
 }))
 
 // Translate action titles and descriptions

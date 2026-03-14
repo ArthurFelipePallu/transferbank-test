@@ -38,7 +38,7 @@ const { t } = useTranslation()
 
         <div class="col-12 col-sm-6 col-lg-4">
           <InfoItem 
-            label="Status" 
+            :label="t('dashboard.status')" 
             :value="info.status" 
             variant="success"
           />

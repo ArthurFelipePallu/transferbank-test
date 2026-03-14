@@ -25,10 +25,10 @@ const passwordScore = computed(() => {
 })
 
 const passwordStrengthLabel = computed(() => {
-  if (!props.password) return t('onboardingForm.passwordStrength.enterPassword')
-  if (passwordScore.value <= 2) return t('onboardingForm.passwordStrength.weak')
-  if (passwordScore.value === 3 || passwordScore.value === 4) return t('onboardingForm.passwordStrength.medium')
-  return t('onboardingForm.passwordStrength.strong')
+  if (!props.password) return t('onboarding.passwordStrength.enterPassword')
+  if (passwordScore.value <= 2) return t('onboarding.passwordStrength.weak')
+  if (passwordScore.value === 3 || passwordScore.value === 4) return t('onboarding.passwordStrength.medium')
+  return t('onboarding.passwordStrength.strong')
 })
 
 const passwordStrengthPercent = computed(() => {
@@ -48,10 +48,10 @@ const passwordStrengthClass = computed(() => {
     <div class="col-12">
       <FormInputField 
         name="password" 
-        :label="t('onboardingForm.password')" 
+        :label="t('onboarding.password')" 
         type="password" 
         autocomplete="new-password"
-        placeholder="Create a strong password"
+        :placeholder="t('onboarding.placeholders.password')"
       >
         <template #below>
           <div class="d-flex align-items-center gap-2 mt-2">
@@ -70,9 +70,9 @@ const passwordStrengthClass = computed(() => {
           </div>
 
           <ul class="small text-muted mt-2 mb-0 ps-3">
-            <li>{{ t('onboardingForm.passwordHints.minLength') }}</li>
-            <li>{{ t('onboardingForm.passwordHints.caseLetters') }}</li>
-            <li>{{ t('onboardingForm.passwordHints.numbersSymbols') }}</li>
+            <li>{{ t('onboarding.passwordHints.minLength') }}</li>
+            <li>{{ t('onboarding.passwordHints.caseLetters') }}</li>
+            <li>{{ t('onboarding.passwordHints.numbersSymbols') }}</li>
           </ul>
         </template>
       </FormInputField>
@@ -81,10 +81,10 @@ const passwordStrengthClass = computed(() => {
     <div class="col-12">
       <FormInputField 
         name="passwordConfirmation" 
-        :label="t('onboardingForm.confirmPassword')" 
+        :label="t('onboarding.confirmPassword')" 
         type="password" 
         autocomplete="new-password"
-        placeholder="Repeat your password" 
+        :placeholder="t('onboarding.placeholders.confirmPassword')" 
         :validate-on-input="true" 
       />
     </div>

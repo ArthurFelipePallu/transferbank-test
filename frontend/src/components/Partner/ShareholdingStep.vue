@@ -6,6 +6,7 @@ import FormNavigation from '@/components/UI/FormNavigation.vue'
 import StatCard from '@/components/UI/StatCard.vue'
 import AlertCard from '@/components/UI/AlertCard.vue'
 import { partnerShareholdingSchema, type PartnerShareholdingFormValues } from '@/domain/partner/partner.schema'
+import { useTranslation } from '@/composables/useTranslation'
 
 const props = defineProps<{
   initialValues?: Partial<PartnerShareholdingFormValues>
@@ -16,6 +17,8 @@ const emit = defineEmits<{
   next: [values: PartnerShareholdingFormValues]
   back: []
 }>()
+
+const { t } = useTranslation()
 
 const { handleSubmit, meta, values } = useForm<PartnerShareholdingFormValues>({
   validationSchema: partnerShareholdingSchema,
@@ -42,20 +45,20 @@ const willExceed = () => {
 <template>
   <form @submit.prevent="submit">
     <FormStepHeader
-      title="Shareholding"
-      description="Define the partner's ownership percentage"
+      :title="t('partner.registration.shareholding.stepTitle')"
+      :description="t('partner.registration.shareholding.stepDescription')"
     />
 
     <div class="row g-3 mb-4">
       <div class="col-6">
         <StatCard
-          label="Current Total"
+          :label="t('partner.registration.shareholding.currentTotal')"
           :value="`${totalShareholding.toFixed(2)}%`"
         />
       </div>
       <div class="col-6">
         <StatCard
-          label="Remaining"
+          :label="t('partner.registration.shareholding.remaining')"
           :value="`${remainingShareholding().toFixed(2)}%`"
           :highlight="willExceed()"
         />
@@ -66,28 +69,28 @@ const willExceed = () => {
       <div class="col-12">
         <FormInputField
           name="shareholding"
-          label="Shareholding Percentage"
+          :label="t('partner.shareholding')"
           type="number"
-          placeholder="0.00"
+          :placeholder="t('partner.registration.shareholding.percentagePlaceholder')"
           inputmode="decimal"
         />
       </div>
 
       <div v-if="willExceed()" class="col-12">
         <AlertCard variant="warning">
-          Warning: Total shareholding will exceed 100%
+          {{ t('partner.registration.shareholding.warningExceeds') }}
         </AlertCard>
       </div>
 
       <div class="col-12">
         <AlertCard variant="info">
-          The sum of all partners' shareholding must equal exactly 100%
+          {{ t('partner.registration.shareholding.infoMustEqual') }}
         </AlertCard>
       </div>
     </div>
 
     <FormNavigation
-      next-label="Next Step"
+      :next-label="t('partner.registration.shareholding.nextStep')"
       :next-disabled="!meta.valid"
       @back="$emit('back')"
     />

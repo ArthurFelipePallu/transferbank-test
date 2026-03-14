@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
+import { useTranslation } from '@/composables/useTranslation'
 import OnboardingForm from '@/components/Form/OnboardingForm.vue'
 import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
 import { useOnboardingStore } from '@/stores/useOnboardingStore'
 import { useUiStore } from '@/stores/useUiStore'
 
 const router = useRouter()
-const route = useRoute()
 const onboardingStore = useOnboardingStore()
 const uiStore = useUiStore()
+const { t } = useTranslation()
 
 onMounted(() => {
   // Clear cache if user is returning to form after successful registration
@@ -20,7 +21,7 @@ onMounted(() => {
 
 const onSubmit = async (values: OnboardingFormValues) => {
   try {
-    uiStore.startLoading('Registering your company...')
+    uiStore.startLoading(t('onboarding.toasts.registering'))
     
     const success = await onboardingStore.submitOnboarding(
       values.cnpj,
@@ -33,17 +34,13 @@ const onSubmit = async (values: OnboardingFormValues) => {
     )
     
     if (success) {
-      // Redirect to success page
       router.push({ name: 'account-created' })
     } else {
-      // Show error message
-      uiStore.showError(onboardingStore.error || 'Registration failed')
+      uiStore.showError(onboardingStore.error || t('onboarding.toasts.failed'))
     }
   } catch (error) {
     console.error('Onboarding error:', error)
-    // 409 errors are handled by axios interceptor
-    // Other errors show generic message
-    uiStore.showError('An unexpected error occurred. Please try again.')
+    uiStore.showError(t('errors.unexpectedError'))
   } finally {
     uiStore.stopLoading()
   }
@@ -58,8 +55,8 @@ const onSubmit = async (values: OnboardingFormValues) => {
           <div class="card-body p-3 p-sm-4 p-lg-5">
             <!-- Header - Mobile optimized -->
             <header class="mb-3 mb-md-4">
-              <h1 class="h4 h-md-3 fw-bold text-dark mb-2">Business Onboarding</h1>
-              <p class="text-muted mb-0 small">Register your company to operate with crypto on web and mobile.</p>
+              <h1 class="h4 h-md-3 fw-bold text-dark mb-2">{{ t('onboarding.title') }}</h1>
+              <p class="text-muted mb-0 small">{{ t('onboarding.subtitle') }}</p>
             </header>
 
             <OnboardingForm @submit="onSubmit" />

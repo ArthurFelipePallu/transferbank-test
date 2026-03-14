@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { Upload, X, FileText } from 'lucide-vue-next'
 import type { PartnerDocument } from '@/domain/partner/partner.types'
+import { useTranslation } from '@/composables/useTranslation'
 
 const props = defineProps<{
   modelValue: PartnerDocument[]
@@ -12,6 +13,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [files: PartnerDocument[]]
 }>()
+
+const { t } = useTranslation()
 
 const isDragging = ref(false)
 const fileInputRef = ref<HTMLInputElement>()
@@ -78,10 +81,10 @@ const openFileDialog = () => {
     >
       <Upload :size="32" class="upload-icon" />
       <p class="upload-text">
-        <span class="upload-text-primary">Click to upload</span>
-        <span class="upload-text-secondary">or drag and drop</span>
+        <span class="upload-text-primary">{{ t('fileUpload.clickToUpload') }}</span>
+        <span class="upload-text-secondary">{{ t('fileUpload.orDragAndDrop') }}</span>
       </p>
-      <p class="upload-hint">PDF, PNG, JPG up to 10MB</p>
+      <p class="upload-hint">{{ t('fileUpload.acceptedFormats') }}</p>
       
       <input
         ref="fileInputRef"
@@ -110,7 +113,7 @@ const openFileDialog = () => {
           type="button"
           class="file-remove"
           @click="removeFile(file.id)"
-          aria-label="Remove file"
+          :aria-label="t('fileUpload.removeFile')"
         >
           <X :size="18" />
         </button>

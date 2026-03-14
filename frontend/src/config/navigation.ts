@@ -1,5 +1,7 @@
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+
 export interface NavLink {
-  label: string
+  label: TranslationKey
   routeName: string
   variant?: 'default' | 'ghost' | 'primary'
 }
@@ -11,33 +13,13 @@ export interface NavigationConfig {
 
 export const navigationConfig: NavigationConfig = {
   mainLinks: [
-    {
-      label: 'Companies',
-      routeName: 'companies',
-    },
-    {
-      label: 'Solutions',
-      routeName: 'solutions',
-    },
-    {
-      label: 'Pricing',
-      routeName: 'pricing',
-    },
-    {
-      label: 'Resources',
-      routeName: 'resources',
-    },
+    { label: 'navigation.companies', routeName: 'companies' },
+    { label: 'navigation.solutions', routeName: 'solutions' },
+    { label: 'navigation.pricing', routeName: 'pricing' },
+    { label: 'navigation.resources', routeName: 'resources' },
   ],
   authLinks: [
-    {
-      label: 'Login',
-      routeName: 'login',
-      variant: 'ghost',
-    },
-    {
-      label: 'Open account',
-      routeName: 'home',
-      variant: 'primary',
-    },
+    { label: 'navigation.login', routeName: 'login', variant: 'ghost' },
+    { label: 'navigation.openAccount', routeName: 'home', variant: 'primary' },
   ],
 }

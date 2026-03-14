@@ -16,22 +16,22 @@ import type {
 import { usePartnerStore } from '@/stores/usePartnerStore'
 import { useUiStore } from '@/stores/useUiStore'
 import { useScrollToTop } from '@/composables/useScrollToTop'
+import { useTranslation } from '@/composables/useTranslation'
 
 const router = useRouter()
 const partnerStore = usePartnerStore()
 const uiStore = useUiStore()
 const { scrollToTop } = useScrollToTop()
+const { t } = useTranslation()
 
 const { currentStep, formData, steps, totalShareholding } = storeToRefs(partnerStore)
 
 onMounted(async () => {
-  // Load existing partners to calculate total shareholding
   await partnerStore.loadPartners()
   
-  // Check if shareholding is already 100%
-  const totalShareholding = partnerStore.partnersCollection?.totalShareholding || 0
-  if (totalShareholding >= 100) {
-    uiStore.showWarning('Total shareholding is already 100%. Cannot add more partners.')
+  const total = partnerStore.partnersCollection?.totalShareholding || 0
+  if (total >= 100) {
+    uiStore.showWarning(t('partner.registration.toasts.shareholdingFull'))
     router.push({ name: 'dashboard' })
   }
 })
@@ -40,7 +40,6 @@ const handlePersonalInfoNext = (values: PartnerPersonalInfoFormValues) => {
   partnerStore.updateFormData(values)
   partnerStore.markStepCompleted(PartnerRegistrationStep.PERSONAL_INFO)
   partnerStore.nextStep()
-  scrollToTop()
   scrollToTop()
 }
 
@@ -65,35 +64,31 @@ const handleBack = (targetStep: number) => {
 
 const handleSubmit = async () => {
   try {
-    uiStore.startLoading('Registering partner...')
+    uiStore.startLoading(t('partner.registration.toasts.registering'))
     
     const success = await partnerStore.submitPartner()
     
     if (success) {
       partnerStore.resetForm()
       
-      // Check if all partners are registered (shareholding = 100%)
       const validation = await partnerStore.validateShareholding()
       
       if (validation.isValid) {
-        // All partners registered, redirect to account created page
         router.push({ name: 'account-created' })
       } else {
-        // More partners needed, redirect to partner registered success page
         router.push({ name: 'partner-registered' })
       }
     } else {
-      // Check if error is due to existing partner
       if (partnerStore.error?.includes('already exists') || 
           partnerStore.error?.includes('duplicate')) {
-        uiStore.showError('A partner with this CPF already exists')
+        uiStore.showError(t('partner.registration.toasts.cpfAlreadyExists'))
       } else {
-        uiStore.showError(partnerStore.error || 'Failed to register partner')
+        uiStore.showError(partnerStore.error || t('partner.registration.toasts.failedToRegister'))
       }
     }
   } catch (error) {
     console.error('Error registering partner:', error)
-    uiStore.showError('An unexpected error occurred. Please try again.')
+    uiStore.showError(t('errors.unexpectedError'))
   } finally {
     uiStore.stopLoading()
   }
@@ -104,10 +99,8 @@ const handleSubmit = async () => {
   <main class="partner-registration-page py-3 px-3 py-md-4 px-md-4 py-lg-5 px-lg-5">
     <div class="standard-container">
       <header class="mb-4">
-        <h1 class="h3 fw-bold mb-2">Partner Registration</h1>
-        <p class="text-muted mb-0">
-          Register a new partner for your company. All fields are required.
-        </p>
+        <h1 class="h3 fw-bold mb-2">{{ t('partner.registration.pageTitle') }}</h1>
+        <p class="text-muted mb-0">{{ t('partner.registration.pageSubtitle') }}</p>
       </header>
 
       <StepIndicator :steps="steps" :current-step="currentStep" />

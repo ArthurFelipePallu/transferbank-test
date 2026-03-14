@@ -70,7 +70,7 @@ watch(() => props.cnpj, async (newCnpj, oldCnpj) => {
     
     // Check if CNPJ was not found
     if (companyInfo === null) {
-      cnpjNotFoundMessage.value = t('onboardingForm.cnpjNotFound')
+      cnpjNotFoundMessage.value = t('onboarding.cnpjNotFound')
       return
     }
     
@@ -101,17 +101,17 @@ watch(() => props.cnpj, async (newCnpj, oldCnpj) => {
       <div class="col-12 col-md-6">
         <FormInputField 
           name="cnpj" 
-          :label="t('onboardingForm.cnpj')" 
-          placeholder="00.000.000/0000-00" 
+          :label="t('onboarding.cnpj')" 
+          :placeholder="t('onboarding.placeholders.cnpj')" 
           inputmode="numeric" 
           mask="cnpj" 
         >
           <template #below>
             <div v-if="isCnpjLoading" class="small text-primary fw-medium mt-1">
-              <span class="pulse">{{ t('onboardingForm.searching') }}</span>
+              <span class="pulse">{{ t('onboarding.searching') }}</span>
             </div>
             <div v-else-if="isTestCnpj" class="small fw-medium mt-1" style="color: var(--bs-warning);">
-              ⚠️ {{ t('onboardingForm.testCnpjWarning') }}
+              ⚠️ {{ t('onboarding.testCnpjWarning') }}
             </div>
             <div v-else-if="cnpjNotFoundMessage" class="small fw-medium mt-1" style="color: var(--bs-danger);">
               ❌ {{ cnpjNotFoundMessage }}
@@ -123,16 +123,16 @@ watch(() => props.cnpj, async (newCnpj, oldCnpj) => {
       <div class="col-12 col-md-6">
         <FormInputField 
           name="companyName" 
-          :label="t('onboardingForm.companyName')" 
-          placeholder="Your company LTDA" 
+          :label="t('onboarding.companyName')" 
+          :placeholder="t('onboarding.placeholders.companyName')" 
         />
       </div>
     </div>
 
     <FormInputField 
       name="fantasyName" 
-      :label="t('onboardingForm.fantasyName')" 
-      placeholder="Company fantasy name" 
+      :label="t('onboarding.fantasyName')" 
+      :placeholder="t('onboarding.placeholders.fantasyName')" 
     />
   </div>
 </template>

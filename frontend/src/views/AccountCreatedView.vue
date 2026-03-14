@@ -1,19 +1,18 @@
 <script setup lang="ts">
+import { useTranslation } from '@/composables/useTranslation'
 import StatusMessageCard from '@/components/UI/StatusMessageCard.vue'
 import type { StatusAction, StatusLink } from '@/components/UI/StatusMessageCard.vue'
 
+const { t } = useTranslation()
+
 const primaryAction: StatusAction = {
-  label: 'Go to Login',
+  label: t('status.accountCreated.action'),
   route: 'login',
   variant: 'primary',
 }
 
 const links: StatusLink[] = [
-  {
-    text: 'Need help?',
-    linkText: 'Contact Support',
-    route: 'contact-us',
-  },
+  { text: t('status.needHelp'), linkText: t('status.contactSupport'), route: 'contact-us' },
 ]
 </script>
 
@@ -22,8 +21,8 @@ const links: StatusLink[] = [
     icon="CheckCircle"
     icon-color="var(--color-primary-teal)"
     variant="success"
-    title="Account Successfully Created!"
-    message="Congratulations! Your account has been created successfully. You can now log in to access your account and start using our services."
+    :title="t('status.accountCreated.title')"
+    :message="t('status.accountCreated.message')"
     :primary-action="primaryAction"
     :links="links"
   />

@@ -4,6 +4,7 @@ import FormInputField from '@/components/Form/FormInputField.vue'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
 import { partnerPersonalInfoSchema, type PartnerPersonalInfoFormValues } from '@/domain/partner/partner.schema'
+import { useTranslation } from '@/composables/useTranslation'
 
 const props = defineProps<{
   initialValues?: Partial<PartnerPersonalInfoFormValues>
@@ -12,6 +13,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   next: [values: PartnerPersonalInfoFormValues]
 }>()
+
+const { t } = useTranslation()
 
 const { handleSubmit, meta, values, setFieldValue } = useForm<PartnerPersonalInfoFormValues>({
   validationSchema: partnerPersonalInfoSchema,
@@ -31,16 +34,16 @@ const submit = handleSubmit((values) => {
 <template>
   <form @submit.prevent="submit">
     <FormStepHeader
-      title="Personal Information"
-      description="Enter the partner's basic information"
+      :title="t('partner.registration.personalInfo.stepTitle')"
+      :description="t('partner.registration.personalInfo.stepDescription')"
     />
 
     <div class="row g-3">
       <div class="col-12">
         <FormInputField
           name="fullName"
-          label="Full Name"
-          placeholder="John Doe Silva"
+          :label="t('partner.fullName')"
+          :placeholder="t('partner.registration.personalInfo.fullNamePlaceholder')"
           autocomplete="name"
         />
       </div>
@@ -48,8 +51,8 @@ const submit = handleSubmit((values) => {
       <div class="col-12">
         <FormInputField
           name="cpf"
-          label="CPF"
-          placeholder="000.000.000-00"
+          :label="t('partner.cpf')"
+          :placeholder="t('partner.registration.personalInfo.cpfPlaceholder')"
           inputmode="numeric"
           mask="cpf"
         />
@@ -58,8 +61,8 @@ const submit = handleSubmit((values) => {
       <div class="col-12">
         <FormInputField
           name="nationality"
-          label="Nationality"
-          placeholder="Brazilian"
+          :label="t('partner.nationality')"
+          :placeholder="t('partner.registration.personalInfo.nationalityPlaceholder')"
         />
       </div>
 
@@ -75,11 +78,11 @@ const submit = handleSubmit((values) => {
                 @change="setFieldValue('isPep', !values.isPep)"
               />
               <label class="form-check-label fw-medium" for="isPep">
-                This person is a PEP (Politically Exposed Person)
+                {{ t('partner.registration.personalInfo.pepLabel') }}
               </label>
             </div>
             <p class="text-muted small mb-0 mt-2">
-              PEPs are individuals who hold or have held prominent public positions
+              {{ t('partner.registration.personalInfo.pepDescription') }}
             </p>
           </div>
         </div>
@@ -88,7 +91,7 @@ const submit = handleSubmit((values) => {
 
     <FormNavigation
       :show-back="false"
-      next-label="Next Step"
+      :next-label="t('partner.registration.personalInfo.nextStep')"
       :next-disabled="!meta.valid"
     />
   </form>

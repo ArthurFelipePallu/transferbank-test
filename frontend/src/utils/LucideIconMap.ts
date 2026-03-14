@@ -30,6 +30,7 @@ import {
   TrendingUp,
   TriangleAlert,
   User,
+  UserCheck,
   X,
   Zap,
 } from 'lucide-vue-next'
@@ -66,6 +67,7 @@ export const iconMap = {
   TrendingUp,
   TriangleAlert,
   User,
+  UserCheck,
   X,
   Zap,
 } as const

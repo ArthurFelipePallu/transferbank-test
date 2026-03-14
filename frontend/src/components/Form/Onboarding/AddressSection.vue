@@ -63,13 +63,13 @@ watch(() => props.cep, async (newCep, oldCep) => {
         <div class="position-relative">
           <FormInputField 
             name="cep" 
-            :label="t('onboardingForm.cep')" 
-            placeholder="00000-000" 
+            :label="t('onboarding.cep')" 
+            :placeholder="t('onboarding.placeholders.cep')" 
             inputmode="numeric" 
             mask="cep" 
           />
           <span v-if="isCepLoading" class="position-absolute top-50 end-0 translate-middle-y me-3 small text-primary fw-medium pulse">
-            {{ t('onboardingForm.searching') }}
+            {{ t('onboarding.searching') }}
           </span>
         </div>
       </div>
@@ -77,8 +77,8 @@ watch(() => props.cep, async (newCep, oldCep) => {
       <div class="col-12 col-md-6">
         <FormInputField 
           name="logradouro" 
-          :label="t('onboardingForm.street')" 
-          placeholder="Rua Example" 
+          :label="t('onboarding.street')" 
+          :placeholder="t('onboarding.placeholders.street')" 
         />
       </div>
     </div>
@@ -87,15 +87,15 @@ watch(() => props.cep, async (newCep, oldCep) => {
       <div class="col-12 col-md-6">
         <FormInputField 
           name="numero" 
-          :label="t('onboardingForm.number')" 
-          placeholder="123" 
+          :label="t('onboarding.number')" 
+          :placeholder="t('onboarding.placeholders.number')" 
         />
       </div>
       <div class="col-12 col-md-6">
         <FormInputField 
           name="complemento" 
-          :label="t('onboardingForm.complement')" 
-          placeholder="Apt 45 (optional)" 
+          :label="t('onboarding.complement')" 
+          :placeholder="t('onboarding.placeholders.complement')" 
         />
       </div>
     </div>
@@ -104,23 +104,23 @@ watch(() => props.cep, async (newCep, oldCep) => {
       <div class="col-12 col-md-6">
         <FormInputField 
           name="bairro" 
-          :label="t('onboardingForm.neighborhood')" 
-          placeholder="Centro" 
+          :label="t('onboarding.neighborhood')" 
+          :placeholder="t('onboarding.placeholders.neighborhood')" 
         />
       </div>
       <div class="col-12 col-md-6">
         <FormInputField 
           name="cidade" 
-          :label="t('onboardingForm.city')" 
-          placeholder="São Paulo" 
+          :label="t('onboarding.city')" 
+          :placeholder="t('onboarding.placeholders.city')" 
         />
       </div>
     </div>
 
     <FormInputField 
       name="uf" 
-      :label="t('onboardingForm.state')" 
-      placeholder="SP" 
+      :label="t('onboarding.state')" 
+      :placeholder="t('onboarding.placeholders.state')" 
       maxlength="2" 
     />
   </div>

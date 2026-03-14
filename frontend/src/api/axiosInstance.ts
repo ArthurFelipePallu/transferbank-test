@@ -1,6 +1,7 @@
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
+import { translationService } from '@/infrastructure/i18n/TranslationService'
 
 // Import UI store dynamically to avoid circular dependencies
 let uiStore: any = null
@@ -51,7 +52,7 @@ axiosInstance.interceptors.response.use(
 
     // Network error (no response from server)
     if (!error.response) {
-      ui.showError('Network error. Please check your connection.')
+      ui.showError(translationService.t('errors.networkError'))
       return Promise.reject(error)
     }
 

@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { usePartnerStore } from '@/stores/usePartnerStore'
 import { useUiStore } from '@/stores/useUiStore'
+import { useTranslation } from '@/composables/useTranslation'
 
 /**
  * Dashboard Composable
@@ -15,6 +16,7 @@ export function useDashboard() {
   const authStore = useAuthStore()
   const partnerStore = usePartnerStore()
   const uiStore = useUiStore()
+  const { t } = useTranslation()
 
   const loadDashboardData = async () => {
     // This is a fallback - the route guard should handle this
@@ -35,7 +37,7 @@ export function useDashboard() {
       const totalShareholding = partnerStore.partnersCollection?.totalShareholding || 0
       
       if (totalShareholding >= 100) {
-        uiStore.showWarning('Cannot add new partner. Total shareholding is already 100%.')
+        uiStore.showWarning(t('partner.registration.toasts.shareholdingFull'))
         return
       }
     }

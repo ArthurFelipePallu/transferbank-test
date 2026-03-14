@@ -6,6 +6,7 @@ const props = defineProps<{
     name: IconName,
     size?: number,
     stroke_width?: number,
+    color?: string,
 }>()
 
 const Icon = computed(() => iconMap[props.name])
@@ -13,7 +14,5 @@ const Icon = computed(() => iconMap[props.name])
 
 
 <template>
-    <component :is="Icon" :size='size ?? 20' stroke="currentColor" :stroke-width="stroke_width ?? 2" class="class" />
+    <component :is="Icon" :size='size ?? 20' :stroke="color ?? 'currentColor'" :stroke-width="stroke_width ?? 2" />
 </template>
-
-<style scoped></style>

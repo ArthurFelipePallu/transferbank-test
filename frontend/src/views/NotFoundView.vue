@@ -1,14 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useTranslation } from '@/composables/useTranslation'
+const { t } = useTranslation()
+</script>
 
 <template>
   <main class="status-page">
     <div class="standard-container">
       <section class="status-card not-found">
-        <h1>Page not found</h1>
-        <p>
-          The page you were looking for doesn&apos;t exist or may have been moved. Please check the
-          address or return to the onboarding page.
-        </p>
+        <h1>{{ t('pages.notFound.title') }}</h1>
+        <p>{{ t('pages.notFound.message') }}</p>
       </section>
     </div>
   </main>

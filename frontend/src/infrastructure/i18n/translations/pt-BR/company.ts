@@ -1,0 +1,16 @@
+export const company = {
+  title: 'Empresas',
+  subtitle: 'Navegue por todas as empresas registradas',
+  companyName: 'Razão Social',
+  fantasyName: 'Nome Fantasia',
+  cnpj: 'CNPJ',
+  email: 'E-mail',
+  phone: 'Telefone',
+  cryptocurrencies: 'Criptomoedas',
+  partners: 'Sócios',
+  partner: 'sócio',
+  noCompanies: 'Nenhuma empresa registrada ainda',
+  registerCompany: 'Registrar Empresa',
+  unnamedCompany: 'Empresa sem nome',
+  active: 'Ativo',
+}

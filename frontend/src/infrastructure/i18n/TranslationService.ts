@@ -1,8 +1,9 @@
 import type { ITranslationService } from '@/domain/i18n/ports/ITranslationService'
 import type { Locale } from '@/domain/i18n/types/Locale'
 import { DEFAULT_LOCALE } from '@/domain/i18n/types/Locale'
-import { en } from './translations/en'
-import { ptBR } from './translations/pt-BR'
+import { en } from './translations/en/index'
+import type { TranslationKey } from './translations/en/index'
+import { ptBR } from './translations/pt-BR/index'
 import { storageService } from '../storage/StorageService'
 
 const LOCALE_STORAGE_KEY = 'app_locale'
@@ -42,7 +43,7 @@ export class TranslationService implements ITranslationService {
     }
   }
 
-  t(key: string, params?: Record<string, string | number>): string {
+  t(key: TranslationKey, params?: Record<string, string | number>): string {
     const translation = this.getNestedTranslation(key)
     
     if (!translation) {
@@ -58,7 +59,7 @@ export class TranslationService implements ITranslationService {
     return translation
   }
 
-  has(key: string): boolean {
+  has(key: TranslationKey): boolean {
     return this.getNestedTranslation(key) !== null
   }
 

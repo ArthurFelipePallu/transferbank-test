@@ -1,24 +1,19 @@
 <script setup lang="ts">
+import { useTranslation } from '@/composables/useTranslation'
 import StatusMessageCard from '@/components/UI/StatusMessageCard.vue'
 import type { StatusAction, StatusLink } from '@/components/UI/StatusMessageCard.vue'
 
+const { t } = useTranslation()
+
 const primaryAction: StatusAction = {
-  label: 'Add Another Partner',
+  label: t('status.partnerRegistered.action'),
   route: 'partner-registration',
   variant: 'primary',
 }
 
 const links: StatusLink[] = [
-  {
-    text: 'All partners registered?',
-    linkText: 'Go to Dashboard',
-    route: 'dashboard',
-  },
-  {
-    text: 'Need help?',
-    linkText: 'Contact Support',
-    route: 'contact-us',
-  },
+  { text: t('status.partnerRegistered.allRegistered'), linkText: t('status.partnerRegistered.goToDashboard'), route: 'dashboard' },
+  { text: t('status.needHelp'), linkText: t('status.contactSupport'), route: 'contact-us' },
 ]
 </script>
 
@@ -27,8 +22,8 @@ const links: StatusLink[] = [
     icon="UserCheck"
     icon-color="var(--color-primary-teal)"
     variant="success"
-    title="Partner Successfully Registered!"
-    message="The partner has been added to your company. You can now add more partners or proceed to the dashboard if all partners have been registered."
+    :title="t('status.partnerRegistered.title')"
+    :message="t('status.partnerRegistered.message')"
     :primary-action="primaryAction"
     :links="links"
   />

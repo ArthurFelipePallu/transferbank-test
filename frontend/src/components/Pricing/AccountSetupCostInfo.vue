@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTranslation } from '@/composables/useTranslation'
 import InfoTooltip from '@/components/UI/InfoTooltip.vue'
 import { CurrencyCode } from '@/domain/pricing/entities/Currency'
 
@@ -13,14 +14,13 @@ const props = withDefaults(defineProps<Props>(), {
   position: 'top'
 })
 
+const { t } = useTranslation()
+
 const getCurrencyLabel = (source: CurrencyCode): string => {
   switch (source) {
-    case CurrencyCode.USD:
-      return '$100 USD'
-    case CurrencyCode.BTC:
-      return '0.00153 BTC'
-    case CurrencyCode.ETH:
-      return '0.521 ETH'
+    case CurrencyCode.USD: return '$100 USD'
+    case CurrencyCode.BTC: return '0.00153 BTC'
+    case CurrencyCode.ETH: return '0.521 ETH'
   }
 }
 
@@ -34,13 +34,13 @@ const currencyLabel = getCurrencyLabel(props.selectedCurrency)
     aria-label="Account setup cost information"
   >
     <p class="tooltip-item">
-      <strong>Based on:</strong> {{ currencyLabel }}
+      <strong>{{ t('pricing.basedOn') }}:</strong> {{ currencyLabel }}
     </p>
     <p class="tooltip-item">
-      <strong>Fees:</strong> 1% spread + 3.5% IOF
+      <strong>{{ t('pricing.fees') }}:</strong> {{ t('pricing.feesDetail') }}
     </p>
     <p class="tooltip-item mb-0">
-      <strong>Updates:</strong> Every 5 seconds
+      <strong>{{ t('pricing.updates') }}:</strong> {{ t('pricing.updatesDetail') }}
     </p>
   </InfoTooltip>
 </template>

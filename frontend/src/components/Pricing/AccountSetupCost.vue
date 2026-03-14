@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { usePricingStore } from '@/stores/usePricingStore'
+import { useTranslation } from '@/composables/useTranslation'
 import PriceChangeIndicator from '@/components/Pricing/PriceChangeIndicator.vue'
 import AccountSetupCostInfo from '@/components/Pricing/AccountSetupCostInfo.vue'
 
-// Use centralized pricing store
 const pricingStore = usePricingStore()
+const { t } = useTranslation()
 
 onMounted(() => {
   // Start auto-updating price when component mounts
@@ -22,9 +23,9 @@ onUnmounted(() => {
   <div class="account-cost-compact">
     <div v-if="pricingStore.isCalculating" class="cost-loading">
       <div class="spinner-border spinner-border-sm text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
+        <span class="visually-hidden">{{ t('common.loading') }}</span>
       </div>
-      <span class="ms-2 small">Loading price...</span>
+      <span class="ms-2 small">{{ t('pricing.loadingPrice') }}</span>
     </div>
 
     <div v-else-if="pricingStore.error" class="cost-error">
@@ -32,7 +33,7 @@ onUnmounted(() => {
     </div>
 
     <div v-else-if="pricingStore.hasPrice" class="cost-display">
-      <span class="cost-label">Account Setup Cost:</span>
+      <span class="cost-label">{{ t('pricing.accountSetupCost') }}</span>
       
       <div class="cost-value-wrapper">
         <Transition name="fade" mode="out-in">

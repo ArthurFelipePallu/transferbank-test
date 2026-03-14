@@ -2,6 +2,7 @@
 import { Check } from 'lucide-vue-next'
 import BaseButton from '@/components/UI/BaseButton.vue'
 import type { PartnerFormValues } from '@/domain/partner/partner.schema'
+import { useTranslation } from '@/composables/useTranslation'
 
 defineProps<{
   formData: Partial<PartnerFormValues>
@@ -11,6 +12,8 @@ const emit = defineEmits<{
   submit: []
   back: []
 }>()
+
+const { t } = useTranslation()
 
 const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes'
@@ -23,31 +26,31 @@ const formatFileSize = (bytes: number): string => {
 
 <template>
   <div class="review-step">
-    <h2 class="form-title">Review Information</h2>
-    <p class="form-description">Please review all information before submitting</p>
+    <h2 class="form-title">{{ t('partner.registration.review.stepTitle') }}</h2>
+    <p class="form-description">{{ t('partner.registration.review.stepDescription') }}</p>
 
     <div class="review-sections">
       <!-- Personal Information -->
       <div class="review-section">
-        <h3 class="section-title">Personal Information</h3>
+        <h3 class="section-title">{{ t('partner.registration.review.personalInfo') }}</h3>
         <div class="review-grid">
           <div class="review-item">
-            <span class="review-label">Full Name</span>
+            <span class="review-label">{{ t('partner.fullName') }}</span>
             <span class="review-value">{{ formData.fullName }}</span>
           </div>
           <div class="review-item">
-            <span class="review-label">CPF</span>
+            <span class="review-label">{{ t('partner.cpf') }}</span>
             <span class="review-value">{{ formData.cpf }}</span>
           </div>
           <div class="review-item">
-            <span class="review-label">Nationality</span>
+            <span class="review-label">{{ t('partner.nationality') }}</span>
             <span class="review-value">{{ formData.nationality }}</span>
           </div>
           <div class="review-item">
-            <span class="review-label">PEP Status</span>
+            <span class="review-label">{{ t('partner.registration.review.pepStatus') }}</span>
             <span class="review-value">
-              <span v-if="formData.isPep" class="badge badge--warning">Yes</span>
-              <span v-else class="badge badge--success">No</span>
+              <span v-if="formData.isPep" class="badge badge--warning">{{ t('common.yes') }}</span>
+              <span v-else class="badge badge--success">{{ t('common.no') }}</span>
             </span>
           </div>
         </div>
@@ -55,16 +58,16 @@ const formatFileSize = (bytes: number): string => {
 
       <!-- Shareholding -->
       <div class="review-section">
-        <h3 class="section-title">Shareholding</h3>
+        <h3 class="section-title">{{ t('partner.shareholding') }}</h3>
         <div class="shareholding-display">
           <span class="shareholding-value">{{ formData.shareholding }}%</span>
-          <span class="shareholding-label">Ownership Percentage</span>
+          <span class="shareholding-label">{{ t('partner.registration.review.ownershipPercentage') }}</span>
         </div>
       </div>
 
       <!-- Documents -->
       <div class="review-section">
-        <h3 class="section-title">Documents</h3>
+        <h3 class="section-title">{{ t('partner.documents') }}</h3>
         <div class="documents-list">
           <div
             v-for="doc in formData.documents"
@@ -83,10 +86,10 @@ const formatFileSize = (bytes: number): string => {
 
     <div class="form-actions">
       <BaseButton variant="outline" @click="$emit('back')">
-        Back
+        {{ t('common.back') }}
       </BaseButton>
       <BaseButton variant="primary" @click="$emit('submit')">
-        Submit Partner
+        {{ t('partner.registration.review.submit') }}
       </BaseButton>
     </div>
   </div>

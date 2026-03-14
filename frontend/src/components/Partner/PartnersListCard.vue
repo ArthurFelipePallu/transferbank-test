@@ -32,11 +32,11 @@ const toggleExpanded = () => {
       </div>
       
       <div class="flex-grow-1 min-w-0">
-        <h3 class="h5 fw-semibold mb-1">{{ t('partnersList.companyPartners') }}</h3>
+        <h3 class="h5 fw-semibold mb-1">{{ t('partner.companyPartners') }}</h3>
         <p class="small text-muted mb-0">
           {{ collection.totalCount }} 
-          {{ collection.totalCount === 1 ? t('partnersList.partner') : t('partnersList.partners') }}
-          • {{ collection.totalShareholding.toFixed(2) }}% {{ t('partnersList.allocated') }}
+          {{ collection.totalCount === 1 ? t('partner.partner') : t('partner.partners') }}
+          • {{ collection.totalShareholding.toFixed(2) }}% {{ t('partner.allocated') }}
         </p>
       </div>
 
@@ -51,7 +51,7 @@ const toggleExpanded = () => {
     <Transition name="expand">
       <div v-if="isExpanded" class="card-body pt-0 px-4 pb-4">
         <div v-if="collection.totalCount === 0" class="text-center py-5">
-          <p class="text-muted mb-0">{{ t('partnersList.noPartnersYet') }}</p>
+          <p class="text-muted mb-0">{{ t('partner.noPartnersYet') }}</p>
         </div>
         
         <div v-else class="d-flex flex-column gap-3">

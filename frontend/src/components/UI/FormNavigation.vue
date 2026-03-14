@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useTranslation } from '@/composables/useTranslation'
+
+const { t } = useTranslation()
+
 withDefaults(
   defineProps<{
     showBack?: boolean
@@ -8,8 +12,6 @@ withDefaults(
   }>(),
   {
     showBack: true,
-    backLabel: 'Back',
-    nextLabel: 'Next Step',
     nextDisabled: false,
   }
 )
@@ -28,14 +30,14 @@ defineEmits<{
       class="btn btn-outline-secondary px-4 py-2 fw-semibold rounded-3"
       @click="$emit('back')"
     >
-      {{ backLabel }}
+      {{ backLabel ?? t('common.back') }}
     </button>
     <button
       type="submit"
       class="btn btn-primary px-4 py-2 fw-semibold rounded-3"
       :disabled="nextDisabled"
     >
-      {{ nextLabel }}
+      {{ nextLabel ?? t('common.next') }}
     </button>
   </div>
 </template>

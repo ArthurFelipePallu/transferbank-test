@@ -8,15 +8,15 @@ import type { MenuItem } from '@/domain/navigation/types/MenuItem'
 
 export const authenticatedNavigationConfig = {
   services: [
-    { label: 'Accounts', route: 'accounts' },
-    { label: 'Transfers', route: 'transfers' },
-    { label: 'Loans', route: 'loans' },
-    { label: 'Investments', route: 'investments' },
+    { label: 'navigation.accounts', route: 'accounts' },
+    { label: 'navigation.transfers', route: 'transfers' },
+    { label: 'navigation.loans', route: 'loans' },
+    { label: 'navigation.investments', route: 'investments' },
   ] as MenuItem[],
 
   support: [
-    { label: 'Help Center', route: 'help-center' },
-    { label: 'Security', route: 'security' },
-    { label: 'Contact Us', route: 'contact-us' },
+    { label: 'navigation.helpCenter', route: 'help-center' },
+    { label: 'navigation.security', route: 'security' },
+    { label: 'navigation.contactUs', route: 'contact-us' },
   ] as MenuItem[],
 }

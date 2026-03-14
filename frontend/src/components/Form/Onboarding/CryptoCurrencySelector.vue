@@ -40,7 +40,7 @@ const handleToggle = (currency: CryptoCurrencyEnum) => {
 
 <template>
   <div class="mb-3">
-    <label class="form-label">{{ t('onboardingForm.cryptoCurrencies') }}</label>
+    <label class="form-label">{{ t('onboarding.cryptoCurrencies') }}</label>
     <div class="d-flex flex-wrap gap-2">
       <CryptoChip 
         v-for="c in cryptoCurrencies" 

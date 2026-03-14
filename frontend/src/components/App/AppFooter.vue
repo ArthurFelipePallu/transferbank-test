@@ -1,102 +1,88 @@
 <script setup lang="ts">
-import AppBrandLogo from './AppBrandLogo.vue';
+import { useTranslation } from '@/composables/useTranslation'
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+import AppBrandLogo from './AppBrandLogo.vue'
+
+const { t } = useTranslation()
 const year = new Date().getFullYear()
 
-const servicesLinks = [
-    {
-        name: 'accounts',
-        Title: 'Accounts'
-    },
-    {
-        name: 'transfers',
-        Title: 'Transfers'
-    },
-    {
-        name: 'loans',
-        Title: 'Loans'
-    },
-    {
-        name: 'investments',
-        Title: 'Investments'
-    },
+const servicesLinks: { name: string; labelKey: TranslationKey }[] = [
+  { name: 'accounts',     labelKey: 'navigation.accounts' },
+  { name: 'transfers',    labelKey: 'navigation.transfers' },
+  { name: 'loans',        labelKey: 'navigation.loans' },
+  { name: 'investments',  labelKey: 'navigation.investments' },
 ]
-const supportLinks = [
-    {
-        name: 'help-center',
-        Title: 'Help Center'
-    },
-    {
-        name: 'security',
-        Title: 'Security'
-    },
-    {
-        name: 'report-fraud',
-        Title: 'Report Fraud'
-    },
-    {
-        name: 'contact-us',
-        Title: 'Contact Us'
-    },
+
+const supportLinks: { name: string; labelKey: TranslationKey }[] = [
+  { name: 'help-center',  labelKey: 'navigation.helpCenter' },
+  { name: 'security',     labelKey: 'navigation.security' },
+  { name: 'report-fraud', labelKey: 'footer.reportFraud' },
+  { name: 'contact-us',   labelKey: 'navigation.contactUs' },
 ]
 
 const contactInformation = {
-    email: "support@mediteranian.com",
-    phone: "+1 234 567 890"
+  email: 'support@mediteranian.com',
+  phone: '+1 234 567 890',
 }
 </script>
 
 <template>
-    <footer class="py-4 py-md-5 footer-bg">
-        <div class="footer-container">
-            <!-- Mobile: 2 columns, Tablet+: 4 columns -->
-            <div class="row g-4 g-md-5">
-                <!-- Bank Info - Full width on mobile -->
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <AppBrandLogo />
-                    <p class="mt-3 small text-muted user-select-none">Your trusted digital banking partner.</p>
-                </div>
-
-                <!-- Services -->
-                <div class="col-6 col-sm-6 col-lg-3">
-                    <h4 class="h6 fw-semibold mb-3 user-select-none">Services</h4>
-                    <ul class="list-unstyled footer-links">
-                        <li v-for="service in servicesLinks" :key="service.name" class="mb-2">
-                            <RouterLink :to="{ name: service.name }" class="text-decoration-none footer-link">
-                                {{ service.Title }}
-                            </RouterLink>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Support -->
-                <div class="col-6 col-sm-6 col-lg-3">
-                    <h4 class="h6 fw-semibold mb-3 user-select-none">Support</h4>
-                    <ul class="list-unstyled footer-links">
-                        <li v-for="support in supportLinks" :key="support.name" class="mb-2">
-                            <RouterLink :to="{ name: support.name }" class="text-decoration-none footer-link">
-                                {{ support.Title }}
-                            </RouterLink>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Contact - Full width on mobile, shares row with others on tablet+ -->
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <h4 class="h6 fw-semibold mb-3 user-select-none">Contact</h4>
-                    <p class="small mb-2 user-select-none">
-                        Email: <a :href="`mailto:${contactInformation.email}`" class="footer-link user-select-text">{{ contactInformation.email }}</a>
-                    </p>
-                    <p class="small mb-0 user-select-none">
-                        Phone: <a :href="`tel:${contactInformation.phone}`" class="footer-link user-select-text">{{ contactInformation.phone }}</a>
-                    </p>
-                </div>
-            </div>
-
-            <div class="border-top border-primary mt-4 pt-3 text-center">
-                <p class="small mb-0 user-select-none">© {{ year }} SafeBank. All rights reserved.</p>
-            </div>
+  <footer class="py-4 py-md-5 footer-bg">
+    <div class="footer-container">
+      <div class="row g-4 g-md-5">
+        <!-- Brand -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <AppBrandLogo />
+          <p class="mt-3 small text-muted user-select-none">{{ t('footer.tagline') }}</p>
         </div>
-    </footer>
+
+        <!-- Services -->
+        <div class="col-6 col-sm-6 col-lg-3">
+          <h4 class="h6 fw-semibold mb-3 user-select-none">{{ t('footer.services') }}</h4>
+          <ul class="list-unstyled footer-links">
+            <li v-for="service in servicesLinks" :key="service.name" class="mb-2">
+              <RouterLink :to="{ name: service.name }" class="text-decoration-none footer-link">
+                {{ t(service.labelKey) }}
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div class="col-6 col-sm-6 col-lg-3">
+          <h4 class="h6 fw-semibold mb-3 user-select-none">{{ t('footer.support') }}</h4>
+          <ul class="list-unstyled footer-links">
+            <li v-for="support in supportLinks" :key="support.name" class="mb-2">
+              <RouterLink :to="{ name: support.name }" class="text-decoration-none footer-link">
+                {{ t(support.labelKey) }}
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <h4 class="h6 fw-semibold mb-3 user-select-none">{{ t('footer.contact') }}</h4>
+          <p class="small mb-2 user-select-none">
+            {{ t('footer.email') }}: 
+            <a :href="`mailto:${contactInformation.email}`" class="footer-link user-select-text">
+              {{ contactInformation.email }}
+            </a>
+          </p>
+          <p class="small mb-0 user-select-none">
+            {{ t('footer.phone') }}: 
+            <a :href="`tel:${contactInformation.phone}`" class="footer-link user-select-text">
+              {{ contactInformation.phone }}
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <div class="border-top border-primary mt-4 pt-3 text-center">
+        <p class="small mb-0 user-select-none">© {{ year }} SafeBank. {{ t('footer.allRightsReserved') }}</p>
+      </div>
+    </div>
+  </footer>
 </template>
 
 <style scoped>

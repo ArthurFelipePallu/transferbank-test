@@ -6,12 +6,12 @@
 
     <div class="card-body d-flex flex-column gap-3">
       <div class="info-row">
-        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('companyCard.cnpj') }}</span>
+        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('company.cnpj') }}</span>
         <span class="fw-medium">{{ formattedCnpj }}</span>
       </div>
 
       <div class="info-row">
-        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('companyCard.cryptocurrencies') }}</span>
+        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('company.cryptocurrencies') }}</span>
         <div class="d-flex flex-wrap gap-2">
           <span
             v-for="crypto in company.cryptoCurrencies"
@@ -24,7 +24,7 @@
       </div>
 
       <div class="info-row">
-        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('companyCard.partners') }}</span>
+        <span class="text-uppercase small fw-semibold text-muted d-block mb-1">{{ t('company.partners') }}</span>
         <span class="fw-semibold partner-count">
           {{ partnerCount }} {{ partnerLabel }}
         </span>
@@ -51,14 +51,14 @@ defineEmits<{
 
 const { t } = useTranslation()
 
-const displayName = computed(() => props.company.fantasyName || props.company.companyName || t('companyCard.unnamedCompany'))
+const displayName = computed(() => props.company.fantasyName || props.company.companyName || t('company.unnamedCompany'))
 
 const partnerCount = computed(() => props.company.partnerCount || 0)
 
 const formattedCnpj = computed(() => formatCnpj(props.company.cnpj))
 
 const partnerLabel = computed(() => {
-  return partnerCount.value === 1 ? t('companyCard.partner') : t('companyCard.partners')
+  return partnerCount.value === 1 ? t('company.partner') : t('company.partners')
 })
 
 const formatCrypto = (crypto: string): string => {

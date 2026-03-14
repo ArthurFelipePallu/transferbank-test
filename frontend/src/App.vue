@@ -13,11 +13,8 @@ const authStore = useAuthStore()
 const onboardingStore = useOnboardingStore()
 const route = useRoute()
 
-// Routes that should show the authenticated header
-const authenticatedRoutes = ['dashboard', 'partner-registration', 'accounts', 'transfers', 'loans', 'investments']
-
 const showAuthenticatedHeader = computed(() => {
-  return authStore.isAuthenticated && authenticatedRoutes.includes(route.name as string)
+  return authStore.isAuthenticated && !!route.meta.requiresAuth
 })
 
 onMounted(() => {

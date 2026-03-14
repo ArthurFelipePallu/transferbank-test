@@ -127,7 +127,7 @@ const handleAddressUpdate = (field: keyof OnboardingFormValues, value: string) =
 const submit = handleSubmit((values) => {
   // Prevent submission if company status is invalid
   if (cnpjStatusError.value) {
-    uiStore.showError('Cannot register an inactive company', 5000)
+    uiStore.showError(t('onboarding.toasts.inactiveCompany'), 5000)
     return
   }
   
@@ -197,12 +197,12 @@ const submit = handleSubmit((values) => {
 
     <div class="d-grid mb-3">
       <button type="submit" class="btn btn-primary btn-lg" :disabled="!meta.valid || !!cnpjStatusError">
-        {{ props.submitLabel || t('onboardingForm.createAccount') }}
+        {{ props.submitLabel || t('onboarding.createAccount') }}
       </button>
     </div>
 
-    <p v-if="props.hintText || t('onboardingForm.hint')" class="text-center text-muted small mb-0">
-      {{ props.hintText || t('onboardingForm.hint') }}
+    <p v-if="props.hintText || t('onboarding.hint')" class="text-center text-muted small mb-0">
+      {{ props.hintText || t('onboarding.hint') }}
     </p>
   </form>
 </template>

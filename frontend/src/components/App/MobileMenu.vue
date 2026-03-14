@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { X } from 'lucide-vue-next'
+import { useTranslation } from '@/composables/useTranslation'
 import type { NavLink } from '@/config/navigation'
-import BaseLucideIcon from '../BaseLucideIcon.vue';
+import BaseLucideIcon from '../BaseLucideIcon.vue'
 
 defineProps<{
   isOpen: boolean
@@ -10,37 +10,23 @@ defineProps<{
   authLinks: NavLink[]
 }>()
 
-const emit = defineEmits<{
-  close: []
-}>()
+const emit = defineEmits<{ close: [] }>()
+const { t } = useTranslation()
 
-const handleLinkClick = () => {
-  emit('close')
-}
+const handleLinkClick = () => emit('close')
 </script>
 
 <template>
-  <!-- Mobile Menu Overlay -->
   <Transition name="overlay">
-    <div 
-      v-if="isOpen" 
-      class="mobile-menu-overlay"
-      @click="$emit('close')"
-    />
+    <div v-if="isOpen" class="mobile-menu-overlay" @click="$emit('close')" />
   </Transition>
 
-  <!-- Mobile Side Menu -->
   <Transition name="slide">
     <nav v-if="isOpen" class="mobile-menu">
       <div class="mobile-menu-header">
-        <span class="mobile-menu-title">Menu</span>
-        <button 
-          class="mobile-menu-close" 
-          @click="$emit('close')"
-          aria-label="Close menu"
-        >
+        <span class="mobile-menu-title">{{ t('navigation.menu') }}</span>
+        <button class="mobile-menu-close" @click="$emit('close')" :aria-label="t('common.close')">
           <BaseLucideIcon name="X" :size="24" />
-          <!-- <X :size="24" /> -->
         </button>
       </div>
       
@@ -52,7 +38,7 @@ const handleLinkClick = () => {
           :to="{ name: link.routeName }"
           @click="handleLinkClick"
         >
-          {{ link.label }}
+          {{ t(link.label as any) }}
         </RouterLink>
 
         <div class="mobile-menu-divider" />
@@ -68,7 +54,7 @@ const handleLinkClick = () => {
           :to="{ name: link.routeName }"
           @click="handleLinkClick"
         >
-          {{ link.label }}
+          {{ t(link.label as any) }}
         </RouterLink>
       </div>
     </nav>

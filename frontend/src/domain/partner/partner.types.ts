@@ -1,3 +1,5 @@
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+
 export interface Partner {
   id?: string
   fullName: string
@@ -18,8 +20,8 @@ export interface PartnerDocument {
 
 export interface PartnerFormStep {
   id: number
-  title: string
-  description: string
+  title: TranslationKey
+  description: TranslationKey
   isCompleted: boolean
 }
 

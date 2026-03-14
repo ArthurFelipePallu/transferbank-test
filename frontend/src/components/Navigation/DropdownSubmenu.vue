@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTranslation } from '@/composables/useTranslation'
 import type { MenuItem } from '@/domain/navigation/types/MenuItem'
 
 defineProps<{
@@ -9,6 +10,8 @@ defineProps<{
 const emit = defineEmits<{
   itemClick: [route: string]
 }>()
+
+const { t } = useTranslation()
 </script>
 
 <template>
@@ -20,7 +23,7 @@ const emit = defineEmits<{
         class="submenu-item" 
         @click="item.route && emit('itemClick', item.route)"
       >
-        {{ item.label }}
+        {{ t(item.label as any) }}
       </button>
     </div>
   </Transition>

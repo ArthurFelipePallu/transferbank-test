@@ -1,27 +1,13 @@
 import type { Locale } from '../types/Locale'
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 
 /**
  * Port: Translation Service Interface
  * Defines the contract for translation operations
  */
 export interface ITranslationService {
-  /**
-   * Get current locale
-   */
   getCurrentLocale(): Locale
-
-  /**
-   * Set current locale
-   */
   setLocale(locale: Locale): void
-
-  /**
-   * Translate a key with optional parameters
-   */
-  t(key: string, params?: Record<string, string | number>): string
-
-  /**
-   * Check if a translation key exists
-   */
-  has(key: string): boolean
+  t(key: TranslationKey, params?: Record<string, string | number>): string
+  has(key: TranslationKey): boolean
 }

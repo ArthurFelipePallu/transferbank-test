@@ -37,7 +37,7 @@ defineExpose({
         <PhoneInputField 
           ref="phoneInputRef"
           name="phone" 
-          :label="t('onboardingForm.phone')" 
+          :label="t('onboarding.phone')" 
           placeholder="(11) 99999-9999"
           @dial-code-change="handleDialCodeChange"
         />
@@ -46,7 +46,7 @@ defineExpose({
       <div class="col-12 col-md-6">
         <FormInputField 
           name="email" 
-          :label="t('onboardingForm.email')" 
+          :label="t('onboarding.email')" 
           type="email" 
           placeholder="you@company.com" 
           autocomplete="email" 

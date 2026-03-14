@@ -2,10 +2,12 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { useTranslation } from '@/composables/useTranslation'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const { t } = useTranslation()
 const isOpen = ref(false)
 const menuRef = ref<HTMLElement | null>(null)
 
@@ -73,7 +75,7 @@ onUnmounted(() => {
         
         <button type="button" class="dropdown-item" @click="handleLogout">
           <BaseLucideIcon name="LogOut" :size="16" />
-          <span>Logout</span>
+          <span>{{ t('navigation.logout') }}</span>
         </button>
       </div>
     </Transition>
