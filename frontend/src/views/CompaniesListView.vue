@@ -1,29 +1,31 @@
 <template>
-  <div class="companies-list-view">
-    <div class="header">
-      <h1>{{ t('company.title') }}</h1>
-      <p class="subtitle">{{ t('company.subtitle') }}</p>
-    </div>
+  <div class="companies-list-page py-3 px-3 py-md-4 px-md-4 py-lg-5 px-lg-5">
+    <div class="standard-container">
+      <div class="mb-4">
+        <h1 class="h2 fw-semibold mb-2">{{ t('company.title') }}</h1>
+        <p class="text-muted mb-0">{{ t('company.subtitle') }}</p>
+      </div>
 
-    <div v-if="loading" class="loading">
-      <p>{{ t('common.loading') }}</p>
-    </div>
+      <div v-if="loading" class="text-center py-5">
+        <p class="text-muted">{{ t('common.loading') }}</p>
+      </div>
 
-    <div v-else-if="error" class="error">
-      <p>{{ error }}</p>
-    </div>
+      <div v-else-if="error" class="alert alert-danger" role="alert">
+        {{ error }}
+      </div>
 
-    <div v-else-if="companies.length === 0" class="empty">
-      <p>{{ t('company.noCompanies') }}</p>
-    </div>
+      <div v-else-if="companies.length === 0" class="text-center py-5">
+        <p class="text-muted">{{ t('company.noCompanies') }}</p>
+      </div>
 
-    <div v-else class="companies-grid">
-      <CompanyCard
-        v-for="company in companies"
-        :key="company.id"
-        :company="company"
-        @click="handleCompanyClick(company.id)"
-      />
+      <div v-else class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div v-for="company in companies" :key="company.id" class="col">
+          <CompanyCard
+            :company="company"
+            @click="handleCompanyClick(company.id)"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -65,60 +67,5 @@ const handleCompanyClick = (companyId: string) => {
 </script>
 
 <style scoped>
-.companies-list-view {
-  padding: var(--spacing-page);
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.header {
-  margin-bottom: var(--spacing-section);
-}
-
-.header h1 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  margin: 0 0 0.5rem 0;
-}
-
-.subtitle {
-  color: var(--color-text-muted);
-  font-size: 1rem;
-  margin: 0;
-}
-
-.companies-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-
-.loading,
-.error,
-.empty {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--color-text-muted);
-}
-
-.error {
-  color: var(--color-error);
-}
-
-@media (max-width: 1024px) {
-  .companies-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .companies-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .header h1 {
-    font-size: 1.5rem;
-  }
-}
+/* No custom styles needed - using Bootstrap utilities */
 </style>

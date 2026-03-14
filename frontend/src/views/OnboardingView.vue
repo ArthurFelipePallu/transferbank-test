@@ -51,82 +51,50 @@ const onSubmit = async (values: OnboardingFormValues) => {
 </script>
 
 <template>
-  <main class="onboarding-page">
-    <section class="card">
-      <header class="card-header">
-        <h1>Business Onboarding</h1>
-        <p>Register your company to operate with crypto on web and mobile.</p>
-      </header>
+  <main class="onboarding-page min-vh-100 d-flex align-items-center py-3 py-md-4 px-2 px-sm-3">
+    <div class="onboarding-container">
+      <div class="onboarding-content">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-3 p-sm-4 p-lg-5">
+            <!-- Header - Mobile optimized -->
+            <header class="mb-3 mb-md-4">
+              <h1 class="h4 h-md-3 fw-bold text-dark mb-2">Business Onboarding</h1>
+              <p class="text-muted mb-0 small">Register your company to operate with crypto on web and mobile.</p>
+            </header>
 
-      <OnboardingForm @submit="onSubmit" />
-    </section>
+            <OnboardingForm @submit="onSubmit" />
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
 <style scoped>
 .onboarding-page {
-  max-width: var(--app-max-width);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-page);
-  color: var(--color-white);
+  background: var(--color-surface);
+}
+
+.onboarding-container {
+  /* All screens: 80% width */
+  width: 80%;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.onboarding-content {
+  width: 100%;
+  max-width: 100%;
 }
 
 .card {
-  width: 100%;
-  max-width: 100%;
-  background: var(--color-white);
   border-radius: 1rem;
-  box-shadow: var(--shadow-card-strong);
-  padding: var(--spacing-card);
-  border: 1px solid var(--color-surface-border);
 }
 
-.card-header {
-  margin-bottom: 1.25rem;
-}
-
-.card-header h1 {
-  font-size: 1.4rem;
-  margin-bottom: 0.4rem;
-  color: var(--color-text-main);
-}
-
-.card-header p {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  line-height: 1.5;
-}
-
-@media (min-width: 640px) {
-  .card {
-    border-radius: 1.25rem;
-    max-width: 600px;
-  }
-
-  .card-header {
-    margin-bottom: 1.75rem;
-  }
-
-  .card-header h1 {
-    font-size: 1.6rem;
-  }
-
-  .card-header p {
-    font-size: 0.9rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .card {
-    max-width: var(--app-max-container-width);
-    padding: 2.25rem 2.5rem;
-  }
-
-  .card-header h1 {
-    font-size: 1.9rem;
+/* Ensure content doesn't go to extremes on very large screens */
+@media (min-width: 1920px) {
+  .onboarding-container {
+    max-width: 1536px; /* 80% of 1920px */
   }
 }
 </style>

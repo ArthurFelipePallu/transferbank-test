@@ -2,21 +2,21 @@
 
 <template>
   <main class="status-page">
-    <section class="status-card not-found">
-      <h1>Page not found</h1>
-      <p>
-        The page you were looking for doesn&apos;t exist or may have been moved. Please check the
-        address or return to the onboarding page.
-      </p>
-    </section>
+    <div class="standard-container">
+      <section class="status-card not-found">
+        <h1>Page not found</h1>
+        <p>
+          The page you were looking for doesn&apos;t exist or may have been moved. Please check the
+          address or return to the onboarding page.
+        </p>
+      </section>
+    </div>
   </main>
 </template>
 
 <style scoped>
 .status-page {
-  max-width: var(--app-max-width);
   min-height: calc(100vh - 80px);
-  margin: 0 auto;
   padding: var(--spacing-page);
   display: flex;
   align-items: center;
@@ -26,6 +26,7 @@
 .status-card {
   width: 100%;
   max-width: 600px;
+  margin: 0 auto;
   padding: var(--spacing-card);
   border-radius: 1rem;
   background: var(--color-white);
@@ -63,7 +64,7 @@
 
 @media (min-width: 1024px) {
   .status-card {
-    max-width: var(--app-max-container-width);
+    padding: 2.5rem;
   }
 
   .status-card h1 {
