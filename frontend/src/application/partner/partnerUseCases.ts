@@ -1,9 +1,15 @@
 import type { PartnerGateway } from '@/domain/partner/ports/PartnerGateway'
+import type { IPartnerListGateway } from '@/domain/partner/ports/IPartnerListGateway'
 import type {
   PartnerRegistration,
   RegisteredPartner,
   ShareholdingInfo,
 } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
+import {
+  sortPartnersByShareholding,
+  calculateTotalShareholding,
+} from '@/domain/partner/entities/PartnerSummary'
 
 export const registerPartnerViaGateway = async (
   gateway: PartnerGateway,
@@ -39,10 +45,20 @@ export const validateCompanyShareholding = async (
 ): Promise<{ isValid: boolean; total: number; remaining: number }> => {
   const info = await gateway.getShareholdingInfo(companyId)
   const isValid = Math.abs(info.totalShareholding - 100) < 0.01
-  
+  return { isValid, total: info.totalShareholding, remaining: info.remaining }
+}
+
+export const fetchPartnersCollection = async (
+  gateway: IPartnerListGateway,
+  companyId: string
+): Promise<PartnersCollection> => {
+  const partners = await gateway.getPartnersByCompanyId(companyId)
+  const sortedPartners = sortPartnersByShareholding(partners)
+  const totalShareholding = calculateTotalShareholding(partners)
   return {
-    isValid,
-    total: info.totalShareholding,
-    remaining: info.remaining,
+    partners: sortedPartners,
+    totalCount: partners.length,
+    totalShareholding,
+    remainingShareholding: Math.max(0, 100 - totalShareholding),
   }
 }
