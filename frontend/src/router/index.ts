@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import NotFoundView from '../views/NotFoundView.vue'
 import OnBoardingView from '../views/OnboardingView.vue'
 import InDevelopmentView from '../views/InDevelopmentView.vue'
+import LandingView from '../views/LandingView.vue'
 import AlreadyExistingView from '@/views/AlreadyExistingView.vue'
 import AccountCreatedView from '@/views/AccountCreatedView.vue'
 import PartnerRegisteredView from '@/views/PartnerRegisteredView.vue'
@@ -45,7 +46,8 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      redirect: { name: 'register' },
+      component: LandingView,
+      meta: { titleKey: 'landing.hero.tagline' },
     },
     {
       path: '/sign-up',
@@ -182,6 +184,24 @@ const router = createRouter({
       name: 'in-development',
       component: InDevelopmentView,
       meta: { titleKey: 'pages.inDevelopment.title' },
+    },
+    {
+      path: '/legal/cookie-policy',
+      name: 'cookie-policy',
+      component: InDevelopmentView,
+      meta: { titleKey: 'cookies.cookiePolicy' },
+    },
+    {
+      path: '/legal/privacy-policy',
+      name: 'privacy-policy',
+      component: InDevelopmentView,
+      meta: { titleKey: 'cookies.privacyPolicy' },
+    },
+    {
+      path: '/legal/accessibility',
+      name: 'accessibility',
+      component: InDevelopmentView,
+      meta: { titleKey: 'cookies.accessibility' },
     },
     {
       path: '/:pathMatch(.*)*',

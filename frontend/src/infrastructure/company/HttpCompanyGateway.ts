@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { api } from '@/api/apiClient'
 import type { RegisterCompanyRequest, CompanyResponse } from '@/api/backendApi'
 import type {
@@ -6,6 +7,7 @@ import type {
   CompanyListItem,
 } from '@/domain/company/interfaces/companyInterface'
 import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
+import { CompanyAlreadyExistsError } from '@/domain/onboarding/errors/CompanyAlreadyExistsError'
 
 const mapToRegisterRequest = (data: CompanyRegistration): RegisterCompanyRequest => ({
   cnpj: data.cnpj,
@@ -42,9 +44,16 @@ const mapToCompanyListItem = (response: CompanyResponse): CompanyListItem => ({
 
 export const httpCompanyGateway: CompanyGateway = {
   async register(data) {
-    const request = mapToRegisterRequest(data)
-    const response = await api.company.companyRegisterCreate(request)
-    return mapToCompany(response.data)
+    try {
+      const request = mapToRegisterRequest(data)
+      const response = await api.company.companyRegisterCreate(request)
+      return mapToCompany(response.data)
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 409) {
+        throw new CompanyAlreadyExistsError()
+      }
+      throw err
+    }
   },
 
   async getById(id) {

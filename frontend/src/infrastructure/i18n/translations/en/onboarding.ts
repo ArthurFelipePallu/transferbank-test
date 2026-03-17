@@ -69,4 +69,50 @@ export const onboarding = {
     failed: 'Registration failed',
     inactiveCompany: 'Cannot register an inactive company',
   },
+  steps: {
+    cnpj: {
+      title: 'CNPJ',
+      description: 'Look up your company',
+    },
+    company: {
+      title: 'Company Info',
+      description: 'Name and contact',
+    },
+    crypto: {
+      title: 'Cryptocurrencies',
+      description: 'Select currencies',
+    },
+    address: {
+      title: 'Address',
+      description: 'Company location',
+    },
+    password: {
+      title: 'Password',
+      description: 'Secure your account',
+    },
+    review: {
+      title: 'Review',
+      description: 'Confirm and submit',
+    },
+  },
+  review: {
+    title: 'Review your information',
+    description: 'Please confirm all details before creating your account.',
+    cnpjSection: 'CNPJ',
+    companySection: 'Company Information',
+    cryptoSection: 'Cryptocurrencies',
+    addressSection: 'Address',
+    editStep: 'Edit',
+    submitButton: 'Create Account',
+    noCurrencies: 'No currencies selected',
+  },
+  cnpjStep: {
+    title: 'Enter your CNPJ',
+    description: 'We will look up your company information automatically.',
+    activeStatus: 'Company is active and eligible for registration.',
+    inactiveStatus: 'This company is not eligible for registration.',
+    testCnpjInfo: 'Test CNPJ detected. You can proceed, but no data will be auto-filled.',
+    notFound: 'CNPJ not found. Please check the number and try again.',
+    companyFound: 'Company found',
+  },
 }

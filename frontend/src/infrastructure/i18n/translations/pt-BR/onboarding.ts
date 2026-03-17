@@ -68,4 +68,50 @@ export const onboarding = {
     failed: 'Falha no cadastro',
     inactiveCompany: 'Não é possível registrar uma empresa inativa',
   },
+  steps: {
+    cnpj: {
+      title: 'CNPJ',
+      description: 'Consulte sua empresa',
+    },
+    company: {
+      title: 'Dados da Empresa',
+      description: 'Nome e contato',
+    },
+    crypto: {
+      title: 'Criptomoedas',
+      description: 'Selecione as moedas',
+    },
+    address: {
+      title: 'Endereço',
+      description: 'Localização da empresa',
+    },
+    password: {
+      title: 'Senha',
+      description: 'Proteja sua conta',
+    },
+    review: {
+      title: 'Revisão',
+      description: 'Confirme e envie',
+    },
+  },
+  review: {
+    title: 'Revise suas informações',
+    description: 'Confirme todos os dados antes de criar sua conta.',
+    cnpjSection: 'CNPJ',
+    companySection: 'Informações da Empresa',
+    cryptoSection: 'Criptomoedas',
+    addressSection: 'Endereço',
+    editStep: 'Editar',
+    submitButton: 'Criar Conta',
+    noCurrencies: 'Nenhuma moeda selecionada',
+  },
+  cnpjStep: {
+    title: 'Informe seu CNPJ',
+    description: 'Buscaremos as informações da sua empresa automaticamente.',
+    activeStatus: 'Empresa ativa e apta para cadastro.',
+    inactiveStatus: 'Esta empresa não está apta para cadastro.',
+    testCnpjInfo: 'CNPJ de teste detectado. Você pode continuar, mas nenhum dado será preenchido automaticamente.',
+    notFound: 'CNPJ não encontrado. Verifique o número e tente novamente.',
+    companyFound: 'Empresa encontrada',
+  },
 }

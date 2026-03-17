@@ -87,12 +87,8 @@ axiosInstance.interceptors.response.use(
         break
 
       case 409:
-        // Conflict - Check if it's a company already exists error
-        if (errorCode === 'CompanyAlreadyExists') {
-          const routerInstance = await getRouter()
-          routerInstance.push({ name: 'account-exists' })
-        }
-        // Show backend error message
+        // Conflict — gateways are responsible for translating 409 into domain errors.
+        // If a 409 reaches here it wasn't handled by a gateway, so show the message.
         ui.showError(errorMessage)
         break
 
@@ -112,8 +108,13 @@ axiosRetry(axiosInstance, {
     if (!axios.isAxiosError(error)) return false
 
     const status = error.response?.status
+    const method = error.config?.method?.toUpperCase()
 
-    // Only retry on server errors (5xx) or network errors
+    // Never retry non-idempotent methods (POST, PUT, PATCH, DELETE)
+    // Retrying a POST can cause duplicate resource creation
+    if (method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) return false
+
+    // Only retry GET requests on server errors (5xx) or network errors
     return !status || status >= 500
   },
   onRetry: (retryCount, error) => {
