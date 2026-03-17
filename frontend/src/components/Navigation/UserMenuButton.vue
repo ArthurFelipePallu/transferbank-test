@@ -27,18 +27,17 @@ defineEmits<{
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.875rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--color-white-alpha-25);
+  border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
   color: white;
-  backdrop-filter: blur(10px);
 }
 
 .user-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--color-white-alpha-12);
+  border-color: var(--color-white-alpha-40);
 }
 
 .user-info {

@@ -4,6 +4,7 @@ import { User, LogOut } from 'lucide-vue-next'
 import DropdownMenuItem from './DropdownMenuItem.vue'
 import DropdownSubmenu from './DropdownSubmenu.vue'
 import type { MenuItem } from '@/domain/navigation/types/MenuItem'
+import type { DropdownItem } from './DropdownMenuItem.vue'
 import { useTranslation } from '@/composables/useTranslation'
 
 defineProps<{
@@ -41,7 +42,7 @@ const handleNavigation = (route: string) => {
       <!-- Dashboard -->
       <div class="dropdown-section">
         <DropdownMenuItem 
-          :item="{ label: t('navigation.dashboard'), route: 'dashboard' }"
+          :item="({ label: t('navigation.dashboard'), route: 'dashboard' } satisfies DropdownItem)"
           @click="handleNavigation('dashboard')"
         >
           <template #icon>
@@ -55,7 +56,7 @@ const handleNavigation = (route: string) => {
       <!-- Services with Submenu -->
       <div class="dropdown-section">
         <DropdownMenuItem 
-          :item="{ label: t('navigation.services') }"
+          :item="({ label: t('navigation.services') } satisfies DropdownItem)"
           :has-submenu="true"
           @mouseenter="showSubmenu('services')"
           @mouseleave="hideSubmenu"
@@ -75,7 +76,7 @@ const handleNavigation = (route: string) => {
       <!-- Support with Submenu -->
       <div class="dropdown-section">
         <DropdownMenuItem 
-          :item="{ label: t('navigation.support') }"
+          :item="({ label: t('navigation.support') } satisfies DropdownItem)"
           :has-submenu="true"
           @mouseenter="showSubmenu('support')"
           @mouseleave="hideSubmenu"
@@ -95,7 +96,7 @@ const handleNavigation = (route: string) => {
       <!-- Logout -->
       <div class="dropdown-section">
         <DropdownMenuItem 
-          :item="{ label: t('auth.logout'), isDanger: true }"
+          :item="({ label: t('auth.logout'), isDanger: true } satisfies DropdownItem)"
           @click="$emit('logout')"
         >
           <template #icon>
@@ -115,9 +116,9 @@ const handleNavigation = (route: string) => {
   min-width: 200px;
   background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--color-white-alpha-20);
   border-radius: 0.75rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 40px var(--color-black-alpha-25);
   overflow: visible;
   z-index: 1000;
 }
@@ -128,7 +129,7 @@ const handleNavigation = (route: string) => {
 
 .dropdown-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-white-alpha-15);
   margin: 0.25rem 0;
 }
 

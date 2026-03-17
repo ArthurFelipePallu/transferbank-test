@@ -29,7 +29,7 @@ defineProps<{
 .welcome-icon {
   width: 4rem;
   height: 4rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-white-alpha-20);
   border-radius: 50%;
   align-items: center;
   justify-content: center;

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { ChevronLeft } from 'lucide-vue-next'
-import type { MenuItem } from '@/domain/navigation/types/MenuItem'
+
+export interface DropdownItem {
+  label: string
+  route?: string
+  icon?: string
+  isDanger?: boolean
+}
 
 const props = defineProps<{
-  item: MenuItem
+  item: DropdownItem
   hasSubmenu?: boolean
   isActive?: boolean
 }>()
@@ -59,7 +65,7 @@ const itemClasses = computed(() => ({
 }
 
 .dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-white-alpha-10);
 }
 
 .dropdown-parent {
@@ -67,11 +73,11 @@ const itemClasses = computed(() => ({
 }
 
 .dropdown-item-danger {
-  color: #ff6b6b;
+  color: var(--color-danger-text);
 }
 
 .dropdown-item-danger:hover {
-  background: rgba(255, 107, 107, 0.15);
+  background: var(--color-danger-alpha-15);
 }
 
 .item-label {
@@ -79,13 +85,13 @@ const itemClasses = computed(() => ({
 }
 
 .submenu-arrow {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-white-alpha-60);
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
 .dropdown-parent:hover .submenu-arrow {
   transform: translateX(-2px);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-white-alpha-90);
 }
 </style>

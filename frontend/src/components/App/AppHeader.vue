@@ -8,6 +8,7 @@ import MobileMenuButton from './MobileMenuButton.vue'
 import MobileMenu from './MobileMenu.vue'
 import { navigationConfig } from '@/config/navigation'
 import { useUiStore } from '@/stores/useUiStore'
+import BaseHeader from '@/components/Layout/BaseHeader.vue'
 
 const router = useRouter()
 const uiStore = useUiStore()
@@ -30,68 +31,25 @@ watch(isMobileMenuOpen, (isOpen) => {
 </script>
 
 <template>
-  <header class="app-header">
-    <div class="app-header-inner">
-      <AppBrandLogo />
-      <DesktopNav 
-        :main-links="navigationConfig.mainLinks" 
-        :auth-links="navigationConfig.authLinks" 
-      />
-      <MobileMenuButton 
-        :is-open="isMobileMenuOpen" 
-        @toggle="uiStore.toggleMobileMenu" 
-      />
-    </div>
-
-    <MobileMenu 
-      :is-open="isMobileMenuOpen" 
+  <BaseHeader>
+    <AppBrandLogo />
+    <DesktopNav
       :main-links="navigationConfig.mainLinks"
       :auth-links="navigationConfig.authLinks"
-      @close="uiStore.closeMobileMenu" 
     />
-  </header>
+    <MobileMenuButton
+      :is-open="isMobileMenuOpen"
+      @toggle="uiStore.toggleMobileMenu"
+    />
+    <MobileMenu
+      :is-open="isMobileMenuOpen"
+      :main-links="navigationConfig.mainLinks"
+      :auth-links="navigationConfig.authLinks"
+      @close="uiStore.closeMobileMenu"
+    />
+  </BaseHeader>
 </template>
 
 <style scoped>
-.app-header {
-  width: 100%;
-  background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
-  color: var(--color-white);
-  position: relative;
-  z-index: 100;
-}
-
-.app-header-inner {
-  /* Mobile: full width */
-  width: 100%;
-  margin: 0 auto;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-@media (min-width: 768px) {
-  .app-header-inner {
-    padding: 0.9rem 1.25rem;
-    gap: 1rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .app-header-inner {
-    /* Desktop: constrain to 80% */
-    max-width: 80%;
-    padding: 0.9rem 1.5rem;
-    gap: 1.5rem;
-  }
-}
-
-/* Ensure content doesn't go to extremes on very large screens */
-@media (min-width: 1920px) {
-  .app-header-inner {
-    max-width: 1536px; /* 80% of 1920px */
-  }
-}
+/* BaseHeader owns all positioning and transition styles */
 </style>

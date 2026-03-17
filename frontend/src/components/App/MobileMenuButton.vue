@@ -38,11 +38,11 @@ defineEmits<{
 }
 
 .mobile-menu-button:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--color-white-alpha-12);
 }
 
 .mobile-menu-button:active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--color-white-alpha-20);
 }
 
 @media (min-width: 768px) {

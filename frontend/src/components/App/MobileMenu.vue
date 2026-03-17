@@ -69,7 +69,7 @@ const handleLinkClick = () => emit('close')
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--color-black-alpha-50);
   z-index: 200;
   backdrop-filter: blur(2px);
 }
@@ -83,7 +83,7 @@ const handleLinkClick = () => emit('close')
   width: 280px;
   max-width: 85vw;
   background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+  box-shadow: -4px 0 24px var(--color-black-alpha-30);
   z-index: 300;
   display: flex;
   flex-direction: column;
@@ -92,7 +92,7 @@ const handleLinkClick = () => emit('close')
 
 .mobile-menu-header {
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid var(--color-white-alpha-15);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -120,11 +120,11 @@ const handleLinkClick = () => emit('close')
 }
 
 .mobile-menu-close:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--color-white-alpha-12);
 }
 
 .mobile-menu-close:active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--color-white-alpha-20);
 }
 
 .mobile-menu-content {
@@ -136,7 +136,7 @@ const handleLinkClick = () => emit('close')
 
 .mobile-menu-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-white-alpha-15);
   margin: 0.75rem 0;
 }
 
@@ -159,7 +159,7 @@ const handleLinkClick = () => emit('close')
 }
 
 .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--color-white-alpha-12);
 }
 
 .nav-link:active {
@@ -167,7 +167,7 @@ const handleLinkClick = () => emit('close')
 }
 
 .nav-link--ghost {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-white-alpha-8);
 }
 
 .nav-link--primary {

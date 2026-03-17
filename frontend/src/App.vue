@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import { RouterView } from 'vue-router'
 import AppHeader from './components/App/AppHeader.vue'
 import AuthenticatedHeader from './components/Layout/AuthenticatedHeader.vue'
 import AppFooter from './components/App/AppFooter.vue'
 import NotificationToast from './components/UI/NotificationToast.vue'
 import LoadingOverlay from './components/UI/LoadingOverlay.vue'
+import CookieConsentBanner from './components/UI/CookieConsentBanner.vue'
 import { useAuthStore } from './stores/useAuthStore'
 import { useOnboardingStore } from './stores/useOnboardingStore'
 
 const authStore = useAuthStore()
 const onboardingStore = useOnboardingStore()
-const route = useRoute()
 
-const showAuthenticatedHeader = computed(() => {
-  return authStore.isAuthenticated && !!route.meta.requiresAuth
-})
+const showAuthenticatedHeader = computed(() => authStore.isAuthenticated)
 
 onMounted(() => {
   // Restore auth session if exists
@@ -32,17 +30,20 @@ onMounted(() => {
     <AppHeader v-else />
     
     <!-- RouterView with transition -->
-    <RouterView v-slot="{ Component, route }">
-      <Transition name="page" mode="out-in">
-        <component :is="Component" :key="route.path" />
-      </Transition>
-    </RouterView>
+    <main class="app-main">
+      <RouterView v-slot="{ Component, route }">
+        <Transition name="page" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </Transition>
+      </RouterView>
+    </main>
     
     <AppFooter />
     
     <!-- Global UI Components -->
     <NotificationToast />
     <LoadingOverlay />
+    <CookieConsentBanner />
   </div>
 </template>
 
@@ -51,6 +52,19 @@ onMounted(() => {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Offset fixed header — approximate header height at each breakpoint */
+.app-main {
+  padding-top: 56px; /* mobile */
+}
+
+@media (min-width: 768px) {
+  .app-main { padding-top: 62px; }
+}
+
+@media (min-width: 1024px) {
+  .app-main { padding-top: 66px; }
 }
 
 /* Page transition animations */

@@ -99,8 +99,8 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--color-white-alpha-10);
+  border: 1px solid var(--color-white-alpha-20);
   border-radius: 0.5rem;
   color: var(--color-white);
   cursor: pointer;
@@ -110,14 +110,14 @@ onUnmounted(() => {
 }
 
 .user-menu-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--color-white-alpha-15);
+  border-color: var(--color-white-alpha-30);
 }
 
 .user-avatar {
   width: 28px;
   height: 28px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-white-alpha-20);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -146,14 +146,14 @@ onUnmounted(() => {
   min-width: 240px;
   background: var(--color-white);
   border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--color-black-alpha-15);
   overflow: hidden;
   z-index: 1000;
 }
 
 .dropdown-header {
   padding: 1rem;
-  background: linear-gradient(135deg, rgba(28, 156, 140, 0.05), rgba(33, 184, 166, 0.05));
+  background: linear-gradient(135deg, var(--color-teal-alpha-5), var(--color-accent-teal-alpha-5));
 }
 
 .dropdown-user-info {
@@ -203,7 +203,7 @@ onUnmounted(() => {
 }
 
 .dropdown-item:hover {
-  background: rgba(28, 156, 140, 0.08);
+  background: var(--color-teal-alpha-8);
 }
 
 /* Dropdown transition */

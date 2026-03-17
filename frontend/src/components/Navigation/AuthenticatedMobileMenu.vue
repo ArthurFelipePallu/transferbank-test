@@ -159,7 +159,7 @@ const handleLogout = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--color-black-alpha-50);
   z-index: 200;
   backdrop-filter: blur(2px);
 }
@@ -173,7 +173,7 @@ const handleLogout = () => {
   width: 280px;
   max-width: 85vw;
   background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+  box-shadow: -4px 0 24px var(--color-black-alpha-30);
   z-index: 300;
   display: flex;
   flex-direction: column;
@@ -182,7 +182,7 @@ const handleLogout = () => {
 
 .mobile-menu-header {
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid var(--color-white-alpha-15);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -210,11 +210,11 @@ const handleLogout = () => {
 }
 
 .mobile-menu-close:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--color-white-alpha-12);
 }
 
 .mobile-menu-close:active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--color-white-alpha-20);
 }
 
 .mobile-menu-content {
@@ -226,7 +226,7 @@ const handleLogout = () => {
 
 .mobile-menu-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-white-alpha-15);
   margin: 0.75rem 0;
 }
 
@@ -236,7 +236,7 @@ const handleLogout = () => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-white-alpha-10);
   border-radius: 0.75rem;
 }
 
@@ -246,7 +246,7 @@ const handleLogout = () => {
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-white-alpha-15);
   border-radius: 50%;
   color: var(--color-white);
   flex-shrink: 0;
@@ -268,7 +268,7 @@ const handleLogout = () => {
 
 .company-email {
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-white-alpha-70);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -291,7 +291,7 @@ const handleLogout = () => {
   justify-content: space-between;
   width: 100%;
   padding: 0.85rem 1rem;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-white-alpha-8);
   border: none;
   border-radius: 0.75rem;
   color: var(--color-white);
@@ -304,11 +304,11 @@ const handleLogout = () => {
 }
 
 .section-header:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--color-white-alpha-12);
 }
 
 .section-header:active {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: var(--color-white-alpha-15);
 }
 
 .chevron-open {
@@ -329,7 +329,7 @@ const handleLogout = () => {
   background: transparent;
   border: none;
   border-radius: 0.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-white-alpha-90);
   font-size: 0.9375rem;
   font-weight: 400;
   text-align: left;
@@ -340,11 +340,11 @@ const handleLogout = () => {
 }
 
 .menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--color-white-alpha-8);
 }
 
 .menu-item:active {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--color-white-alpha-12);
 }
 
 /* Logout Button */
@@ -353,10 +353,10 @@ const handleLogout = () => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.85rem 1rem;
-  background: rgba(220, 38, 38, 0.15);
-  border: 1px solid rgba(220, 38, 38, 0.3);
+  background: var(--color-danger-alpha-15);
+  border: 1px solid var(--color-danger-alpha-30);
   border-radius: 0.75rem;
-  color: #fca5a5;
+  color: var(--color-danger-light);
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -366,12 +366,12 @@ const handleLogout = () => {
 }
 
 .logout-button:hover {
-  background: rgba(220, 38, 38, 0.25);
-  border-color: rgba(220, 38, 38, 0.5);
+  background: var(--color-danger-alpha-25);
+  border-color: var(--color-danger-alpha-50);
 }
 
 .logout-button:active {
-  background: rgba(220, 38, 38, 0.3);
+  background: var(--color-danger-alpha-30);
 }
 
 /* Transitions */

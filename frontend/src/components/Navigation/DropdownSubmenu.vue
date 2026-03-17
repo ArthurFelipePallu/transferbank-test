@@ -38,9 +38,9 @@ const { t } = useTranslation()
   margin-right: 0.5rem;
   background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--color-white-alpha-20);
   border-radius: 0.5rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px var(--color-black-alpha-20);
   padding: 0.5rem;
   z-index: 10;
   display: flex;
@@ -62,7 +62,7 @@ const { t } = useTranslation()
 }
 
 .submenu-item:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-white-alpha-15);
 }
 
 /* Submenu Transition */

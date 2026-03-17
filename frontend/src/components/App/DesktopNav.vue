@@ -79,7 +79,7 @@ const { t } = useTranslation()
   }
 
   .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: var(--color-white-alpha-12);
   }
 
   .nav-link--ghost {
@@ -97,7 +97,7 @@ const { t } = useTranslation()
   }
 
   .nav-separator {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--color-white-alpha-40);
     padding-inline: 0.2rem;
   }
 }
