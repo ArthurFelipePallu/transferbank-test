@@ -1,5 +1,6 @@
 import type { QuickAction } from '@/components/Dashboard/QuickActionsCard.vue'
 import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 
 /**
  * Dashboard Quick Actions Configuration
@@ -11,22 +12,22 @@ export const dashboardActionsConfig: QuickAction[] = [
   {
     title: 'dashboard.registerPartners' as TranslationKey,
     description: 'dashboard.addPartners' as TranslationKey,
-    route: 'partner-registration',
+    route: RouteName.PartnerRegistration,
     variant: 'primary',
   },
   {
     title: 'dashboard.manageAccounts' as TranslationKey,
     description: 'dashboard.viewAccounts' as TranslationKey,
-    route: 'accounts',
+    route: RouteName.Accounts,
   },
   {
     title: 'dashboard.makeTransfer' as TranslationKey,
     description: 'dashboard.transferFunds' as TranslationKey,
-    route: 'transfers',
+    route: RouteName.Transfers,
   },
   {
     title: 'dashboard.getSupport' as TranslationKey,
     description: 'dashboard.accessHelp' as TranslationKey,
-    route: 'help-center',
+    route: RouteName.HelpCenter,
   },
 ]

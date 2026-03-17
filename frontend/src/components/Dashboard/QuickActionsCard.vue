@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import ActionCard from './ActionCard.vue'
 import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+import type { RouteName } from '@/domain/navigation/types/RouteNames'
 
 export interface QuickAction {
   title: TranslationKey
   description: TranslationKey
-  route: string
+  route: RouteName
   variant?: 'default' | 'primary'
 }
 
 export interface TranslatedAction {
   title: string
   description: string
-  route: string
+  route: RouteName
   variant?: 'default' | 'primary'
 }
 
@@ -22,7 +23,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  navigate: [route: string]
+  navigate: [route: RouteName]
 }>()
 </script>
 
