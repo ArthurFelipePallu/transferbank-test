@@ -48,14 +48,14 @@ const showTooltip = ref(false)
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-color: rgba(28, 156, 140, 0.3);
+  border-color: var(--color-teal-alpha-30);
   color: var(--color-primary-teal);
   transition: all 0.2s ease;
 }
 
 .info-button:hover,
 .info-button:focus {
-  background-color: rgba(28, 156, 140, 0.1);
+  background-color: var(--color-teal-alpha-10);
   border-color: var(--color-primary-teal);
   color: var(--color-primary-teal);
 }
@@ -81,7 +81,7 @@ const showTooltip = ref(false)
   height: 12px;
   background: var(--bs-white);
   transform: rotate(45deg);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 4px var(--color-black-alpha-10);
 }
 
 /* Position: Bottom */
@@ -99,7 +99,7 @@ const showTooltip = ref(false)
   height: 12px;
   background: var(--bs-white);
   transform: rotate(45deg);
-  box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: -2px -2px 4px var(--color-black-alpha-10);
 }
 
 /* Position: Left */
@@ -118,7 +118,7 @@ const showTooltip = ref(false)
   width: 12px;
   height: 12px;
   background: var(--bs-white);
-  box-shadow: 2px -2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px -2px 4px var(--color-black-alpha-10);
 }
 
 /* Position: Right */
@@ -137,12 +137,12 @@ const showTooltip = ref(false)
   width: 12px;
   height: 12px;
   background: var(--bs-white);
-  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: -2px 2px 4px var(--color-black-alpha-10);
 }
 
 .tooltip-content {
   padding: 0.875rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--color-black-alpha-15);
 }
 
 /* Tooltip transition */

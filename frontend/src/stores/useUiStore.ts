@@ -16,6 +16,7 @@ export const useUiStore = defineStore('ui', () => {
   const isLoading = ref(false)
   const loadingMessage = ref<string>('')
   const isMobileMenuOpen = ref(false)
+  const isHeaderVisible = ref(true)
 
   // Getters
   const hasNotifications = computed(() => notifications.value.length > 0)
@@ -95,12 +96,21 @@ export const useUiStore = defineStore('ui', () => {
     isMobileMenuOpen.value = true
   }
 
+  const hideHeader = () => {
+    isHeaderVisible.value = false
+  }
+
+  const showHeader = () => {
+    isHeaderVisible.value = true
+  }
+
   return {
     // State
     notifications,
     isLoading,
     loadingMessage,
     isMobileMenuOpen,
+    isHeaderVisible,
 
     // Getters
     hasNotifications,
@@ -119,5 +129,7 @@ export const useUiStore = defineStore('ui', () => {
     toggleMobileMenu,
     closeMobileMenu,
     openMobileMenu,
+    hideHeader,
+    showHeader,
   }
 })

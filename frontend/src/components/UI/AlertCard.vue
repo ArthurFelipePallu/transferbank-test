@@ -22,7 +22,9 @@ const variantIcons: Record<AlertVariant, string> = {
 <template>
   <div class="alert" :class="`alert-${variant}`" role="alert">
     <div class="d-flex align-items-start gap-2">
-      <span class="alert-icon">{{ icon || variantIcons[variant] }}</span>
+      <span class="alert-icon flex-shrink-0 mt-1">
+        <slot name="icon">{{ icon || variantIcons[variant] }}</slot>
+      </span>
       <div class="flex-grow-1">
         <slot />
       </div>

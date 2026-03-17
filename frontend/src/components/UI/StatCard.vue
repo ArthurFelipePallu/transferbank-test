@@ -3,7 +3,7 @@ withDefaults(
   defineProps<{
     label: string
     value: string | number
-    variant?: 'gradient' | 'light'
+    variant?: 'gradient' | 'light' | 'glass'
     highlight?: boolean
   }>(),
   {
@@ -32,6 +32,17 @@ withDefaults(
 .stat-card--light {
   background: var(--color-chip-bg);
   border: 1px solid var(--color-chip-border);
+}
+
+.stat-card--glass {
+  background: var(--color-white-alpha-8);
+  border: 1px solid var(--color-white-alpha-15);
+  color: var(--color-white);
+  backdrop-filter: blur(8px);
+}
+
+.stat-card--glass .stat-label {
+  opacity: 0.7;
 }
 
 .stat-label {

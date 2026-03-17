@@ -25,7 +25,7 @@ const { isLoading, loadingMessage } = storeToRefs(uiStore)
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--color-black-alpha-50);
   backdrop-filter: blur(4px);
   z-index: 10000;
   display: flex;
@@ -41,7 +41,7 @@ const { isLoading, loadingMessage } = storeToRefs(uiStore)
   padding: 2rem;
   background: var(--color-white);
   border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px var(--color-black-alpha-20);
   min-width: 200px;
 }
 

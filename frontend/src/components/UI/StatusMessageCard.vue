@@ -37,24 +37,24 @@ const props = withDefaults(
 const iconWrapperStyle = computed(() => {
   const colors = {
     success: {
-      bg: 'linear-gradient(135deg, rgba(28, 156, 140, 0.1), rgba(33, 184, 166, 0.1))',
+      bg: 'linear-gradient(135deg, var(--color-teal-alpha-10), var(--color-accent-teal-alpha-10))',
       border: 'var(--color-primary-teal)',
-      shadow: 'rgba(28, 156, 140, 0.4)',
+      shadow: 'var(--color-teal-alpha-40)',
     },
     warning: {
-      bg: 'linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.15))',
+      bg: 'linear-gradient(135deg, var(--color-warning-alpha-10), var(--color-warning-alpha-15))',
       border: 'var(--bs-warning)',
-      shadow: 'rgba(255, 193, 7, 0.4)',
+      shadow: 'var(--color-warning-alpha-40)',
     },
     error: {
-      bg: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.15))',
+      bg: 'linear-gradient(135deg, var(--color-error-alpha-10), var(--color-error-alpha-15))',
       border: 'var(--color-error)',
-      shadow: 'rgba(249, 115, 22, 0.4)',
+      shadow: 'var(--color-error-alpha-40)',
     },
     info: {
-      bg: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.15))',
-      border: '#3b82f6',
-      shadow: 'rgba(59, 130, 246, 0.4)',
+      bg: 'linear-gradient(135deg, var(--color-info-alpha-10), var(--color-info-alpha-15))',
+      border: 'var(--color-info)',
+      shadow: 'var(--color-info-alpha-40)',
     },
   }
 

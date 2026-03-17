@@ -65,4 +65,5 @@ export const STORAGE_KEYS = {
   ONBOARDING_FORM_CACHE: 'onboarding_form_cache',
   PARTNER_FORM_CACHE: 'partner_form_cache',
   APP_LOCALE: 'app_locale',
+  COOKIE_CONSENT: 'cookie_consent',
 } as const

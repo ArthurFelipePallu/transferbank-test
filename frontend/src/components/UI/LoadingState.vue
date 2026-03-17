@@ -33,6 +33,6 @@ defineProps<{
 }
 
 .text-muted {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-white-alpha-70) !important;
 }
 </style>

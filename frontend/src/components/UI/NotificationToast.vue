@@ -66,7 +66,7 @@ const getIcon = (type: string) => {
   padding: 1rem 1.25rem;
   background: var(--color-white);
   border-radius: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--color-black-alpha-15);
   border-left: 4px solid;
   pointer-events: auto;
   min-height: 60px;
