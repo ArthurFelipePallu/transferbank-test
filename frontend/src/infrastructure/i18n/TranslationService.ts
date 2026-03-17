@@ -4,9 +4,7 @@ import { DEFAULT_LOCALE } from '@/domain/i18n/types/Locale'
 import { en } from './translations/en/index'
 import type { TranslationKey } from './translations/en/index'
 import { ptBR } from './translations/pt-BR/index'
-import { storageService } from '../storage/StorageService'
-
-const LOCALE_STORAGE_KEY = 'app_locale'
+import { storageService, STORAGE_KEYS } from '../storage/StorageService'
 
 type TranslationObject = Record<string, any>
 
@@ -25,7 +23,7 @@ export class TranslationService implements ITranslationService {
     }
 
     // Load saved locale or use default
-    const savedLocale = storageService.get<Locale>(LOCALE_STORAGE_KEY)
+    const savedLocale = storageService.get<Locale>(STORAGE_KEYS.APP_LOCALE)
     this.currentLocale = savedLocale || DEFAULT_LOCALE
   }
 
@@ -35,7 +33,7 @@ export class TranslationService implements ITranslationService {
 
   setLocale(locale: Locale): void {
     this.currentLocale = locale
-    storageService.set(LOCALE_STORAGE_KEY, locale)
+    storageService.set(STORAGE_KEYS.APP_LOCALE, locale)
     
     // Update HTML lang attribute
     if (typeof document !== 'undefined') {
