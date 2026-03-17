@@ -6,9 +6,9 @@ import type {
   OnboardingFormStep,
   RegisteredCompany,
   OnboardingFormCache,
-  RegistrationResult,
 } from '@/domain/onboarding/onboarding.types'
 import { OnboardingStep } from '@/domain/onboarding/onboarding.types'
+import { RegistrationResult } from '@/domain/onboarding/types/RegistrationResult'
 import { CompanyAlreadyExistsError } from '@/domain/onboarding/errors/CompanyAlreadyExistsError'
 import { registerCompany } from '@/application/company/companyUseCases'
 import { httpCompanyGateway } from '@/infrastructure/company/HttpCompanyGateway'
@@ -142,14 +142,14 @@ export const useOnboardingStore = defineStore('onboarding', () => {
       isCompleted.value = true
       storageService.set(STORAGE_KEYS.ONBOARDING_DATA, registeredCompany.value)
 
-      return 'success'
+      return RegistrationResult.Success
     } catch (err) {
       // Gateway translates HTTP 409 into this domain error — no axios here
       if (err instanceof CompanyAlreadyExistsError) {
-        return 'already_exists'
+        return RegistrationResult.AlreadyExists
       }
       error.value = err instanceof Error ? err.message : 'Onboarding failed'
-      return 'error'
+      return RegistrationResult.Error
     } finally {
       isSubmitting.value = false
     }

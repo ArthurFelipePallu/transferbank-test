@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { NotificationType } from '@/domain/ui/types/NotificationType'
 
-export type NotificationType = 'success' | 'error' | 'warning' | 'info'
+export { NotificationType }
 
 export interface Notification {
   id: string
@@ -59,19 +60,19 @@ export const useUiStore = defineStore('ui', () => {
   }
 
   const showSuccess = (message: string, duration?: number) => {
-    return showNotification('success', message, duration)
+    return showNotification(NotificationType.Success, message, duration)
   }
 
   const showError = (message: string, duration?: number) => {
-    return showNotification('error', message, duration)
+    return showNotification(NotificationType.Error, message, duration)
   }
 
   const showWarning = (message: string, duration?: number) => {
-    return showNotification('warning', message, duration)
+    return showNotification(NotificationType.Warning, message, duration)
   }
 
   const showInfo = (message: string, duration?: number) => {
-    return showNotification('info', message, duration)
+    return showNotification(NotificationType.Info, message, duration)
   }
 
   const startLoading = (message: string = 'Loading...') => {

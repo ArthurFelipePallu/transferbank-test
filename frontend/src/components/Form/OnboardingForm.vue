@@ -7,6 +7,7 @@ import { useUiStore } from '@/stores/useUiStore'
 import { useScrollToTop } from '@/composables/useScrollToTop'
 import { useTranslation } from '@/composables/useTranslation'
 import { OnboardingStep } from '@/domain/onboarding/onboarding.types'
+import { RegistrationResult } from '@/domain/onboarding/types/RegistrationResult'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
 import { applyCepMask } from '@/utils/formatters'
 import type {
@@ -117,10 +118,10 @@ const handleSubmit = async () => {
       pendingPassword.value,
     )
 
-    if (result === 'success') {
+    if (result === RegistrationResult.Success) {
       // Backend confirmed registration — navigate to success view
       router.push({ name: RouteName.AccountCreated })
-    } else if (result === 'already_exists') {
+    } else if (result === RegistrationResult.AlreadyExists) {
       // Backend says company already exists — navigate to the dedicated view
       router.push({ name: RouteName.AccountExists })
     } else {

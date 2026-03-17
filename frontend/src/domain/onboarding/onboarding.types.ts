@@ -51,8 +51,4 @@ export interface OnboardingFormCache {
 
 // ─── Use-case result ──────────────────────────────────────────────────────────
 
-/**
- * Outcome of the company registration use case.
- * Defined in the domain so no layer above needs to know about HTTP codes.
- */
-export type RegistrationResult = 'success' | 'already_exists' | 'error'
+export { RegistrationResult } from '@/domain/onboarding/types/RegistrationResult'
