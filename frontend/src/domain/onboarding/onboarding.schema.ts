@@ -1,5 +1,6 @@
 import * as yup from 'yup'
 import { CryptoCurrencyEnum } from '@/api/backendApi'
+import { VALIDATION } from '@/domain/validation/ValidationConstants'
 
 // ─── Full schema (used for final validation) ────────────────────────────────
 
@@ -24,11 +25,11 @@ export const onboardingSchema = yup.object({
   complemento: yup.string().optional(),
   bairro: yup.string().required('Neighborhood is required'),
   cidade: yup.string().required('City is required'),
-  uf: yup.string().required('State is required').length(2, 'State must be 2 characters'),
+  uf: yup.string().required('State is required').length(VALIDATION.UF_LENGTH, 'State must be 2 characters'),
   password: yup
     .string()
     .required('Password is required')
-    .min(8, 'At least 8 characters')
+    .min(VALIDATION.PASSWORD_MIN_LENGTH, 'At least 8 characters')
     .matches(/[A-Z]/, 'Use at least one uppercase letter')
     .matches(/[a-z]/, 'Use at least one lowercase letter')
     .matches(/[0-9]/, 'Include at least one number')
@@ -73,14 +74,14 @@ export const onboardingAddressSchema = yup.object({
   complemento: yup.string().optional(),
   bairro: yup.string().required('Neighborhood is required'),
   cidade: yup.string().required('City is required'),
-  uf: yup.string().required('State is required').length(2, 'State must be 2 characters'),
+  uf: yup.string().required('State is required').length(VALIDATION.UF_LENGTH, 'State must be 2 characters'),
 })
 
 export const onboardingPasswordSchema = yup.object({
   password: yup
     .string()
     .required('Password is required')
-    .min(8, 'At least 8 characters')
+    .min(VALIDATION.PASSWORD_MIN_LENGTH, 'At least 8 characters')
     .matches(/[A-Z]/, 'Use at least one uppercase letter')
     .matches(/[a-z]/, 'Use at least one lowercase letter')
     .matches(/[0-9]/, 'Include at least one number')

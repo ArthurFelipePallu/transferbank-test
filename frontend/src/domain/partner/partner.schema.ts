@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import { VALIDATION } from '@/domain/validation/ValidationConstants'
 
 // CPF validation (simplified - checks format and basic validation)
 const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/
@@ -7,7 +8,7 @@ export const partnerPersonalInfoSchema = yup.object({
   fullName: yup
     .string()
     .required('Full name is required')
-    .min(3, 'Full name must have at least 3 characters')
+    .min(VALIDATION.NAME_MIN_LENGTH, 'Full name must have at least 3 characters')
     .max(100, 'Full name is too long'),
   cpf: yup
     .string()
@@ -26,8 +27,8 @@ export const partnerShareholdingSchema = yup.object({
   shareholding: yup
     .number()
     .required('Shareholding is required')
-    .min(0.01, 'Shareholding must be greater than 0')
-    .max(100, 'Shareholding cannot exceed 100%'),
+    .min(VALIDATION.SHAREHOLDING_MIN, 'Shareholding must be greater than 0')
+    .max(VALIDATION.SHAREHOLDING_MAX, 'Shareholding cannot exceed 100%'),
 })
 
 export const partnerDocumentsSchema = yup.object({

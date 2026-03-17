@@ -5,6 +5,7 @@
  */
 
 import { ref, computed } from 'vue'
+import { PRICE_SIGNIFICANCE_THRESHOLD } from '@/domain/validation/ValidationConstants'
 
 export interface PriceChangeState {
   currentValue: number | null
@@ -12,7 +13,7 @@ export interface PriceChangeState {
   lastSignificantChange: { current: number; previous: number } | null
 }
 
-export function usePriceChangeTracking(significanceThreshold = 0.01) {
+export function usePriceChangeTracking(significanceThreshold = PRICE_SIGNIFICANCE_THRESHOLD) {
   const currentValue = ref<number | null>(null)
   const previousValue = ref<number | null>(null)
   const lastSignificantChange = ref<{ current: number; previous: number } | null>(null)

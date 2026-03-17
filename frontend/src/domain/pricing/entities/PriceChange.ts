@@ -3,6 +3,8 @@
  * Represents the change between two prices
  */
 
+import { PRICE_SIGNIFICANCE_THRESHOLD } from '@/domain/validation/ValidationConstants'
+
 export enum PriceDirection {
   UP = 'up',
   DOWN = 'down',
@@ -10,7 +12,7 @@ export enum PriceDirection {
 }
 
 export class PriceChange {
-  private static readonly MINIMUM_CHANGE_THRESHOLD = 0.01 // 1 cent
+  private static readonly MINIMUM_CHANGE_THRESHOLD = PRICE_SIGNIFICANCE_THRESHOLD
 
   constructor(
     public readonly direction: PriceDirection,
