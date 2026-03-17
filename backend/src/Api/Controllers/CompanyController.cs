@@ -156,7 +156,7 @@ public class CompanyController : ControllerBase
         try
         {
             var exists = await _companyService.ExistsAsync(cnpj, email);
-            return Ok(new { exists });
+            return Ok(exists);
         }
         catch (Exception ex)
         {
