@@ -7,6 +7,7 @@ import DividerText from '@/components/UI/DividerText.vue'
 import SocialLoginButton from '@/components/Auth/SocialLoginButton.vue'
 import GoogleIcon from '@/components/icons/GoogleIcon.vue'
 import { Apple } from 'lucide-vue-next'
+import { authPageLinks } from '@/config/navigation'
 
 const { t } = useTranslation()
 </script>
@@ -32,12 +33,12 @@ const { t } = useTranslation()
       <div class="social-buttons mb-4">
         <div class="row g-3">
           <div class="col-12 col-sm-6">
-            <SocialLoginButton label="Google" @click="$router.push({ name: 'in-development' })">
+            <SocialLoginButton label="Google" @click="$router.push({ name: authPageLinks.socialLoginFallback })">
               <template #icon><GoogleIcon /></template>
             </SocialLoginButton>
           </div>
           <div class="col-12 col-sm-6">
-            <SocialLoginButton label="Apple" @click="$router.push({ name: 'in-development' })">
+            <SocialLoginButton label="Apple" @click="$router.push({ name: authPageLinks.socialLoginFallback })">
               <template #icon><Apple :size="18" /></template>
             </SocialLoginButton>
           </div>
@@ -47,7 +48,7 @@ const { t } = useTranslation()
       <div class="text-center">
         <p class="text-muted mb-0">
           {{ t('auth.noAccount') }}
-          <RouterLink class="text-decoration-none fw-semibold signup-link" :to="{ name: 'home' }">
+          <RouterLink class="text-decoration-none fw-semibold signup-link" :to="{ name: authPageLinks.signUp }">
             {{ t('auth.signUp') }}
           </RouterLink>
         </p>

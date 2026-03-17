@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/useAuthStore'
 import { usePartnerStore } from '@/stores/usePartnerStore'
 import { useUiStore } from '@/stores/useUiStore'
 import { useTranslation } from '@/composables/useTranslation'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 
 /**
  * Dashboard Composable
@@ -21,7 +22,7 @@ export function useDashboard() {
   const loadDashboardData = async () => {
     // This is a fallback - the route guard should handle this
     if (!authStore.isAuthenticated) {
-      router.push({ name: 'login' })
+      router.push({ name: RouteName.Login })
       return
     }
 
@@ -31,9 +32,8 @@ export function useDashboard() {
     }
   }
 
-  const navigateTo = (routeName: string) => {
-    // Check if trying to add a partner when shareholding is already 100%
-    if (routeName === 'partner-registration') {
+  const navigateTo = (routeName: RouteName) => {
+    if (routeName === RouteName.PartnerRegistration) {
       const totalShareholding = partnerStore.partnersCollection?.totalShareholding || 0
       
       if (totalShareholding >= 100) {

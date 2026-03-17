@@ -33,7 +33,7 @@ const sizeClasses = {
 <style scoped>
 .fi {
   border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--color-black-alpha-10);
   display: inline-block;
 }
 

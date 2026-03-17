@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from 'lucide-vue-next'
 import { useTranslation } from '@/composables/useTranslation'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 
 const router = useRouter()
@@ -25,7 +26,7 @@ const goBack = () => {
   if (router.options.history.state.back) {
     router.back()
   } else {
-    router.push({ name: 'home' })
+    router.push({ name: RouteName.Home })
   }
 }
 </script>

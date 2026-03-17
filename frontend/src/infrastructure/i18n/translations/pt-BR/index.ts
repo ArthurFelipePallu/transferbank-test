@@ -15,6 +15,8 @@ import { validation } from './validation'
 import { footer } from './footer'
 import { fileUpload } from './fileUpload'
 import { pages } from './pages'
+import { cookies } from './cookies'
+import { landing } from './landing'
 
 export const ptBR: TranslationKeys = {
   common,
@@ -33,4 +35,6 @@ export const ptBR: TranslationKeys = {
   footer,
   fileUpload,
   pages,
+  cookies,
+  landing,
 }

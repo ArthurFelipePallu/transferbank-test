@@ -20,19 +20,19 @@ defineProps<{
 
 <style scoped>
 .market-status {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-white-alpha-5);
+  border: 1px solid var(--color-white-alpha-10);
 }
 
 .status-indicator {
   width: 8px;
   height: 8px;
-  background: #6c757d;
+  background: var(--color-neutral);
   border-radius: 50%;
 }
 
 .status-indicator.active {
-  background: #10b981;
+  background: var(--color-success);
   animation: pulse 2s infinite;
 }
 
@@ -46,6 +46,6 @@ defineProps<{
 }
 
 .text-muted {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-white-alpha-70) !important;
 }
 </style>

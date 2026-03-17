@@ -17,11 +17,11 @@ defineProps<{
 
 <style scoped>
 .panel-footer {
-  background: rgba(255, 255, 255, 0.05);
-  border-top-color: rgba(255, 255, 255, 0.1) !important;
+  background: var(--color-white-alpha-5);
+  border-top-color: var(--color-white-alpha-10) !important;
 }
 
 .text-muted {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-white-alpha-70) !important;
 }
 </style>

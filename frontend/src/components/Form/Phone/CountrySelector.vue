@@ -174,7 +174,7 @@ defineExpose({ openDropdown, closeDropdown })
   min-width: 400px !important;
   max-width: 420px !important;
   border-radius: 0.375rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-card-weak);
   border: 1px solid var(--bs-border-color);
   margin-top: 0.5rem !important;
   opacity: 1 !important;
@@ -211,7 +211,7 @@ defineExpose({ openDropdown, closeDropdown })
 :deep(.country-intl-search input:focus) {
   outline: none;
   border-color: var(--color-primary-teal);
-  box-shadow: 0 0 0 0.2rem rgba(28, 156, 140, 0.25);
+  box-shadow: var(--shadow-input-focus);
 }
 
 :deep(.vue-country-item) {
@@ -232,7 +232,7 @@ defineExpose({ openDropdown, closeDropdown })
 }
 
 :deep(.vue-country-item.selected) {
-  background: rgba(28, 156, 140, 0.1);
+  background: var(--color-teal-alpha-10);
   color: var(--color-primary-teal);
 }
 

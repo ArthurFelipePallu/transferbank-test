@@ -3,14 +3,15 @@ import { ref } from 'vue'
 import { User, LogOut } from 'lucide-vue-next'
 import DropdownMenuItem from './DropdownMenuItem.vue'
 import DropdownSubmenu from './DropdownSubmenu.vue'
-import type { MenuItem } from '@/domain/navigation/types/MenuItem'
+import type { NavItem } from '@/domain/navigation/types/NavItem'
 import type { DropdownItem } from './DropdownMenuItem.vue'
 import { useTranslation } from '@/composables/useTranslation'
+import { dashboardLinks } from '@/config/navigation'
 
 defineProps<{
   isVisible: boolean
-  services: MenuItem[]
-  support: MenuItem[]
+  services: NavItem[]
+  support: NavItem[]
 }>()
 
 const emit = defineEmits<{
@@ -42,8 +43,10 @@ const handleNavigation = (route: string) => {
       <!-- Dashboard -->
       <div class="dropdown-section">
         <DropdownMenuItem 
-          :item="({ label: t('navigation.dashboard'), route: 'dashboard' } satisfies DropdownItem)"
-          @click="handleNavigation('dashboard')"
+          v-for="link in dashboardLinks"
+          :key="link.routeName"
+          :item="({ label: t(link.label as any), route: link.routeName } satisfies DropdownItem)"
+          @click="handleNavigation(link.routeName)"
         >
           <template #icon>
             <User :size="18" />

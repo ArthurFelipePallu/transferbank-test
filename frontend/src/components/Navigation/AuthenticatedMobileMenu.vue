@@ -3,15 +3,15 @@ import { X, User, LogOut } from 'lucide-vue-next'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import LanguageSwitcher from '@/components/Language/LanguageSwitcher.vue'
 import { useTranslation } from '@/composables/useTranslation'
-import type { MenuItem } from '@/domain/navigation/types/MenuItem'
+import type { NavItem } from '@/domain/navigation/types/NavItem'
 import { ref } from 'vue'
 
 defineProps<{
   isOpen: boolean
   companyName: string
   companyEmail: string
-  services: MenuItem[]
-  support: MenuItem[]
+  services: NavItem[]
+  support: NavItem[]
 }>()
 
 const emit = defineEmits<{
@@ -101,9 +101,9 @@ const handleLogout = () => {
             <div v-if="expandedSection === 'services'" class="section-items">
               <button
                 v-for="item in services"
-                :key="item.route"
+                :key="item.routeName"
                 class="menu-item"
-                @click="handleNavigation(item.route!)"
+                @click="handleNavigation(item.routeName)"
               >
                 {{ t(item.label as any) }}
               </button>
@@ -129,9 +129,9 @@ const handleLogout = () => {
             <div v-if="expandedSection === 'support'" class="section-items">
               <button
                 v-for="item in support"
-                :key="item.route"
+                :key="item.routeName"
                 class="menu-item"
-                @click="handleNavigation(item.route!)"
+                @click="handleNavigation(item.routeName)"
               >
                 {{ t(item.label as any) }}
               </button>

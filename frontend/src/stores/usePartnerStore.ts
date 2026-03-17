@@ -10,7 +10,7 @@ import {
   getCompanyShareholdingInfo,
   validateCompanyShareholding,
 } from '@/application/partner/partnerUseCases'
-import { fetchPartnersCollection } from '@/application/partner/partnerListUseCases'
+import { fetchPartnersCollection } from '@/application/partner/partnerUseCases'
 import { httpPartnerGateway } from '@/infrastructure/partner/HttpPartnerGateway'
 import { httpPartnerListGateway } from '@/infrastructure/partner/HttpPartnerListGateway'
 import { useAuthStore } from './useAuthStore'

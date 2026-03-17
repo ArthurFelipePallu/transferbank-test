@@ -60,8 +60,8 @@ onUnmounted(() => {
 
 <style scoped>
 .account-cost-compact {
-  background: linear-gradient(135deg, rgba(28, 156, 140, 0.05), rgba(33, 184, 166, 0.05));
-  border: 1px solid rgba(28, 156, 140, 0.2);
+  background: linear-gradient(135deg, var(--color-teal-alpha-5), var(--color-accent-teal-alpha-5));
+  border: 1px solid var(--color-teal-alpha-20);
   border-radius: 0.5rem;
   padding: 0.875rem 1rem;
   margin-bottom: 1.5rem;

@@ -18,7 +18,7 @@
             :key="crypto"
             class="badge rounded-pill crypto-badge"
           >
-            {{ formatCrypto(crypto) }}
+            {{ formatAlias(crypto) }}
           </span>
         </div>
       </div>
@@ -34,10 +34,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import type { CompanyListItem } from '@/domain/company/interfaces/companyInterface'
 import { formatCnpj } from '@/utils/formatters'
 import { useTranslation } from '@/composables/useTranslation'
+import { useCryptoCurrencies } from '@/composables/useCryptoCurrencies'
 
 interface Props {
   company: CompanyListItem
@@ -50,31 +51,14 @@ defineEmits<{
 }>()
 
 const { t } = useTranslation()
+const { loadCurrencies, formatAlias } = useCryptoCurrencies()
+
+onMounted(loadCurrencies)
 
 const displayName = computed(() => props.company.fantasyName || props.company.companyName || t('company.unnamedCompany'))
-
 const partnerCount = computed(() => props.company.partnerCount || 0)
-
 const formattedCnpj = computed(() => formatCnpj(props.company.cnpj))
-
-const partnerLabel = computed(() => {
-  return partnerCount.value === 1 ? t('company.partner') : t('company.partners')
-})
-
-const formatCrypto = (crypto: string): string => {
-  const cryptoNames: Record<string, string> = {
-    Bitcoin: 'BTC',
-    Ethereum: 'ETH',
-    Tether: 'USDT',
-    USD_Coin: 'USDC',
-    BinanceCoin: 'BNB',
-    XRP: 'XRP',
-    Cardano: 'ADA',
-    Solana: 'SOL',
-    Dogecoin: 'DOGE'
-  }
-  return cryptoNames[crypto] || crypto
-}
+const partnerLabel = computed(() => partnerCount.value === 1 ? t('company.partner') : t('company.partners'))
 </script>
 
 <style scoped>
@@ -82,12 +66,12 @@ const formatCrypto = (crypto: string): string => {
   cursor: pointer;
   transition: all 0.2s ease;
   border: 2px solid var(--bs-border-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px var(--color-black-alpha-10);
 }
 
 .company-card:hover {
   border-color: var(--color-primary-teal);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px var(--color-black-alpha-10);
   transform: translateY(-4px);
 }
 
@@ -99,7 +83,7 @@ const formatCrypto = (crypto: string): string => {
   background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
   color: white;
   font-weight: 600;
-  box-shadow: 0 2px 4px rgba(28, 156, 140, 0.2);
+  box-shadow: 0 2px 4px var(--color-teal-alpha-20);
 }
 
 .partner-count {

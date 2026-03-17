@@ -7,36 +7,53 @@ import type { Locale } from '@/domain/i18n/types/Locale'
 
 const { currentLocale, setLocale } = useTranslation()
 const isOpen = ref(false)
+let closeTimer: ReturnType<typeof setTimeout> | null = null
 
-const toggleDropdown = () => {
-  isOpen.value = !isOpen.value
+const open = () => {
+  if (closeTimer) {
+    clearTimeout(closeTimer)
+    closeTimer = null
+  }
+  isOpen.value = true
 }
 
-const closeDropdown = () => {
-  isOpen.value = false
+const scheduleClose = () => {
+  closeTimer = setTimeout(() => {
+    isOpen.value = false
+    closeTimer = null
+  }, 150)
 }
 
 const changeLocale = (locale: Locale) => {
   setLocale(locale)
-  closeDropdown()
-  // Reload page to apply translations everywhere
+  isOpen.value = false
   window.location.reload()
 }
 </script>
 
 <template>
-  <div class="language-switcher" @mouseleave="closeDropdown">
-    <button 
-      class="language-button" 
-      @click="toggleDropdown"
+  <div
+    class="language-switcher"
+    @mouseenter="open"
+    @mouseleave="scheduleClose"
+  >
+    <button
+      class="language-button"
+      :aria-expanded="isOpen"
       :aria-label="`Current language: ${LOCALE_INFO[currentLocale].name}`"
+      @click="isOpen = !isOpen"
     >
-      <Globe :size="20" />
+      <Globe :size="18" />
       <span class="language-flag">{{ LOCALE_INFO[currentLocale].flag }}</span>
     </button>
 
     <Transition name="dropdown">
-      <div v-if="isOpen" class="language-dropdown">
+      <div
+        v-if="isOpen"
+        class="language-dropdown"
+        @mouseenter="open"
+        @mouseleave="scheduleClose"
+      >
         <button
           v-for="locale in SUPPORTED_LOCALES"
           :key="locale"
@@ -63,34 +80,46 @@ const changeLocale = (locale: Locale) => {
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--color-white-alpha-25);
   border-radius: 0.5rem;
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.language-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
+.language-button:hover,
+.language-button[aria-expanded="true"] {
+  background: var(--color-white-alpha-12);
+  border-color: var(--color-white-alpha-40);
 }
 
 .language-flag {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   line-height: 1;
 }
 
+/* Invisible bridge between button and dropdown so mouse can travel without triggering close */
 .language-dropdown {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  top: calc(100% + 0.25rem);
   right: 0;
-  min-width: 150px;
-  background: white;
-  border: 1px solid var(--color-border);
+  min-width: 160px;
+  padding: 0.375rem;
+  background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
+  border: 1px solid var(--color-white-alpha-20);
   border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  box-shadow: 0 8px 24px var(--color-black-alpha-25);
   z-index: 1000;
+}
+
+/* Pseudo-element bridge fills the gap between button bottom and dropdown top */
+.language-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -0.5rem;
+  left: 0;
+  right: 0;
+  height: 0.5rem;
 }
 
 .language-option {
@@ -98,47 +127,44 @@ const changeLocale = (locale: Locale) => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   background: transparent;
   border: none;
+  border-radius: 0.375rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease;
   text-align: left;
+  color: var(--color-white-alpha-85);
 }
 
 .language-option:hover {
-  background: var(--color-background-soft);
+  background: var(--color-white-alpha-15);
+  color: white;
 }
 
 .language-option.active {
-  background: var(--color-primary-teal);
+  background: var(--color-white-alpha-20);
   color: white;
 }
 
 .option-flag {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   line-height: 1;
 }
 
 .option-name {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-text);
 }
 
-.language-option.active .option-name {
-  color: white;
-}
-
-/* Dropdown Transition */
 .dropdown-enter-active,
 .dropdown-leave-active {
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .dropdown-enter-from,
 .dropdown-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-6px);
 }
 </style>

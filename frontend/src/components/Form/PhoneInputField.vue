@@ -173,7 +173,7 @@ defineExpose({
 
 .phone-input-container:focus-within {
   border-color: var(--color-primary-teal);
-  box-shadow: 0 0 0 0.2rem rgba(28, 156, 140, 0.25);
+  box-shadow: var(--shadow-input-focus);
 }
 
 /* Wrapper for flag display and country selector */
@@ -200,7 +200,7 @@ defineExpose({
 }
 
 .flag-display:hover {
-  background: #e0e0e0;
+  background: var(--color-surface-border);
 }
 
 /* Dial code display */
@@ -245,7 +245,7 @@ defineExpose({
 
 .phone-input-container:has(.phone-number-input.is-invalid):focus-within {
   border-color: var(--bs-danger);
-  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  box-shadow: 0 0 0 0.2rem var(--color-danger-alpha-25);
 }
 
 /* Mobile responsive */

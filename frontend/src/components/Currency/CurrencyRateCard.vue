@@ -49,8 +49,8 @@ defineProps<{
 
 <style scoped>
 .currency-rate-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-white-alpha-5);
+  border: 1px solid var(--color-white-alpha-10);
   border-radius: 0.75rem;
   padding: 0.875rem 1.25rem;
   display: flex;
@@ -60,8 +60,8 @@ defineProps<{
 }
 
 .currency-rate-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--color-white-alpha-8);
+  border-color: var(--color-white-alpha-20);
   transform: translateY(-2px);
 }
 
@@ -75,7 +75,7 @@ defineProps<{
 .currency-icon-wrapper {
   width: 36px;
   height: 36px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-white-alpha-10);
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
@@ -98,7 +98,7 @@ defineProps<{
 .currency-code {
   font-size: 0.875rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-white-alpha-90);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   line-height: 1;
@@ -107,7 +107,7 @@ defineProps<{
 .currency-name {
   font-size: 0.6875rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-white-alpha-60);
   line-height: 1;
 }
 

@@ -24,14 +24,14 @@ defineProps<{
 
 <style scoped>
 .panel-header {
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  background: var(--color-white-alpha-5);
+  border-bottom-color: var(--color-white-alpha-10) !important;
 }
 
 .icon-wrapper {
   width: 48px;
   height: 48px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-white-alpha-10);
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
@@ -39,6 +39,6 @@ defineProps<{
 }
 
 .text-muted {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-white-alpha-70) !important;
 }
 </style>

@@ -126,7 +126,7 @@ const applyMask = (value: string): string => {
 
 .form-control:focus {
   border-color: var(--color-primary-teal);
-  box-shadow: 0 0 0 0.2rem rgba(28, 156, 140, 0.25);
+  box-shadow: var(--shadow-input-focus);
 }
 
 .input-group-text + .form-control:focus {

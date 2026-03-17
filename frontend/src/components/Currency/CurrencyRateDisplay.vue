@@ -41,21 +41,21 @@ defineProps<{
 
 <style scoped>
 .currency-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-white-alpha-5);
   border-radius: 0.75rem;
   padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-white-alpha-10);
 }
 
 .currency-symbol {
   font-size: 1.5rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-white-alpha-90);
 }
 
 .rate-display {
   padding: 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--color-white-alpha-10);
 }
 
 .current-rate {
@@ -66,7 +66,7 @@ defineProps<{
 }
 
 .text-muted {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-white-alpha-70) !important;
 }
 
 /* Responsive adjustments */

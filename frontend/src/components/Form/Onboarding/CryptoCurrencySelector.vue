@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useField } from 'vee-validate'
 import CryptoChip from '../CryptoChip.vue'
 import { CryptoCurrencyEnum } from '@/api/backendApi'
-import { httpCurrencyGateway } from '@/infrastructure/onboarding/HttpCurrencyGateway'
-import { loadAllCryptoCurrenciesOrdered } from '@/application/onboarding/cryptoCurrencyUseCase'
-import type { CryptoCurrencyOption } from '@/domain/onboarding/interfaces/currencyInterface'
 import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
 import { useTranslation } from '@/composables/useTranslation'
+import { useCryptoCurrencies } from '@/composables/useCryptoCurrencies'
 
 interface Props {
   selectedCurrencies: CryptoCurrencyEnum[]
@@ -20,7 +18,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useTranslation()
-const cryptoCurrencies = ref<CryptoCurrencyOption[]>([])
+const { currencies: cryptoCurrencies, loadCurrencies } = useCryptoCurrencies()
 
 const {
   errorMessage: cryptoError,
@@ -28,9 +26,7 @@ const {
   setTouched: setCryptoTouched,
 } = useField<OnboardingFormValues['cryptoCurrencies']>('cryptoCurrencies')
 
-onMounted(async () => {
-  cryptoCurrencies.value = await loadAllCryptoCurrenciesOrdered(httpCurrencyGateway)
-})
+onMounted(loadCurrencies)
 
 const handleToggle = (currency: CryptoCurrencyEnum) => {
   setCryptoTouched(true)

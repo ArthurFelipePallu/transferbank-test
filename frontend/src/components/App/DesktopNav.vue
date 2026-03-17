@@ -2,12 +2,12 @@
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useTranslation } from '@/composables/useTranslation'
-import type { NavLink } from '@/config/navigation'
+import type { NavItem } from '@/domain/navigation/types/NavItem'
 import UserMenu from './UserMenu.vue'
 
 defineProps<{
-  mainLinks: NavLink[]
-  authLinks: NavLink[]
+  mainLinks: NavItem[]
+  authLinks: NavItem[]
 }>()
 
 const authStore = useAuthStore()

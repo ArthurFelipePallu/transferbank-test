@@ -78,11 +78,11 @@ onUnmounted(() => {
   color: var(--color-white);
   border-radius: 1rem;
   overflow: hidden;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-card-weak);
 }
 
 .panel-content {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--color-white-alpha-5);
 }
 
 .currencies-container {

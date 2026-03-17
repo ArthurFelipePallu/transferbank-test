@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useOnboardingStore } from '../useOnboardingStore'
-import * as registerCompanyUseCase from '@/application/company/registerCompanyUseCase'
+import * as companyUseCases from '@/application/company/companyUseCases'
 import { CryptoCurrencyEnum } from '@/api/backendApi'
 import type { Company } from '@/domain/company/interfaces/companyInterface'
 
-vi.mock('@/application/company/registerCompanyUseCase')
+vi.mock('@/application/company/companyUseCases')
 
 describe('useOnboardingStore', () => {
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe('useOnboardingStore', () => {
         createdAt: new Date().toISOString(),
       }
 
-      vi.mocked(registerCompanyUseCase.registerCompany).mockResolvedValue(mockCompany)
+      vi.mocked(companyUseCases.registerCompany).mockResolvedValue(mockCompany)
 
       const result = await store.submitOnboarding(
         '12345678000190',
@@ -78,7 +78,7 @@ describe('useOnboardingStore', () => {
         createdAt: new Date().toISOString(),
       }
 
-      vi.mocked(registerCompanyUseCase.registerCompany).mockResolvedValue(mockCompany)
+      vi.mocked(companyUseCases.registerCompany).mockResolvedValue(mockCompany)
 
       await store.submitOnboarding(
         '12345678000190',
@@ -95,7 +95,7 @@ describe('useOnboardingStore', () => {
 
     it('should handle duplicate company error', async () => {
       const store = useOnboardingStore()
-      vi.mocked(registerCompanyUseCase.registerCompany).mockRejectedValue(
+      vi.mocked(companyUseCases.registerCompany).mockRejectedValue(
         new Error('Company with this CNPJ or Email already exists')
       )
 
@@ -114,7 +114,7 @@ describe('useOnboardingStore', () => {
 
     it('should handle general errors', async () => {
       const store = useOnboardingStore()
-      vi.mocked(registerCompanyUseCase.registerCompany).mockRejectedValue(
+      vi.mocked(companyUseCases.registerCompany).mockRejectedValue(
         new Error('Network error')
       )
 
@@ -147,7 +147,7 @@ describe('useOnboardingStore', () => {
         createdAt: new Date().toISOString(),
       }
 
-      vi.mocked(registerCompanyUseCase.registerCompany).mockResolvedValue(mockCompany)
+      vi.mocked(companyUseCases.registerCompany).mockResolvedValue(mockCompany)
       await store.submitOnboarding(
         '12345678000190',
         'Test Company',

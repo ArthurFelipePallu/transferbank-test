@@ -4,12 +4,12 @@ import UserMenuButton from './UserMenuButton.vue'
 import UserDropdownMenu from './UserDropdownMenu.vue'
 import { ref } from 'vue'
 import { useClickOutside } from '@/composables/useClickOutside'
-import type { MenuItem } from '@/domain/navigation/types/MenuItem'
+import type { NavItem } from '@/domain/navigation/types/NavItem'
 
 defineProps<{
   companyName: string
-  services: MenuItem[]
-  support: MenuItem[]
+  services: NavItem[]
+  support: NavItem[]
 }>()
 
 const emit = defineEmits<{

@@ -100,8 +100,8 @@ const totalErrors = computed(() => {
 
 <style scoped>
 .validation-feedback {
-  background: #fff3cd;
-  border: 1px solid #ffc107;
+  background: var(--color-warning-ui-bg);
+  border: 1px solid var(--color-warning-ui);
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -111,7 +111,7 @@ const totalErrors = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #856404;
+  color: var(--color-warning-ui-text);
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
@@ -133,7 +133,7 @@ const totalErrors = computed(() => {
 .section-title {
   font-weight: 600;
   font-size: 0.875rem;
-  color: #856404;
+  color: var(--color-warning-ui-text);
   margin-bottom: 0.25rem;
 }
 
@@ -141,7 +141,7 @@ const totalErrors = computed(() => {
   list-style: disc;
   margin: 0;
   padding-left: 1.25rem;
-  color: #856404;
+  color: var(--color-warning-ui-text);
 }
 
 .error-list li {

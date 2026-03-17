@@ -8,6 +8,7 @@ import ShareholdingStep from '@/components/Partner/ShareholdingStep.vue'
 import DocumentsStep from '@/components/Partner/DocumentsStep.vue'
 import ReviewStep from '@/components/Partner/ReviewStep.vue'
 import { PartnerRegistrationStep } from '@/domain/partner/partner.types'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 import type {
   PartnerPersonalInfoFormValues,
   PartnerShareholdingFormValues,
@@ -32,7 +33,7 @@ onMounted(async () => {
   const total = partnerStore.partnersCollection?.totalShareholding || 0
   if (total >= 100) {
     uiStore.showWarning(t('partner.registration.toasts.shareholdingFull'))
-    router.push({ name: 'dashboard' })
+    router.push({ name: RouteName.Dashboard })
   }
 })
 
@@ -74,9 +75,9 @@ const handleSubmit = async () => {
       const validation = await partnerStore.validateShareholding()
       
       if (validation.isValid) {
-        router.push({ name: 'account-created' })
+        router.push({ name: RouteName.AccountCreated })
       } else {
-        router.push({ name: 'partner-registered' })
+        router.push({ name: RouteName.PartnerRegistered })
       }
     } else {
       if (partnerStore.error?.includes('already exists') || 

@@ -2,6 +2,7 @@ import axios from 'axios'
 import axiosRetry from 'axios-retry'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
 import { translationService } from '@/infrastructure/i18n/TranslationService'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 
 // Import UI store dynamically to avoid circular dependencies
 let uiStore: any = null
@@ -80,7 +81,7 @@ axiosInstance.interceptors.response.use(
           storageService.remove(STORAGE_KEYS.AUTH_TOKEN)
           storageService.remove(STORAGE_KEYS.AUTH_USER)
           const routerInstance = await getRouter()
-          routerInstance.push({ name: 'login' })
+          routerInstance.push({ name: RouteName.Login })
         }
         // Show backend error message
         ui.showError(errorMessage)

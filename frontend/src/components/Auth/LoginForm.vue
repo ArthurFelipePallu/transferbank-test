@@ -8,6 +8,8 @@ import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useUiStore } from '@/stores/useUiStore'
 import { useTranslation } from '@/composables/useTranslation'
+import { authPageLinks } from '@/config/navigation'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 
 const props = withDefaults(
     defineProps<{
@@ -41,7 +43,7 @@ const submit = handleSubmit(async (values) => {
             uiStore.showSuccess(t('auth.welcomeBack'))
             // Check if there's a redirect query parameter
             const redirect = router.currentRoute.value.query.redirect as string
-            router.push(redirect || { name: 'dashboard' })
+            router.push(redirect || { name: RouteName.Dashboard })
         } else {
             uiStore.showError(authStore.error || t('auth.loginFailed'))
         }
@@ -89,7 +91,7 @@ const submit = handleSubmit(async (values) => {
             <div class="text-end mt-2">
                 <RouterLink 
                     class="small fw-semibold text-decoration-none forgot-password" 
-                    :to="{ name: 'in-development' }"
+                    :to="{ name: authPageLinks.forgotPassword }"
                 >
                     {{ t('auth.forgotPassword') }}
                 </RouterLink>
@@ -140,7 +142,7 @@ const submit = handleSubmit(async (values) => {
 
 .submit-btn:not(:disabled):hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(28, 156, 140, 0.3);
+    box-shadow: 0 6px 16px var(--color-teal-alpha-30);
 }
 
 .submit-btn:not(:disabled):active {

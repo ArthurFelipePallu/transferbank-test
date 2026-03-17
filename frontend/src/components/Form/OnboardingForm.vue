@@ -7,6 +7,7 @@ import { useUiStore } from '@/stores/useUiStore'
 import { useScrollToTop } from '@/composables/useScrollToTop'
 import { useTranslation } from '@/composables/useTranslation'
 import { OnboardingStep } from '@/domain/onboarding/onboarding.types'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 import { applyCepMask } from '@/utils/formatters'
 import type {
   OnboardingCnpjValues,
@@ -118,10 +119,10 @@ const handleSubmit = async () => {
 
     if (result === 'success') {
       // Backend confirmed registration — navigate to success view
-      router.push({ name: 'account-created' })
+      router.push({ name: RouteName.AccountCreated })
     } else if (result === 'already_exists') {
       // Backend says company already exists — navigate to the dedicated view
-      router.push({ name: 'account-exists' })
+      router.push({ name: RouteName.AccountExists })
     } else {
       // Genuine error — show message and reset so user can try again
       uiStore.showError(onboardingStore.error || t('onboarding.toasts.failed'))

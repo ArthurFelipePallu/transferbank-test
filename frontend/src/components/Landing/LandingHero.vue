@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
 import { useTranslation } from '@/composables/useTranslation'
-import { useAuthStore } from '@/stores/useAuthStore'
 import BaseButton from '@/components/UI/BaseButton.vue'
 import GradientSection from '@/components/UI/GradientSection.vue'
+import { useNavigation } from '@/composables/useNavigation'
 
 const { t } = useTranslation()
-const authStore = useAuthStore()
-const router = useRouter()
-
-function handlePrimaryCta() {
-  router.push({ name: authStore.isAuthenticated ? 'dashboard' : 'register' })
-}
+const { navigateToCta } = useNavigation()
 </script>
 
 <template>
@@ -25,7 +19,7 @@ function handlePrimaryCta() {
           {{ t('landing.hero.subtitle') }}
         </p>
         <div class="d-flex flex-column flex-sm-row gap-3">
-          <BaseButton variant="secondary" size="lg" @click="handlePrimaryCta">
+          <BaseButton variant="secondary" size="lg" @click="navigateToCta">
             {{ t('landing.hero.cta') }}
           </BaseButton>
           <a

@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next'
-import type { PartnerFormStep } from '@/domain/partner/partner.types'
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 import { useTranslation } from '@/composables/useTranslation'
 
+interface FormStep {
+  id: number
+  title: TranslationKey
+  description: TranslationKey
+  isCompleted: boolean
+}
+
 defineProps<{
-  steps: PartnerFormStep[]
+  steps: FormStep[]
   currentStep: number
 }>()
 
@@ -75,7 +82,7 @@ const { t } = useTranslation()
   background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
   color: var(--color-white);
   border-color: var(--color-primary-teal);
-  box-shadow: 0 2px 8px rgba(28, 156, 140, 0.3);
+  box-shadow: 0 2px 8px var(--color-teal-alpha-30);
 }
 
 .step-item--completed .step-number {

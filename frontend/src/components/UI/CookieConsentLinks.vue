@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTranslation } from '@/composables/useTranslation'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 
 const { t } = useTranslation()
 </script>
@@ -7,7 +8,7 @@ const { t } = useTranslation()
 <template>
   <div class="d-flex flex-wrap gap-2" role="list">
     <RouterLink
-      :to="{ name: 'cookie-policy' }"
+      :to="{ name: RouteName.CookiePolicy }"
       class="link-secondary text-decoration-underline-hover small"
       role="listitem"
       style="font-size: 0.75rem"
@@ -16,7 +17,7 @@ const { t } = useTranslation()
     </RouterLink>
     <span class="text-muted" aria-hidden="true" style="font-size: 0.75rem">·</span>
     <RouterLink
-      :to="{ name: 'privacy-policy' }"
+      :to="{ name: RouteName.PrivacyPolicy }"
       class="link-secondary text-decoration-underline-hover small"
       role="listitem"
       style="font-size: 0.75rem"
@@ -25,7 +26,7 @@ const { t } = useTranslation()
     </RouterLink>
     <span class="text-muted" aria-hidden="true" style="font-size: 0.75rem">·</span>
     <RouterLink
-      :to="{ name: 'accessibility' }"
+      :to="{ name: RouteName.Accessibility }"
       class="link-secondary text-decoration-underline-hover small"
       role="listitem"
       style="font-size: 0.75rem"

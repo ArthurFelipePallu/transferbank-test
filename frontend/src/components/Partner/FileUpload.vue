@@ -153,12 +153,12 @@ const openFileDialog = () => {
 
 .file-upload-area:hover {
   border-color: var(--color-primary-teal);
-  background: rgba(28, 156, 140, 0.02);
+  background: var(--color-teal-alpha-2);
 }
 
 .file-upload-area--dragging {
   border-color: var(--color-primary-teal);
-  background: rgba(28, 156, 140, 0.05);
+  background: var(--color-teal-alpha-5);
   transform: scale(1.01);
 }
 
@@ -267,7 +267,7 @@ const openFileDialog = () => {
 
 .file-remove:hover {
   color: var(--color-error);
-  background: rgba(249, 115, 22, 0.1);
+  background: var(--color-error-alpha-10);
 }
 
 @media (min-width: 640px) {

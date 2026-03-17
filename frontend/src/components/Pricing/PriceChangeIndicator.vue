@@ -108,18 +108,18 @@ const formattedPercentage = computed(() => {
 
 /* Color variants using semantic colors */
 .badge-up {
-  color: #16a34a;
-  background-color: rgba(22, 163, 74, 0.1);
+  color: var(--color-success);
+  background-color: var(--color-success-alpha-10);
 }
 
 .badge-down {
-  color: #dc2626;
-  background-color: rgba(220, 38, 38, 0.1);
+  color: var(--color-danger);
+  background-color: var(--color-danger-alpha-15);
 }
 
 .badge-neutral {
-  color: #6b7280;
-  background-color: rgba(107, 114, 128, 0.1);
+  color: var(--color-neutral);
+  background-color: var(--color-neutral-alpha-10);
 }
 
 /* Animation - only on mount, not on every render */

@@ -2,7 +2,8 @@
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useMobileMenu } from '@/composables/useMobileMenu'
-import { authenticatedNavigationConfig } from '@/config/authenticatedNavigation'
+import { servicesLinks, supportLinks } from '@/config/navigation'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 import BaseHeader from '@/components/Layout/BaseHeader.vue'
 import AppBrandLogo from '@/components/App/AppBrandLogo.vue'
 import MobileMenuButton from '@/components/App/MobileMenuButton.vue'
@@ -15,7 +16,7 @@ const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu, close: closeMobileMe
 
 const handleLogout = () => {
   authStore.logout()
-  router.push({ name: 'login' })
+  router.push({ name: RouteName.Login })
 }
 
 const navigateTo = (routeName: string) => {
@@ -26,15 +27,15 @@ const navigateTo = (routeName: string) => {
 <template>
   <BaseHeader>
     <!-- Logo -->
-    <router-link :to="{ name: 'dashboard' }" class="brand-link">
+    <router-link :to="{ name: RouteName.Dashboard }" class="brand-link">
       <AppBrandLogo />
     </router-link>
 
     <!-- Desktop Navigation (hidden on mobile) -->
     <AuthenticatedDesktopNav 
       :company-name="authStore.companyName || 'Company'"
-      :services="authenticatedNavigationConfig.services"
-      :support="authenticatedNavigationConfig.support"
+      :services="servicesLinks"
+      :support="supportLinks"
       @navigate="navigateTo"
       @logout="handleLogout"
     />
@@ -50,8 +51,8 @@ const navigateTo = (routeName: string) => {
       :is-open="isMobileMenuOpen"
       :company-name="authStore.companyName || 'Company'"
       :company-email="authStore.userEmail || ''"
-      :services="authenticatedNavigationConfig.services"
-      :support="authenticatedNavigationConfig.support"
+      :services="servicesLinks"
+      :support="supportLinks"
       @navigate="navigateTo"
       @logout="handleLogout"
       @close="closeMobileMenu"

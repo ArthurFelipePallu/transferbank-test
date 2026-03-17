@@ -14,6 +14,8 @@ import { validation } from './validation'
 import { footer } from './footer'
 import { fileUpload } from './fileUpload'
 import { pages } from './pages'
+import { cookies } from './cookies'
+import { landing } from './landing'
 
 export const en = {
   common,
@@ -32,6 +34,8 @@ export const en = {
   footer,
   fileUpload,
   pages,
+  cookies,
+  landing,
 }
 
 export type TranslationKeys = typeof en

@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 import { useTranslation } from '@/composables/useTranslation'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 
@@ -23,7 +24,7 @@ const closeMenu = () => {
 const handleLogout = async () => {
   closeMenu()
   await authStore.logout()
-  router.push({ name: 'login' })
+  router.push({ name: RouteName.Login })
 }
 
 const handleClickOutside = (event: MouseEvent) => {

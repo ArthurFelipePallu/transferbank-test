@@ -6,7 +6,7 @@ import AppBrandLogo from './AppBrandLogo.vue'
 import DesktopNav from './DesktopNav.vue'
 import MobileMenuButton from './MobileMenuButton.vue'
 import MobileMenu from './MobileMenu.vue'
-import { navigationConfig } from '@/config/navigation'
+import { mainLinks, authLinks } from '@/config/navigation'
 import { useUiStore } from '@/stores/useUiStore'
 import BaseHeader from '@/components/Layout/BaseHeader.vue'
 
@@ -34,8 +34,8 @@ watch(isMobileMenuOpen, (isOpen) => {
   <BaseHeader>
     <AppBrandLogo />
     <DesktopNav
-      :main-links="navigationConfig.mainLinks"
-      :auth-links="navigationConfig.authLinks"
+      :main-links="mainLinks"
+      :auth-links="authLinks"
     />
     <MobileMenuButton
       :is-open="isMobileMenuOpen"
@@ -43,8 +43,8 @@ watch(isMobileMenuOpen, (isOpen) => {
     />
     <MobileMenu
       :is-open="isMobileMenuOpen"
-      :main-links="navigationConfig.mainLinks"
-      :auth-links="navigationConfig.authLinks"
+      :main-links="mainLinks"
+      :auth-links="authLinks"
       @close="uiStore.closeMobileMenu"
     />
   </BaseHeader>

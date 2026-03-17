@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useTranslation } from '@/composables/useTranslation'
-import type { MenuItem } from '@/domain/navigation/types/MenuItem'
+import type { NavItem } from '@/domain/navigation/types/NavItem'
 
 defineProps<{
-  items: MenuItem[]
+  items: NavItem[]
   isVisible: boolean
 }>()
 
@@ -19,9 +19,9 @@ const { t } = useTranslation()
     <div v-if="isVisible" class="submenu">
       <button 
         v-for="item in items" 
-        :key="item.route"
+        :key="item.routeName"
         class="submenu-item" 
-        @click="item.route && emit('itemClick', item.route)"
+        @click="item.routeName && emit('itemClick', item.routeName)"
       >
         {{ t(item.label as any) }}
       </button>

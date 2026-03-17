@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { fetchPartnersCollection } from '@/application/partner/partnerListUseCases'
+import { fetchPartnersCollection } from '@/application/partner/partnerUseCases'
 import { httpPartnerListGateway } from '@/infrastructure/partner/HttpPartnerListGateway'
 import type { PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
 

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { useTranslation } from '@/composables/useTranslation'
-import type { NavLink } from '@/config/navigation'
+import type { NavItem } from '@/domain/navigation/types/NavItem'
 import BaseLucideIcon from '../BaseLucideIcon.vue'
 
 defineProps<{
   isOpen: boolean
-  mainLinks: NavLink[]
-  authLinks: NavLink[]
+  mainLinks: NavItem[]
+  authLinks: NavItem[]
 }>()
 
 const emit = defineEmits<{ close: [] }>()

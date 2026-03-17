@@ -1,13 +1,17 @@
 <script setup lang="ts">
-/**
- * Base Header Component
- * Following DDD/SOLID principles - Don't Repeat Yourself
- * Provides common header structure and styling for all header types
- */
+import { storeToRefs } from 'pinia'
+import { useUiStore } from '@/stores/useUiStore'
+import { useScrollVisibility } from '@/composables/useScrollVisibility'
+
+const uiStore = useUiStore()
+const { isHeaderVisible } = storeToRefs(uiStore)
+
+// Registers scroll listener — updates uiStore.isHeaderVisible
+useScrollVisibility()
 </script>
 
 <template>
-  <header class="base-header">
+  <header class="base-header" :class="{ 'base-header--hidden': !isHeaderVisible }">
     <div class="base-header-inner">
       <slot />
     </div>
@@ -19,13 +23,25 @@
   width: 100%;
   background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
   color: var(--color-white);
-  position: relative;
-  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-fixed);
   overflow: visible;
+
+  /* Smooth hide/show — matches React example's duration + easing */
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  will-change: transform, opacity;
+}
+
+.base-header--hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .base-header-inner {
-  /* Mobile: full width */
   width: 100%;
   margin: 0 auto;
   padding: 0.75rem 1rem;
@@ -45,17 +61,15 @@
 
 @media (min-width: 1024px) {
   .base-header-inner {
-    /* Desktop: constrain to 80% */
     max-width: 80%;
     padding: 0.9rem 1.5rem;
     gap: 1.5rem;
   }
 }
 
-/* Ensure content doesn't go to extremes on very large screens */
 @media (min-width: 1920px) {
   .base-header-inner {
-    max-width: 1536px; /* 80% of 1920px */
+    max-width: 1536px;
   }
 }
 </style>
