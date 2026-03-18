@@ -8,8 +8,9 @@ export enum OnboardingStep {
   COMPANY = 2,
   CRYPTO = 3,
   ADDRESS = 4,
-  PASSWORD = 5,
-  REVIEW = 6,
+  PARTNERS = 5,
+  PASSWORD = 6,
+  REVIEW = 7,
 }
 
 export interface OnboardingFormStep {
@@ -20,6 +21,18 @@ export interface OnboardingFormStep {
 }
 
 // ─── Domain entities ──────────────────────────────────────────────────────────
+
+/** A partner being registered during onboarding (before company exists in backend) */
+export interface OnboardingPartner {
+  /** Temporary client-side id */
+  tempId: string
+  fullName: string
+  cpf: string
+  nationality: string
+  shareholding: number
+  isPep: boolean
+  documents: Array<{ id: string; name: string; size: number; type: string }>
+}
 
 /** Completed registration stored after successful submission */
 export interface RegisteredCompany {
