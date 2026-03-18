@@ -129,6 +129,7 @@ export const onboarding = {
     save: 'Salvar Sócio',
     nextDisabled: 'A participação total deve ser 100% para continuar',
     prefilled: 'Sócios preenchidos automaticamente pelo CNPJ. Revise e ajuste.',
+    prefilledCpfWarning: 'Alguns sócios estão sem CPF. Preencha o CPF de todos antes de continuar.',
     shareholdingFull: 'A participação total atingiu 100%.',
     duplicateCpf: 'Já existe um sócio com este CPF na lista.',
     duplicateName: 'Já existe um sócio com este nome na lista.',
@@ -149,6 +150,6 @@ export const onboarding = {
     inactiveStatus: 'Esta empresa não está apta para cadastro.',
     testCnpjInfo: 'CNPJ de teste detectado. Você pode continuar, mas nenhum dado será preenchido automaticamente.',
     notFound: 'CNPJ não encontrado. Verifique o número e tente novamente.',
-    companyFound: 'Empresa encontrada',
+    alreadyRegistered: 'Este CNPJ já está cadastrado em nosso sistema.',
   },
 }

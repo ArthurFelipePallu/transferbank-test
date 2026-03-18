@@ -25,3 +25,13 @@ export const checkCompanyExists = (
   cnpj: string,
   email: string,
 ): Promise<boolean> => gateway.exists(cnpj, email)
+
+/**
+ * Check if a CNPJ is already registered in our system.
+ * Uses a CNPJ-only lookup — no email required.
+ * Returns true if registered, false if not found.
+ */
+export const checkCnpjRegistered = (
+  gateway: CompanyGateway,
+  cnpj: string,
+): Promise<boolean> => gateway.existsByCnpj(cnpj)

@@ -130,6 +130,7 @@ export const onboarding = {
     save: 'Save Partner',
     nextDisabled: 'Total shareholding must equal 100% to continue',
     prefilled: 'Partners pre-filled from CNPJ data. Please review and adjust.',
+    prefilledCpfWarning: 'Some partners are missing a CPF. Fill in all CPFs before continuing.',
     shareholdingFull: 'Total shareholding has reached 100%.',
     duplicateCpf: 'A partner with this CPF is already in the list.',
     duplicateName: 'A partner with this name is already in the list.',
@@ -150,6 +151,6 @@ export const onboarding = {
     inactiveStatus: 'This company is not eligible for registration.',
     testCnpjInfo: 'Test CNPJ detected. You can proceed, but no data will be auto-filled.',
     notFound: 'CNPJ not found. Please check the number and try again.',
-    companyFound: 'Company found',
+    alreadyRegistered: 'This CNPJ is already registered in our system.',
   },
 }
