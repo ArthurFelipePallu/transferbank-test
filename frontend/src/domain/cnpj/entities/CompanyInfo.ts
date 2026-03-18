@@ -18,6 +18,15 @@ export interface CompanyInfo {
   municipio?: string
   uf?: string
   cep?: string
+  socios?: CompanySocio[]
+}
+
+/** Partner/shareholder as returned by the CNPJ.ws API */
+export interface CompanySocio {
+  nome: string
+  cpf?: string          // may be masked (***.***.***-**)
+  qualificacao?: string
+  participacao?: number // percentage, if provided
 }
 
 export interface CnpjApiResponse {
@@ -40,6 +49,12 @@ export interface CnpjApiResponse {
     nome?: string
   }
   uf?: string
+  socios?: Array<{
+    nome: string
+    cpf_cnpj_socio?: string
+    qualificacao_socio?: { descricao?: string }
+    percentual_capital_social?: number
+  }>
 }
 
 /**
