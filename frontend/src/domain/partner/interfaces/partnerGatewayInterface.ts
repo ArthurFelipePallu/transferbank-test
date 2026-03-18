@@ -1,3 +1,7 @@
+import type { PartnerSummary } from '@/domain/partner/entities/PartnerSummary'
+
+// ─── Command types (write side) ───────────────────────────────────────────────
+
 export interface PartnerDocument {
   name: string
   size: number
@@ -14,23 +18,10 @@ export interface PartnerRegistration {
   documents: PartnerDocument[]
 }
 
-export interface RegisteredPartner {
-  id: string
-  companyId: string
-  fullName: string
-  cpf: string
-  nationality: string
-  shareholding: number
-  isPep: boolean
-  documents: Array<{
-    id: string
-    name: string
-    size: number
-    type: string
-    uploadedAt: string
-  }>
-  createdAt: string
-}
+// ─── Query types (read side) ──────────────────────────────────────────────────
+
+/** Re-export so callers only need one import path */
+export type { PartnerSummary }
 
 export interface ShareholdingInfo {
   companyId: string
