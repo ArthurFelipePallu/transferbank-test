@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Edit2 } from 'lucide-vue-next'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
 import AccountSetupCost from '@/components/Pricing/AccountSetupCost.vue'
+import ReviewSection from '@/components/UI/ReviewSection.vue'
 import { OnboardingStep } from '@/domain/onboarding/onboarding.types'
-import type { FormCacheData } from '@/stores/useOnboardingStore'
+import type { OnboardingFormCache } from '@/domain/onboarding/onboarding.types'
 import { useTranslation } from '@/composables/useTranslation'
 
 interface Props {
-  formData: FormCacheData
+  formData: OnboardingFormCache
   cnpj: string
   isSubmitting: boolean
 }
@@ -35,37 +35,34 @@ const address = computed(() => {
     />
 
     <!-- CNPJ -->
-    <div class="review-section mb-3">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h6 class="fw-semibold mb-0 text-muted small text-uppercase">{{ t('onboarding.review.cnpjSection') }}</h6>
-        <button type="button" class="btn btn-link btn-sm p-0 text-primary" @click="$emit('goToStep', OnboardingStep.CNPJ)">
-          <Edit2 :size="14" class="me-1" />{{ t('onboarding.review.editStep') }}
-        </button>
-      </div>
+    <ReviewSection
+      :title="t('onboarding.review.cnpjSection')"
+      :edit-label="t('onboarding.review.editStep')"
+      class="mb-3"
+      @edit="$emit('goToStep', OnboardingStep.CNPJ)"
+    >
       <p class="mb-0 fw-medium">{{ cnpj }}</p>
-    </div>
+    </ReviewSection>
 
     <!-- Company Info -->
-    <div class="review-section mb-3">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h6 class="fw-semibold mb-0 text-muted small text-uppercase">{{ t('onboarding.review.companySection') }}</h6>
-        <button type="button" class="btn btn-link btn-sm p-0 text-primary" @click="$emit('goToStep', OnboardingStep.COMPANY)">
-          <Edit2 :size="14" class="me-1" />{{ t('onboarding.review.editStep') }}
-        </button>
-      </div>
+    <ReviewSection
+      :title="t('onboarding.review.companySection')"
+      :edit-label="t('onboarding.review.editStep')"
+      class="mb-3"
+      @edit="$emit('goToStep', OnboardingStep.COMPANY)"
+    >
       <p class="mb-1 fw-medium">{{ formData.companyName }}</p>
       <p class="mb-1 text-muted small">{{ formData.fantasyName }}</p>
       <p class="mb-0 text-muted small">{{ formData.phone }} · {{ formData.email }}</p>
-    </div>
+    </ReviewSection>
 
     <!-- Cryptocurrencies -->
-    <div class="review-section mb-3">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h6 class="fw-semibold mb-0 text-muted small text-uppercase">{{ t('onboarding.review.cryptoSection') }}</h6>
-        <button type="button" class="btn btn-link btn-sm p-0 text-primary" @click="$emit('goToStep', OnboardingStep.CRYPTO)">
-          <Edit2 :size="14" class="me-1" />{{ t('onboarding.review.editStep') }}
-        </button>
-      </div>
+    <ReviewSection
+      :title="t('onboarding.review.cryptoSection')"
+      :edit-label="t('onboarding.review.editStep')"
+      class="mb-3"
+      @edit="$emit('goToStep', OnboardingStep.CRYPTO)"
+    >
       <div v-if="formData.cryptoCurrencies?.length" class="d-flex flex-wrap gap-2">
         <span
           v-for="c in formData.cryptoCurrencies"
@@ -75,18 +72,17 @@ const address = computed(() => {
         >{{ c }}</span>
       </div>
       <p v-else class="mb-0 text-muted small">{{ t('onboarding.review.noCurrencies') }}</p>
-    </div>
+    </ReviewSection>
 
     <!-- Address -->
-    <div class="review-section mb-4">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h6 class="fw-semibold mb-0 text-muted small text-uppercase">{{ t('onboarding.review.addressSection') }}</h6>
-        <button type="button" class="btn btn-link btn-sm p-0 text-primary" @click="$emit('goToStep', OnboardingStep.ADDRESS)">
-          <Edit2 :size="14" class="me-1" />{{ t('onboarding.review.editStep') }}
-        </button>
-      </div>
+    <ReviewSection
+      :title="t('onboarding.review.addressSection')"
+      :edit-label="t('onboarding.review.editStep')"
+      class="mb-4"
+      @edit="$emit('goToStep', OnboardingStep.ADDRESS)"
+    >
       <p class="mb-0 text-muted small">{{ address }}</p>
-    </div>
+    </ReviewSection>
 
     <!-- Account Setup Cost -->
     <AccountSetupCost />
@@ -102,10 +98,4 @@ const address = computed(() => {
 </template>
 
 <style scoped>
-.review-section {
-  padding: 1rem;
-  border: 1px solid var(--color-surface-border);
-  border-radius: 0.5rem;
-  background: var(--color-surface);
-}
 </style>
