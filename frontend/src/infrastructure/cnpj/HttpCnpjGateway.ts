@@ -75,6 +75,12 @@ export class HttpCnpjGateway implements ICnpjGateway {
       municipio: data.municipio?.nome,
       uf: data.uf,
       cep: estabelecimento.cep,
+      socios: data.socios?.map((s) => ({
+        nome: s.nome,
+        cpf: s.cpf_cnpj_socio,
+        qualificacao: s.qualificacao_socio?.descricao,
+        participacao: s.percentual_capital_social,
+      })) ?? [],
     }
   }
 }

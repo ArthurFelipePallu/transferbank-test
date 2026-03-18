@@ -33,6 +33,7 @@ export interface CompanyResponse {
   email?: string | null;
   /** @format int32 */
   partnerCount?: number;
+  partners?: PartnerResponse[] | null;
   /** @format date-time */
   createdAt?: string;
 }
@@ -46,7 +47,11 @@ export interface CryptoCurrencyDto {
 export interface DocumentRequest {
   /** @minLength 1 */
   name: string;
-  /** @format int64 */
+  /**
+   * @format int64
+   * @min 1
+   * @max 9223372036854776000
+   */
   size: number;
   /** @minLength 1 */
   type: string;
@@ -79,6 +84,23 @@ export interface LoginResponse {
   email?: string | null;
   companyName?: string | null;
   token?: string | null;
+}
+
+export interface PartnerRegistrationDto {
+  /** @minLength 2 */
+  fullName: string;
+  /** @minLength 1 */
+  cpf: string;
+  /** @minLength 1 */
+  nationality: string;
+  /**
+   * @format double
+   * @min 0.01
+   * @max 100
+   */
+  shareholding?: number;
+  isPep?: boolean;
+  documents?: DocumentRequest[] | null;
 }
 
 export interface PartnerResponse {
@@ -115,12 +137,13 @@ export interface RegisterCompanyRequest {
   email: string;
   /** @minLength 8 */
   password: string;
+  partners?: PartnerRegistrationDto[] | null;
 }
 
 export interface RegisterPartnerRequest {
   /** @format uuid */
   companyId: string;
-  /** @minLength 1 */
+  /** @minLength 2 */
   fullName: string;
   /** @minLength 1 */
   cpf: string;

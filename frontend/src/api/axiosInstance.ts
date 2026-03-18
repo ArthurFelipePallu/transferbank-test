@@ -71,6 +71,10 @@ axiosInstance.interceptors.response.use(
       method: error.config?.method,
       data: errorData,
     })
+    // Expand validation errors explicitly so they're visible in the console
+    if (status === 400 && errorData?.errors) {
+      console.error('Validation errors:', JSON.stringify(errorData.errors, null, 2))
+    }
 
     // Handle specific status codes that require special actions
     switch (status) {

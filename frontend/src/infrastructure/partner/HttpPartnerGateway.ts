@@ -1,89 +1,60 @@
-import { api } from '@/api/apiClient'
-import type {
-  RegisterPartnerRequest,
-  PartnerResponse,
-  DocumentRequest,
-} from '@/api/backendApi'
-import type {
-  PartnerRegistration,
-  RegisteredPartner,
-  ShareholdingInfo,
-  PartnerDocument,
-} from '@/domain/partner/interfaces/partnerGatewayInterface'
+﻿import { api } from '@/api/apiClient'
 import type { PartnerGateway } from '@/domain/partner/ports/PartnerGateway'
+import type { PartnerRegistration, ShareholdingInfo } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnerSummary } from '@/domain/partner/entities/PartnerSummary'
+import type { PartnerResponse } from '@/api/backendApi'
+import { PARTNER_SUMMARY_DEFAULTS } from '@/domain/partner/entities/PartnerDefaults'
 
-const mapToDocumentRequest = (doc: PartnerDocument): DocumentRequest => ({
-  name: doc.name,
-  size: doc.size,
-  type: doc.type,
+// ─── Mapper ───────────────────────────────────────────────────────────────────
+
+const toPartnerSummary = (r: PartnerResponse): PartnerSummary => ({
+  ...PARTNER_SUMMARY_DEFAULTS,
+  id: r.id ?? PARTNER_SUMMARY_DEFAULTS.id,
+  companyId: r.companyId ?? PARTNER_SUMMARY_DEFAULTS.companyId,
+  fullName: r.fullName ?? PARTNER_SUMMARY_DEFAULTS.fullName,
+  cpf: r.cpf ?? PARTNER_SUMMARY_DEFAULTS.cpf,
+  nationality: r.nationality ?? PARTNER_SUMMARY_DEFAULTS.nationality,
+  shareholding: r.shareholding ?? PARTNER_SUMMARY_DEFAULTS.shareholding,
+  isPep: r.isPep ?? PARTNER_SUMMARY_DEFAULTS.isPep,
+  createdAt: r.createdAt ?? PARTNER_SUMMARY_DEFAULTS.createdAt,
 })
 
-const mapToRegisterRequest = (data: PartnerRegistration): RegisterPartnerRequest => ({
-  companyId: data.companyId,
-  fullName: data.fullName,
-  cpf: data.cpf,
-  nationality: data.nationality,
-  shareholding: data.shareholding,
-  isPep: data.isPep,
-  documents: data.documents.map(mapToDocumentRequest),
-})
+// ─── Gateway ──────────────────────────────────────────────────────────────────
 
-const mapToRegisteredPartner = (response: PartnerResponse): RegisteredPartner => ({
-  id: response.id || '',
-  companyId: response.companyId || '',
-  fullName: response.fullName || '',
-  cpf: response.cpf || '',
-  nationality: response.nationality || '',
-  shareholding: response.shareholding || 0,
-  isPep: response.isPep || false,
-  documents:
-    response.documents?.map((doc) => ({
-      id: doc.id || '',
-      name: doc.name || '',
-      size: doc.size || 0,
-      type: doc.type || '',
-      uploadedAt: doc.uploadedAt || '',
-    })) || [],
-  createdAt: response.createdAt || '',
-})
+class HttpPartnerGatewayImpl implements PartnerGateway {
+  async register(data: PartnerRegistration): Promise<PartnerSummary> {
+    const response = await api.partner.partnerRegisterCreate({
+      companyId: data.companyId,
+      fullName: data.fullName,
+      cpf: data.cpf,
+      nationality: data.nationality,
+      shareholding: data.shareholding,
+      isPep: data.isPep,
+      documents: data.documents.map((d) => ({ name: d.name, size: d.size, type: d.type })),
+    })
+    return toPartnerSummary(response.data)
+  }
 
-export const httpPartnerGateway: PartnerGateway = {
-  async register(data) {
-    const request = mapToRegisterRequest(data)
-    const response = await api.partner.partnerRegisterCreate(request)
-    return mapToRegisteredPartner(response.data)
-  },
-
-  async getById(id) {
+  async getById(id: string): Promise<PartnerSummary> {
     const response = await api.partner.partnerDetail(id)
-    return mapToRegisteredPartner(response.data)
-  },
+    return toPartnerSummary(response.data)
+  }
 
-  async getByCompanyId(companyId) {
+  async getByCompanyId(companyId: string): Promise<PartnerSummary[]> {
     const response = await api.partner.partnerCompanyDetail(companyId)
-    return response.data.map(mapToRegisteredPartner)
-  },
+    return (response.data ?? []).map(toPartnerSummary)
+  }
 
-  async getShareholdingInfo(companyId) {
+  async getShareholdingInfo(companyId: string): Promise<ShareholdingInfo> {
+    // Backend returns a plain number — total shareholding for the company
     const response = await api.partner.partnerCompanyShareholdingList(companyId)
-    
-    // The API returns an object with totalShareholding and remaining
-    const data = response.data as any
-    
-    if (typeof data === 'object' && 'totalShareholding' in data) {
-      return {
-        companyId,
-        totalShareholding: data.totalShareholding,
-        remaining: data.remaining,
-      }
-    }
-    
-    // Fallback if it returns just a number (total)
-    const total = typeof data === 'number' ? data : 0
+    const total = response.data ?? 0
     return {
       companyId,
       totalShareholding: total,
-      remaining: 100 - total,
+      remaining: Math.max(0, 100 - total),
     }
-  },
+  }
 }
+
+export const httpPartnerGateway: PartnerGateway = new HttpPartnerGatewayImpl()
