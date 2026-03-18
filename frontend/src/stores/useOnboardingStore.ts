@@ -1,35 +1,23 @@
 ﻿import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { CryptoCurrencyEnum } from '@/api/backendApi'
-import type { CompanyRegistration } from '@/domain/company/interfaces/companyInterface'
-import type {
-  OnboardingFormStep,
-  RegisteredCompany,
-  OnboardingFormCache,
-  OnboardingPartner,
-} from '@/domain/onboarding/onboarding.types'
-import { OnboardingStep } from '@/domain/onboarding/onboarding.types'
+import type { OnboardingFormCache, OnboardingPartner, OnboardingFormStep } from '@/domain/onboarding/onboarding.types'
+import { OnboardingStep, AddPartnerResult, arePartnersSubmittable } from '@/domain/onboarding/onboarding.types'
 import { RegistrationResult } from '@/domain/onboarding/types/RegistrationResult'
-import { CompanyAlreadyExistsError } from '@/domain/onboarding/errors/CompanyAlreadyExistsError'
+import { ONBOARDING_FORM_CACHE_DEFAULTS, ONBOARDING_PARTNER_DEFAULTS } from '@/domain/onboarding/entities/OnboardingDefaults'
 import { registerCompany } from '@/application/company/companyUseCases'
 import { companyGateway } from '@/infrastructure/gateways'
-import { sanitizeCnpj, sanitizePhone, sanitizeCpf } from '@/utils/formatters'
-import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
-import { ONBOARDING_PARTNER_DEFAULTS } from '@/domain/onboarding/entities/OnboardingDefaults'
-import {
-  distributeShareholdingEvenly,
-  hasNoShareholdingData,
-} from '@/domain/partner/entities/PartnerSummary'
+import { CompanyAlreadyExistsError } from '@/domain/onboarding/errors/CompanyAlreadyExistsError'
+import { sanitizeCnpj } from '@/utils/formatters'
+import type { CryptoCurrencyEnum } from '@/api/backendApi'
+import type { CompanySocio } from '@/domain/cnpj/entities/CompanyInfo'
 
 export const useOnboardingStore = defineStore('onboarding', () => {
-  const companyData = ref<OnboardingFormCache>({})
-  const registeredCompany = ref<RegisteredCompany | null>(null)
-  const isSubmitting = ref(false)
-  const isCompleted = ref(false)
-  const error = ref<string | null>(null)
   const currentStep = ref<OnboardingStep>(OnboardingStep.CNPJ)
+  const companyData = ref<OnboardingFormCache>({ ...ONBOARDING_FORM_CACHE_DEFAULTS })
+  const partners = ref<OnboardingPartner[]>([])
+  const isSubmitting = ref(false)
+  const error = ref<string | null>(null)
   const formKey = ref(0)
-  const onboardingPartners = ref<OnboardingPartner[]>([])
 
   const steps = ref<OnboardingFormStep[]>([
     { id: OnboardingStep.CNPJ,     title: 'onboarding.steps.cnpj.title',     description: 'onboarding.steps.cnpj.description',     isCompleted: false },
@@ -41,22 +29,16 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     { id: OnboardingStep.REVIEW,   title: 'onboarding.steps.review.title',   description: 'onboarding.steps.review.description',   isCompleted: false },
   ])
 
-  const hasCompanyData = computed(
-    () => !!(companyData.value.cnpj && companyData.value.companyName && companyData.value.email),
+  const totalShareholding = computed(() =>
+    partners.value.reduce((sum, p) => sum + (p.shareholding ?? 0), 0),
   )
-  const selectedCurrencies = computed(() => companyData.value.cryptoCurrencies ?? [])
-  const currentStepData = computed(() => steps.value.find((s) => s.id === currentStep.value))
-  const totalOnboardingShareholding = computed(() =>
-    onboardingPartners.value.reduce((sum, p) => sum + Number(p.shareholding), 0),
-  )
-  const remainingOnboardingShareholding = computed(() =>
-    Math.max(0, 100 - totalOnboardingShareholding.value),
-  )
+  const remainingShareholding = computed(() => Math.max(0, 100 - totalShareholding.value))
+  const canAddPartner = computed(() => totalShareholding.value < 100)
   const isPartnersStepComplete = computed(
-    () => Math.abs(totalOnboardingShareholding.value - 100) < 0.01,
+    () => totalShareholding.value >= 100 && arePartnersSubmittable(partners.value),
   )
 
-  const updateCompanyData = (data: OnboardingFormCache) => {
+  const updateCompanyData = (data: Partial<OnboardingFormCache>) => {
     companyData.value = { ...companyData.value, ...data }
   }
 
@@ -66,71 +48,44 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   }
 
   const nextStep = () => {
-    if (currentStep.value < OnboardingStep.REVIEW) {
-      markStepCompleted(currentStep.value)
-      currentStep.value++
-    }
+    markStepCompleted(currentStep.value)
+    if (currentStep.value < OnboardingStep.REVIEW) currentStep.value++
   }
 
-  const previousStep = () => {
-    if (currentStep.value > OnboardingStep.CNPJ) currentStep.value--
+  const goToStep = (stepId: OnboardingStep) => { currentStep.value = stepId }
+
+  const addPartner = (partner: OnboardingPartner): AddPartnerResult => {
+    if (partners.value.some((p) => p.cpf === partner.cpf))
+      return AddPartnerResult.DuplicateCpf
+    if (partners.value.some((p) => p.fullName.toLowerCase() === partner.fullName.toLowerCase()))
+      return AddPartnerResult.DuplicateName
+    partners.value = [...partners.value, partner]
+    return AddPartnerResult.Success
   }
 
-  const goToStep = (stepId: OnboardingStep) => {
-    currentStep.value = stepId
+  const updatePartner = (tempId: string, data: Partial<OnboardingPartner>) => {
+    partners.value = partners.value.map((p) =>
+      p.tempId === tempId ? { ...p, ...data } : p,
+    )
   }
 
-  const checkPartnerDuplicate = (
-    fullName: string,
-    cpf: string,
-  ): 'duplicate_cpf' | 'duplicate_name' | null => {
-    const normalizedCpf = cpf.replace(/\D/g, '')
-    const normalizedName = fullName.trim().toLowerCase()
-    if (normalizedCpf.length > 0 && onboardingPartners.value.some((p) => p.cpf.replace(/\D/g, '') === normalizedCpf))
-      return 'duplicate_cpf'
-    if (normalizedName.length > 0 && onboardingPartners.value.some((p) => p.fullName.trim().toLowerCase() === normalizedName))
-      return 'duplicate_name'
-    return null
+  const removePartner = (tempId: string) => {
+    partners.value = partners.value.filter((p) => p.tempId !== tempId)
   }
 
-  const addOnboardingPartner = (
-    partner: Omit<OnboardingPartner, 'tempId'>,
-  ): 'added' | 'duplicate_cpf' | 'duplicate_name' => {
-    const duplicate = checkPartnerDuplicate(partner.fullName, partner.cpf)
-    if (duplicate) return duplicate
-    onboardingPartners.value.push({
-      ...partner,
-      shareholding: Number(partner.shareholding),
-      tempId: crypto.randomUUID(),
+  const prefillPartnersFromSocios = (socios: CompanySocio[]) => {
+    if (partners.value.length > 0) return
+    const total = socios.reduce((sum, s) => sum + (s.participacao ?? 0), 0)
+    const hasValidShares = total >= 99 && total <= 101
+    const equalShare = Math.floor((100 / socios.length) * 100) / 100
+    partners.value = socios.map((s, i) => {
+      const shareholding = hasValidShares
+        ? (s.participacao ?? 0)
+        : i === socios.length - 1
+          ? Math.round((100 - equalShare * (socios.length - 1)) * 100) / 100
+          : equalShare
+      return { ...ONBOARDING_PARTNER_DEFAULTS, tempId: crypto.randomUUID(), fullName: s.nome ?? '', cpf: '', shareholding }
     })
-    return 'added'
-  }
-
-  const removeOnboardingPartner = (tempId: string) => {
-    onboardingPartners.value = onboardingPartners.value.filter((p) => p.tempId !== tempId)
-  }
-
-  const prefillPartnersFromSocios = (
-    socios: Array<{ nome: string; cpf?: string; participacao?: number }>,
-  ) => {
-    const valid = socios.filter((s) => s.nome)
-    if (valid.length === 0) return
-    const raw = valid.map((s) => ({
-      ...ONBOARDING_PARTNER_DEFAULTS,
-      tempId: crypto.randomUUID(),
-      fullName: s.nome,
-      cpf: s.cpf ?? ONBOARDING_PARTNER_DEFAULTS.cpf,
-      shareholding: Number(s.participacao ?? 0),
-    }))
-    onboardingPartners.value = hasNoShareholdingData(raw)
-      ? distributeShareholdingEvenly(raw)
-      : raw
-  }
-
-  const ensureShareholdingDistributed = () => {
-    if (onboardingPartners.value.length === 0) return
-    if (!hasNoShareholdingData(onboardingPartners.value)) return
-    onboardingPartners.value = distributeShareholdingEvenly(onboardingPartners.value)
   }
 
   const submitOnboarding = async (
@@ -145,82 +100,40 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     try {
       isSubmitting.value = true
       error.value = null
-      const registration: CompanyRegistration = {
-        cnpj: sanitizeCnpj(cnpj),
-        companyName,
-        fantasyName,
-        cryptoCurrencies,
-        phone: sanitizePhone(phone),
-        email,
-        password,
-        partners: onboardingPartners.value.map((p) => ({
-          fullName: p.fullName,
-          cpf: sanitizeCpf(p.cpf),
-          nationality: p.nationality,
-          shareholding: Number(p.shareholding),
-          isPep: p.isPep,
-          documents: p.documents.map((d) => ({ name: d.name, size: d.size, type: d.type })),
+      await registerCompany(companyGateway, {
+        cnpj: sanitizeCnpj(cnpj), companyName, fantasyName, cryptoCurrencies, phone, email, password,
+        partners: partners.value.map((p) => ({
+          fullName: p.fullName, cpf: p.cpf, nationality: p.nationality,
+          shareholding: p.shareholding, isPep: p.isPep, documents: p.documents,
         })),
-      }
-      const company = await registerCompany(companyGateway, registration)
-      storageService.remove(STORAGE_KEYS.ONBOARDING_FORM_CACHE)
-      companyData.value = {}
-      registeredCompany.value = {
-        id: company.id,
-        cnpj: company.cnpj,
-        companyName: company.companyName,
-        fantasyName: company.fantasyName,
-        phone: company.phone,
-        email: company.email,
-        cryptoCurrencies: company.cryptoCurrencies,
-      }
-      isCompleted.value = true
-      storageService.set(STORAGE_KEYS.ONBOARDING_DATA, registeredCompany.value)
+      })
+      _resetAll()
       return RegistrationResult.Success
     } catch (err) {
-      if (err instanceof CompanyAlreadyExistsError) return RegistrationResult.AlreadyExists
-      error.value = err instanceof Error ? err.message : 'Onboarding failed'
+      if (err instanceof CompanyAlreadyExistsError) { _resetAll(); return RegistrationResult.AlreadyExists }
+      error.value = err instanceof Error ? err.message : 'Registration failed'
       return RegistrationResult.Error
     } finally {
       isSubmitting.value = false
     }
   }
 
-  const clearFormCache = () => {
-    storageService.remove(STORAGE_KEYS.ONBOARDING_FORM_CACHE)
-    companyData.value = {}
-  }
-
-  const resetOnboarding = () => {
-    companyData.value = {}
-    isCompleted.value = false
-    error.value = null
+  const resetOnboarding = () => _resetAll()
+  const clearFormCache = () => { companyData.value = { ...ONBOARDING_FORM_CACHE_DEFAULTS } }
+  const _resetAll = () => {
     currentStep.value = OnboardingStep.CNPJ
-    steps.value.forEach((s) => (s.isCompleted = false))
+    companyData.value = { ...ONBOARDING_FORM_CACHE_DEFAULTS }
+    partners.value = []
+    error.value = null
+    steps.value.forEach((s) => { s.isCompleted = false })
     formKey.value++
-    onboardingPartners.value = []
-    storageService.remove(STORAGE_KEYS.ONBOARDING_DATA)
-    clearFormCache()
-  }
-
-  const loadOnboardingData = () => {
-    const stored = storageService.get<RegisteredCompany>(STORAGE_KEYS.ONBOARDING_DATA)
-    if (stored) {
-      registeredCompany.value = stored
-      isCompleted.value = true
-      return true
-    }
-    return false
   }
 
   return {
-    companyData, registeredCompany, isSubmitting, isCompleted, error,
-    currentStep, steps, formKey, onboardingPartners,
-    hasCompanyData, selectedCurrencies, currentStepData,
-    totalOnboardingShareholding, remainingOnboardingShareholding, isPartnersStepComplete,
-    updateCompanyData, markStepCompleted, nextStep, previousStep, goToStep,
-    submitOnboarding, resetOnboarding, loadOnboardingData, clearFormCache,
-    addOnboardingPartner, removeOnboardingPartner, prefillPartnersFromSocios,
-    ensureShareholdingDistributed, checkPartnerDuplicate,
+    currentStep, companyData, partners, isSubmitting, error, formKey, steps,
+    totalShareholding, remainingShareholding, canAddPartner, isPartnersStepComplete,
+    updateCompanyData, markStepCompleted, nextStep, goToStep,
+    addPartner, updatePartner, removePartner, prefillPartnersFromSocios,
+    submitOnboarding, resetOnboarding, clearFormCache,
   }
 })

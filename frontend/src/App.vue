@@ -8,10 +8,8 @@ import NotificationToast from './components/UI/NotificationToast.vue'
 import LoadingOverlay from './components/UI/LoadingOverlay.vue'
 import CookieConsentBanner from './components/UI/CookieConsentBanner.vue'
 import { useAuthStore } from './stores/useAuthStore'
-import { useOnboardingStore } from './stores/useOnboardingStore'
 
 const authStore = useAuthStore()
-const onboardingStore = useOnboardingStore()
 
 const showAuthenticatedHeader = computed(() => authStore.isAuthenticated)
 
@@ -19,8 +17,7 @@ onMounted(() => {
   // Restore auth session if exists
   authStore.restoreSession()
   
-  // Load onboarding data if exists
-  onboardingStore.loadOnboardingData()
+
 })
 </script>
 

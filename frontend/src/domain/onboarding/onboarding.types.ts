@@ -65,3 +65,14 @@ export interface OnboardingFormCache {
 // ─── Use-case result ──────────────────────────────────────────────────────────
 
 export { RegistrationResult } from '@/domain/onboarding/types/RegistrationResult'
+
+export enum AddPartnerResult {
+  Success      = 'success',
+  DuplicateCpf  = 'duplicate_cpf',
+  DuplicateName = 'duplicate_name',
+}
+
+/** Returns true if all partners have the required fields filled for submission */
+export function arePartnersSubmittable(partners: OnboardingPartner[]): boolean {
+  return partners.length > 0 && partners.every((p) => p.cpf.trim().length > 0)
+}
