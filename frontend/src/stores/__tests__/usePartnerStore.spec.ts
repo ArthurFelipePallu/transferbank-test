@@ -4,16 +4,35 @@ import { usePartnerStore } from '../usePartnerStore'
 import { useAuthStore } from '../useAuthStore'
 import { PartnerRegistrationStep } from '@/domain/partner/partner.types'
 import * as partnerUseCases from '@/application/partner/partnerUseCases'
-import type { RegisteredPartner } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnerSummary, PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
 
 vi.mock('@/application/partner/partnerUseCases')
+vi.mock('@/infrastructure/gateways', () => ({
+  partnerGateway: {},
+}))
+
+const makePartner = (overrides: Partial<PartnerSummary> = {}): PartnerSummary => ({
+  id: 'partner-123',
+  companyId: 'company-123',
+  fullName: 'John Doe',
+  cpf: '123.456.789-00',
+  nationality: 'Brazilian',
+  shareholding: 50,
+  isPep: false,
+  createdAt: new Date().toISOString(),
+  ...overrides,
+})
+
+const makeCollection = (partners: PartnerSummary[]): PartnersCollection => {
+  const total = partners.reduce((s, p) => s + p.shareholding, 0)
+  return { partners, totalCount: partners.length, totalShareholding: total, remainingShareholding: Math.max(0, 100 - total) }
+}
 
 describe('usePartnerStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
 
-    // Mock auth store with company ID
     const authStore = useAuthStore()
     authStore.user = {
       id: 'company-123',
@@ -25,23 +44,19 @@ describe('usePartnerStore', () => {
 
   describe('Initial State', () => {
     it('should start at PERSONAL_INFO step', () => {
-      const store = usePartnerStore()
-      expect(store.currentStep).toBe(PartnerRegistrationStep.PERSONAL_INFO)
+      expect(usePartnerStore().currentStep).toBe(PartnerRegistrationStep.PERSONAL_INFO)
     })
 
     it('should have empty form data initially', () => {
-      const store = usePartnerStore()
-      expect(store.formData).toEqual({})
+      expect(usePartnerStore().formData).toEqual({})
     })
 
     it('should have 4 steps', () => {
-      const store = usePartnerStore()
-      expect(store.steps).toHaveLength(4)
+      expect(usePartnerStore().steps).toHaveLength(4)
     })
 
     it('should not be submitting initially', () => {
-      const store = usePartnerStore()
-      expect(store.isSubmitting).toBe(false)
+      expect(usePartnerStore().isSubmitting).toBe(false)
     })
   })
 
@@ -68,19 +83,14 @@ describe('usePartnerStore', () => {
     it('should mark step as completed', () => {
       const store = usePartnerStore()
       store.markStepCompleted(PartnerRegistrationStep.PERSONAL_INFO)
-      const step = store.steps.find((s) => s.id === PartnerRegistrationStep.PERSONAL_INFO)
-      expect(step?.isCompleted).toBe(true)
+      expect(store.steps.find((s) => s.id === PartnerRegistrationStep.PERSONAL_INFO)?.isCompleted).toBe(true)
     })
   })
 
   describe('Form Data Management', () => {
     it('should update form data', () => {
       const store = usePartnerStore()
-      store.updateFormData({
-        fullName: 'John Doe',
-        cpf: '123.456.789-00',
-      })
-
+      store.updateFormData({ fullName: 'John Doe', cpf: '123.456.789-00' })
       expect(store.formData.fullName).toBe('John Doe')
       expect(store.formData.cpf).toBe('123.456.789-00')
     })
@@ -89,153 +99,80 @@ describe('usePartnerStore', () => {
       const store = usePartnerStore()
       store.updateFormData({ fullName: 'John Doe' })
       store.updateFormData({ cpf: '123.456.789-00' })
-
       expect(store.formData.fullName).toBe('John Doe')
       expect(store.formData.cpf).toBe('123.456.789-00')
     })
   })
 
   describe('submitPartner', () => {
-    it('should submit partner successfully', async () => {
+    it('should submit partner successfully and refresh collection', async () => {
       const store = usePartnerStore()
-      const mockPartner: RegisteredPartner = {
-        id: 'partner-123',
-        companyId: 'company-123',
-        fullName: 'John Doe',
-        cpf: '123.456.789-00',
-        nationality: 'Brazilian',
-        shareholding: 50,
-        isPep: false,
-        documents: [],
-        createdAt: new Date().toISOString(),
-      }
+      const partner = makePartner()
+      const collection = makeCollection([partner])
 
-      vi.mocked(partnerUseCases.registerPartnerViaGateway).mockResolvedValue(mockPartner)
+      vi.mocked(partnerUseCases.registerPartner).mockResolvedValue(partner)
+      vi.mocked(partnerUseCases.fetchPartnersCollection).mockResolvedValue(collection)
 
       store.updateFormData({
-        fullName: 'John Doe',
-        cpf: '123.456.789-00',
-        nationality: 'Brazilian',
-        shareholding: 50,
-        isPep: false,
-        documents: [],
+        fullName: 'John Doe', cpf: '123.456.789-00',
+        nationality: 'Brazilian', shareholding: 50, isPep: false, documents: [],
       })
 
       const result = await store.submitPartner()
 
       expect(result).toBe(true)
-      expect(store.partners).toHaveLength(1)
-      expect(store.partners[0]?.fullName).toBe('John Doe')
+      expect(store.partnersCollection?.totalCount).toBe(1)
+      expect(store.partnersCollection?.partners[0]?.fullName).toBe('John Doe')
     })
 
     it('should handle submission error', async () => {
       const store = usePartnerStore()
-      vi.mocked(partnerUseCases.registerPartnerViaGateway).mockRejectedValue(
-        new Error('Submission failed')
-      )
+      vi.mocked(partnerUseCases.registerPartner).mockRejectedValue(new Error('Submission failed'))
 
       store.updateFormData({
-        fullName: 'John Doe',
-        cpf: '123.456.789-00',
-        nationality: 'Brazilian',
-        shareholding: 50,
-        isPep: false,
-        documents: [],
+        fullName: 'John Doe', cpf: '123.456.789-00',
+        nationality: 'Brazilian', shareholding: 50, isPep: false, documents: [],
       })
 
       const result = await store.submitPartner()
-
       expect(result).toBe(false)
       expect(store.error).toBe('Submission failed')
     })
 
     it('should require company ID from auth store', async () => {
       const store = usePartnerStore()
-      const authStore = useAuthStore()
-      authStore.user = null
+      useAuthStore().user = null
 
       store.updateFormData({
-        fullName: 'John Doe',
-        cpf: '123.456.789-00',
-        nationality: 'Brazilian',
-        shareholding: 50,
-        isPep: false,
-        documents: [],
+        fullName: 'John Doe', cpf: '123.456.789-00',
+        nationality: 'Brazilian', shareholding: 50, isPep: false, documents: [],
       })
 
       const result = await store.submitPartner()
-
       expect(result).toBe(false)
       expect(store.error).toContain('Company ID not found')
     })
   })
 
-  describe('Shareholding Calculations', () => {
-    it('should calculate total shareholding', async () => {
+  describe('loadPartners', () => {
+    it('should load partners collection', async () => {
       const store = usePartnerStore()
-      const mockPartner1: RegisteredPartner = {
-        id: 'partner-1',
-        companyId: 'company-123',
-        fullName: 'Partner 1',
-        cpf: '111.111.111-11',
-        nationality: 'Brazilian',
-        shareholding: 30,
-        isPep: false,
-        documents: [],
-        createdAt: new Date().toISOString(),
-      }
+      const collection = makeCollection([makePartner({ shareholding: 60 }), makePartner({ id: 'p2', shareholding: 40 })])
+      vi.mocked(partnerUseCases.fetchPartnersCollection).mockResolvedValue(collection)
 
-      const mockPartner2: RegisteredPartner = {
-        id: 'partner-2',
-        companyId: 'company-123',
-        fullName: 'Partner 2',
-        cpf: '222.222.222-22',
-        nationality: 'Brazilian',
-        shareholding: 20,
-        isPep: false,
-        documents: [],
-        createdAt: new Date().toISOString(),
-      }
+      await store.loadPartners()
 
-      vi.mocked(partnerUseCases.registerPartnerViaGateway)
-        .mockResolvedValueOnce(mockPartner1)
-        .mockResolvedValueOnce(mockPartner2)
-
-      store.updateFormData({
-        fullName: 'Partner 1',
-        cpf: '111.111.111-11',
-        nationality: 'Brazilian',
-        shareholding: 30,
-        isPep: false,
-        documents: [],
-      })
-      await store.submitPartner()
-
-      store.resetForm()
-      store.updateFormData({
-        fullName: 'Partner 2',
-        cpf: '222.222.222-22',
-        nationality: 'Brazilian',
-        shareholding: 20,
-        isPep: false,
-        documents: [],
-      })
-      await store.submitPartner()
-
-      expect(store.totalShareholding).toBe(50)
-      expect(store.remainingShareholding).toBe(50)
+      expect(store.partnersCollection?.totalCount).toBe(2)
+      expect(store.partnersCollection?.totalShareholding).toBe(100)
     })
+  })
 
-    it('should validate shareholding is complete', async () => {
+  describe('checkShareholding', () => {
+    it('should validate shareholding via use case', async () => {
       const store = usePartnerStore()
-      vi.mocked(partnerUseCases.validateCompanyShareholding).mockResolvedValue({
-        isValid: true,
-        total: 100,
-        remaining: 0,
-      })
+      vi.mocked(partnerUseCases.validateShareholding).mockResolvedValue({ isValid: true, total: 100, remaining: 0 })
 
-      const result = await store.validateShareholding()
-
+      const result = await store.checkShareholding()
       expect(result.isValid).toBe(true)
       expect(result.total).toBe(100)
     })
@@ -257,38 +194,18 @@ describe('usePartnerStore', () => {
     })
   })
 
-  describe('Computed Properties', () => {
-    it('should compute canSubmit correctly', () => {
+  describe('canSubmit', () => {
+    it('should be false when not on review step', () => {
       const store = usePartnerStore()
+      store.updateFormData({ fullName: 'John Doe', cpf: '123.456.789-00', shareholding: 50 })
       expect(store.canSubmit).toBe(false)
-
-      store.goToStep(PartnerRegistrationStep.REVIEW)
-      store.updateFormData({
-        fullName: 'John Doe',
-        cpf: '123.456.789-00',
-        shareholding: 50,
-      })
-
-      expect(store.canSubmit).toBe(true)
     })
 
-    it('should compute isShareholdingValid correctly', () => {
+    it('should be true when on review step with required fields', () => {
       const store = usePartnerStore()
-      expect(store.isShareholdingValid).toBe(false)
-
-      // Manually set partners to 100%
-      store.partners = [
-        {
-          fullName: 'Partner 1',
-          cpf: '111.111.111-11',
-          nationality: 'Brazilian',
-          shareholding: 100,
-          isPep: false,
-          documents: [],
-        },
-      ]
-
-      expect(store.isShareholdingValid).toBe(true)
+      store.goToStep(PartnerRegistrationStep.REVIEW)
+      store.updateFormData({ fullName: 'John Doe', cpf: '123.456.789-00', shareholding: 50 })
+      expect(store.canSubmit).toBe(true)
     })
   })
 })

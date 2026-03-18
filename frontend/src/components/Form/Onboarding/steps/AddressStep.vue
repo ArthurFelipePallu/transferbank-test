@@ -8,6 +8,7 @@ import { onboardingAddressSchema, type OnboardingAddressValues } from '@/domain/
 import { useCepLookup } from '@/composables/useCepLookup'
 import { sanitizeCep, applyCepMask } from '@/utils/formatters'
 import { useTranslation } from '@/composables/useTranslation'
+import { ADDRESS_DEFAULTS } from '@/domain/address/entities/AddressDefaults'
 
 interface Props {
   initialValues?: Partial<OnboardingAddressValues>
@@ -29,12 +30,12 @@ const { handleSubmit, meta, values, setFieldValue, setValues } = useForm<Onboard
   validationSchema: onboardingAddressSchema,
   initialValues: {
     cep: maskedInitialCep,
-    logradouro: props.initialValues?.logradouro ?? '',
-    numero: props.initialValues?.numero ?? '',
-    complemento: props.initialValues?.complemento ?? '',
-    bairro: props.initialValues?.bairro ?? '',
-    cidade: props.initialValues?.cidade ?? '',
-    uf: props.initialValues?.uf ?? '',
+    logradouro: props.initialValues?.logradouro ?? ADDRESS_DEFAULTS.logradouro,
+    numero: props.initialValues?.numero ?? ADDRESS_DEFAULTS.numero,
+    complemento: props.initialValues?.complemento ?? ADDRESS_DEFAULTS.complemento,
+    bairro: props.initialValues?.bairro ?? ADDRESS_DEFAULTS.bairro,
+    cidade: props.initialValues?.cidade ?? ADDRESS_DEFAULTS.localidade,
+    uf: props.initialValues?.uf ?? ADDRESS_DEFAULTS.uf,
   },
   validateOnMount: false,
 })
@@ -45,12 +46,12 @@ onMounted(async () => {
   if (props.initialValues) {
     setValues({
       cep: maskedInitialCep,
-      logradouro: props.initialValues.logradouro ?? '',
-      numero: props.initialValues.numero ?? '',
-      complemento: props.initialValues.complemento ?? '',
-      bairro: props.initialValues.bairro ?? '',
-      cidade: props.initialValues.cidade ?? '',
-      uf: props.initialValues.uf ?? '',
+      logradouro: props.initialValues.logradouro ?? ADDRESS_DEFAULTS.logradouro,
+      numero: props.initialValues.numero ?? ADDRESS_DEFAULTS.numero,
+      complemento: props.initialValues.complemento ?? ADDRESS_DEFAULTS.complemento,
+      bairro: props.initialValues.bairro ?? ADDRESS_DEFAULTS.bairro,
+      cidade: props.initialValues.cidade ?? ADDRESS_DEFAULTS.localidade,
+      uf: props.initialValues.uf ?? ADDRESS_DEFAULTS.uf,
     })
   }
 

@@ -4,6 +4,7 @@ import type { LoginCredentials, AuthSession } from '@/domain/auth/interfaces/aut
 import { login as loginUseCase } from '@/application/auth/loginUseCase'
 import { httpAuthGateway } from '@/infrastructure/auth/HttpAuthGateway'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
+import { USER_DEFAULTS } from '@/domain/auth/entities/AuthDefaults'
 
 export interface User {
   id: string
@@ -21,9 +22,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Getters
   const isAuthenticated = computed(() => !!user.value && !!token.value)
-  const userEmail = computed(() => user.value?.email ?? '')
-  const companyName = computed(() => user.value?.companyName ?? '')
-  const companyId = computed(() => user.value?.companyId ?? '')
+  const userEmail = computed(() => user.value?.email ?? USER_DEFAULTS.email)
+  const companyName = computed(() => user.value?.companyName ?? USER_DEFAULTS.companyName)
+  const companyId = computed(() => user.value?.companyId ?? USER_DEFAULTS.companyId)
 
   // Actions
   const login = async (email: string, password: string) => {

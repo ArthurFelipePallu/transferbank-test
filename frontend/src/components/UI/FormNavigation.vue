@@ -9,10 +9,13 @@ withDefaults(
     backLabel?: string
     nextLabel?: string
     nextDisabled?: boolean
+    /** Set to 'button' when FormNavigation is outside a <form> element */
+    nextType?: 'submit' | 'button'
   }>(),
   {
     showBack: true,
     nextDisabled: false,
+    nextType: 'submit',
   }
 )
 
@@ -33,9 +36,10 @@ defineEmits<{
       {{ backLabel ?? t('common.back') }}
     </button>
     <button
-      type="submit"
+      :type="nextType"
       class="btn btn-primary px-4 py-2 fw-semibold rounded-3"
       :disabled="nextDisabled"
+      @click="nextType === 'button' ? $emit('next') : undefined"
     >
       {{ nextLabel ?? t('common.next') }}
     </button>

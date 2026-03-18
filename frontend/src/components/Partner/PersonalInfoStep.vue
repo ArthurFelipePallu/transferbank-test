@@ -5,6 +5,7 @@ import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
 import { partnerPersonalInfoSchema, type PartnerPersonalInfoFormValues } from '@/domain/partner/partner.schema'
 import { useTranslation } from '@/composables/useTranslation'
+import { PARTNER_REGISTRATION_DEFAULTS } from '@/domain/partner/entities/PartnerDefaults'
 
 const props = defineProps<{
   initialValues?: Partial<PartnerPersonalInfoFormValues>
@@ -19,10 +20,10 @@ const { t } = useTranslation()
 const { handleSubmit, meta, values, setFieldValue } = useForm<PartnerPersonalInfoFormValues>({
   validationSchema: partnerPersonalInfoSchema,
   initialValues: props.initialValues || {
-    fullName: '',
-    cpf: '',
-    nationality: 'Brazilian',
-    isPep: false,
+    fullName: PARTNER_REGISTRATION_DEFAULTS.fullName,
+    cpf: PARTNER_REGISTRATION_DEFAULTS.cpf,
+    nationality: PARTNER_REGISTRATION_DEFAULTS.nationality,
+    isPep: PARTNER_REGISTRATION_DEFAULTS.isPep,
   },
 })
 

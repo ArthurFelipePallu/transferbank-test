@@ -170,6 +170,7 @@
   --shadow-input-focus:         0 0 0 3px rgba(28, 156, 140, 0.25);
   --shadow-button-primary:      0 4px 12px rgba(12, 76, 69, 0.25);
   --shadow-button-primary-active: 0 2px 8px rgba(12, 76, 69, 0.2);
+  --shadow-step-bubble-active:  0 2px 8px var(--color-teal-alpha-30);
 
   /* ----------------------------------------------------------
      1f. Typography — mobile-first (16px base)

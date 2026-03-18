@@ -18,12 +18,13 @@ import type {
   OnboardingPasswordValues,
 } from '@/domain/onboarding/onboarding.schema'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
-import StepIndicator from '@/components/Partner/StepIndicator.vue'
+import StepIndicator from '@/components/UI/StepIndicator.vue'
 import CnpjStep from './Onboarding/steps/CnpjStep.vue'
 import CompanyStep from './Onboarding/steps/CompanyStep.vue'
 import CryptoStep from './Onboarding/steps/CryptoStep.vue'
 import AddressStep from './Onboarding/steps/AddressStep.vue'
 import PasswordStep from './Onboarding/steps/PasswordStep.vue'
+import PartnersStep from './Onboarding/steps/PartnersStep.vue'
 import ReviewStep from './Onboarding/steps/ReviewStep.vue'
 
 const onboardingStore = useOnboardingStore()
@@ -80,6 +81,12 @@ const handleAddressNext = (vals: OnboardingAddressValues) => {
 const handlePasswordNext = (vals: OnboardingPasswordValues) => {
   pendingPassword.value = vals.password
   onboardingStore.markStepCompleted(OnboardingStep.PASSWORD)
+  onboardingStore.nextStep()
+  scrollToTop()
+}
+
+const handlePartnersNext = () => {
+  onboardingStore.markStepCompleted(OnboardingStep.PARTNERS)
   onboardingStore.nextStep()
   scrollToTop()
 }
@@ -176,11 +183,18 @@ const handleSubmit = async () => {
             @back="handleBack(OnboardingStep.CRYPTO)"
           />
 
+          <PartnersStep
+            v-else-if="currentStep === OnboardingStep.PARTNERS"
+            :key="`${formKey}-${OnboardingStep.PARTNERS}`"
+            @next="handlePartnersNext"
+            @back="handleBack(OnboardingStep.ADDRESS)"
+          />
+
           <PasswordStep
             v-else-if="currentStep === OnboardingStep.PASSWORD"
             :key="`${formKey}-${OnboardingStep.PASSWORD}`"
             @next="handlePasswordNext"
-            @back="handleBack(OnboardingStep.ADDRESS)"
+            @back="handleBack(OnboardingStep.PARTNERS)"
           />
 
           <ReviewStep

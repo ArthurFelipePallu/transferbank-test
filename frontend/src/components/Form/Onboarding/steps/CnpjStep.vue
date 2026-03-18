@@ -10,6 +10,7 @@ import { onboardingCnpjSchema, type OnboardingCnpjValues } from '@/domain/onboar
 import { useCnpjLookup } from '@/composables/useCnpjLookup'
 import { sanitizeCnpj, formatPhone, formatCep } from '@/utils/formatters'
 import { useTranslation } from '@/composables/useTranslation'
+import { useOnboardingStore } from '@/stores/useOnboardingStore'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
 
 interface Props {
@@ -24,6 +25,7 @@ const emit = defineEmits<{
 
 const { t } = useTranslation()
 const { isLoading, statusError, companyInfo, lookup, reset } = useCnpjLookup()
+const onboardingStore = useOnboardingStore()
 
 const isTestCnpj = ref(false)
 const cnpjNotFound = ref(false)
@@ -62,6 +64,10 @@ watch(
       lookupDone.value = true
       if (!companyInfo.value && !statusError.value) {
         cnpjNotFound.value = true
+      }
+      // Pre-fill partners from socios if available
+      if (companyInfo.value?.socios?.length) {
+        onboardingStore.prefillPartnersFromSocios(companyInfo.value.socios)
       }
     }
   },

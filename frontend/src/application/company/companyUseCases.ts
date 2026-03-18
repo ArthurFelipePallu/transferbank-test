@@ -1,36 +1,27 @@
-import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
+﻿import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
 import type { CompanyRegistration, Company, CompanyListItem } from '@/domain/company/interfaces/companyInterface'
-import { httpCompanyGateway } from '@/infrastructure/company/HttpCompanyGateway'
 
-export const registerCompany = async (
+export const registerCompany = (
   gateway: CompanyGateway,
-  data: CompanyRegistration
-): Promise<Company> => {
-  return await gateway.register(data)
-}
+  data: CompanyRegistration,
+): Promise<Company> => gateway.register(data)
 
-export const getAllCompanies = async (): Promise<CompanyListItem[]> => {
-  return await httpCompanyGateway.getAll()
-}
-
-export const getCompanyById = async (
+export const getAllCompanies = (
   gateway: CompanyGateway,
-  id: string
-): Promise<Company> => {
-  return await gateway.getById(id)
-}
+): Promise<CompanyListItem[]> => gateway.getAll()
 
-export const getCompanyByCnpj = async (
+export const getCompanyById = (
   gateway: CompanyGateway,
-  cnpj: string
-): Promise<Company> => {
-  return await gateway.getByCnpj(cnpj)
-}
+  id: string,
+): Promise<Company> => gateway.getById(id)
 
-export const checkCompanyExists = async (
+export const getCompanyByCnpj = (
   gateway: CompanyGateway,
   cnpj: string,
-  email: string
-): Promise<boolean> => {
-  return await gateway.exists(cnpj, email)
-}
+): Promise<Company> => gateway.getByCnpj(cnpj)
+
+export const checkCompanyExists = (
+  gateway: CompanyGateway,
+  cnpj: string,
+  email: string,
+): Promise<boolean> => gateway.exists(cnpj, email)

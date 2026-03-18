@@ -21,6 +21,8 @@ export {
   applyCepMask,
 } from './masks'
 
+import { applyCpfMask } from './masks'
+
 /**
  * Formats CNPJ with dots, slash, and dash
  * Example: "12345678000190" -> "12.345.678/0001-90"
@@ -39,6 +41,24 @@ export const formatCpf = (cpf: string): string => {
   const cleaned = cpf.replace(/\D/g, '')
   if (cleaned.length !== 11) return cpf
   return cleaned.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4')
+}
+
+/**
+ * Formats a CPF for display — handles both raw digits and pre-masked values.
+ * The CNPJ.ws public API returns CPFs already masked as "***.***.***-**".
+ * In that case we pass the value through unchanged rather than mangling it.
+ *
+ * Examples:
+ *   "12345678901"   -> "123.456.789-01"
+ *   "***.***.***-**" -> "***.***.***-**"  (API-masked, returned as-is)
+ *   ""              -> "—"
+ */
+export const formatCpfDisplay = (cpf: string | undefined): string => {
+  if (!cpf) return '—'
+  // If it already contains the formatted separators (dots/dash), pass through
+  if (/[.*-]/.test(cpf)) return cpf
+  // Otherwise apply the standard mask to raw digits
+  return applyCpfMask(cpf) || '—'
 }
 
 /**

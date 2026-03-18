@@ -1,47 +1,20 @@
-import { ref, computed } from 'vue'
-import { fetchPartnersCollection } from '@/application/partner/partnerUseCases'
-import { httpPartnerListGateway } from '@/infrastructure/partner/HttpPartnerListGateway'
-import type { PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
+import { computed } from 'vue'
+import { usePartnerStore } from '@/stores/usePartnerStore'
 
 /**
  * Composable: Partners List
- * Manages partners list state and operations
+ * Thin presentation adapter over usePartnerStore.
+ * Components use this instead of the store directly — keeps views decoupled
+ * from store internals and avoids duplicating load logic.
  */
 export const usePartnersList = () => {
-  const partnersCollection = ref<PartnersCollection | null>(null)
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
-
-  const hasPartners = computed(() => {
-    return partnersCollection.value !== null && partnersCollection.value.totalCount > 0
-  })
-
-  const loadPartners = async (companyId: string) => {
-    if (!companyId) {
-      error.value = 'Company ID is required'
-      return
-    }
-
-    try {
-      isLoading.value = true
-      error.value = null
-      partnersCollection.value = await fetchPartnersCollection(
-        httpPartnerListGateway,
-        companyId
-      )
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to load partners'
-      partnersCollection.value = null
-    } finally {
-      isLoading.value = false
-    }
-  }
+  const store = usePartnerStore()
 
   return {
-    partnersCollection,
-    isLoading,
-    error,
-    hasPartners,
-    loadPartners,
+    partnersCollection: computed(() => store.partnersCollection),
+    isLoading: computed(() => store.isLoadingList),
+    error: computed(() => store.listError),
+    hasPartners: computed(() => store.hasPartners),
+    loadPartners: (companyId: string) => store.loadPartners(),
   }
 }

@@ -36,6 +36,7 @@ import { useRouter } from 'vue-router'
 import { useTranslation } from '@/composables/useTranslation'
 import CompanyCard from '@/components/Company/CompanyCard.vue'
 import { getAllCompanies } from '@/application/company/companyUseCases'
+import { companyGateway } from '@/infrastructure/gateways'
 import type { CompanyListItem } from '@/domain/company/interfaces/companyInterface'
 
 const router = useRouter()
@@ -46,7 +47,7 @@ const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    companies.value = await getAllCompanies()
+    companies.value = await getAllCompanies(companyGateway)
     console.log('Companies loaded:', companies.value.map(c => ({
       name: c.fantasyName || c.companyName,
       partnerCount: c.partnerCount

@@ -1,64 +1,51 @@
 import type { PartnerGateway } from '@/domain/partner/ports/PartnerGateway'
-import type { IPartnerListGateway } from '@/domain/partner/ports/IPartnerListGateway'
-import type {
-  PartnerRegistration,
-  RegisteredPartner,
-  ShareholdingInfo,
-} from '@/domain/partner/interfaces/partnerGatewayInterface'
-import type { PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
-import {
-  sortPartnersByShareholding,
-  calculateTotalShareholding,
-} from '@/domain/partner/entities/PartnerSummary'
+import type { PartnerRegistration, ShareholdingInfo } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnerSummary, PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
+import { sortPartnersByShareholding, calculateTotalShareholding } from '@/domain/partner/entities/PartnerSummary'
+import { sanitizeCpf } from '@/utils/formatters'
 
-export const registerPartnerViaGateway = async (
+/**
+ * Register a new partner for a company.
+ * Sanitizes CPF before sending to the gateway.
+ */
+export const registerPartner = async (
   gateway: PartnerGateway,
-  data: PartnerRegistration
-): Promise<RegisteredPartner> => {
-  return await gateway.register(data)
+  data: PartnerRegistration,
+): Promise<PartnerSummary> => {
+  return gateway.register({ ...data, cpf: sanitizeCpf(data.cpf) })
 }
 
-export const getPartnerById = async (
-  gateway: PartnerGateway,
-  id: string
-): Promise<RegisteredPartner> => {
-  return await gateway.getById(id)
-}
-
-export const getPartnersByCompanyId = async (
-  gateway: PartnerGateway,
-  companyId: string
-): Promise<RegisteredPartner[]> => {
-  return await gateway.getByCompanyId(companyId)
-}
-
-export const getCompanyShareholdingInfo = async (
-  gateway: PartnerGateway,
-  companyId: string
-): Promise<ShareholdingInfo> => {
-  return await gateway.getShareholdingInfo(companyId)
-}
-
-export const validateCompanyShareholding = async (
-  gateway: PartnerGateway,
-  companyId: string
-): Promise<{ isValid: boolean; total: number; remaining: number }> => {
-  const info = await gateway.getShareholdingInfo(companyId)
-  const isValid = Math.abs(info.totalShareholding - 100) < 0.01
-  return { isValid, total: info.totalShareholding, remaining: info.remaining }
-}
-
+/**
+ * Fetch all partners for a company as a sorted, enriched collection.
+ * Domain logic (sorting, totals) lives here — not in the store or component.
+ */
 export const fetchPartnersCollection = async (
-  gateway: IPartnerListGateway,
-  companyId: string
+  gateway: PartnerGateway,
+  companyId: string,
 ): Promise<PartnersCollection> => {
-  const partners = await gateway.getPartnersByCompanyId(companyId)
-  const sortedPartners = sortPartnersByShareholding(partners)
-  const totalShareholding = calculateTotalShareholding(partners)
+  const partners = await gateway.getByCompanyId(companyId)
+  const sorted = sortPartnersByShareholding(partners)
+  const total = calculateTotalShareholding(partners)
   return {
-    partners: sortedPartners,
+    partners: sorted,
     totalCount: partners.length,
-    totalShareholding,
-    remainingShareholding: Math.max(0, 100 - totalShareholding),
+    totalShareholding: total,
+    remainingShareholding: Math.max(0, 100 - total),
+  }
+}
+
+/**
+ * Validate whether a company's total shareholding equals 100%.
+ * Returns structured result — caller decides how to surface it.
+ */
+export const validateShareholding = async (
+  gateway: PartnerGateway,
+  companyId: string,
+): Promise<{ isValid: boolean; total: number; remaining: number }> => {
+  const info: ShareholdingInfo = await gateway.getShareholdingInfo(companyId)
+  return {
+    isValid: Math.abs(info.totalShareholding - 100) < 0.01,
+    total: info.totalShareholding,
+    remaining: info.remaining,
   }
 }

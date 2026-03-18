@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import StepIndicator from '@/components/Partner/StepIndicator.vue'
+import StepIndicator from '@/components/UI/StepIndicator.vue'
 import PersonalInfoStep from '@/components/Partner/PersonalInfoStep.vue'
 import ShareholdingStep from '@/components/Partner/ShareholdingStep.vue'
 import DocumentsStep from '@/components/Partner/DocumentsStep.vue'

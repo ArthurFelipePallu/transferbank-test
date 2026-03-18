@@ -1,25 +1,21 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Partner, PartnerFormStep } from '@/domain/partner/partner.types'
+import type { PartnerFormStep } from '@/domain/partner/partner.types'
 import { PartnerRegistrationStep } from '@/domain/partner/partner.types'
 import type { PartnerFormValues } from '@/domain/partner/partner.schema'
-import type { PartnerRegistration } from '@/domain/partner/interfaces/partnerGatewayInterface'
-import type { PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
+import type { PartnerSummary, PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
 import {
-  registerPartnerViaGateway,
-  getCompanyShareholdingInfo,
-  validateCompanyShareholding,
+  registerPartner,
+  fetchPartnersCollection,
+  validateShareholding,
 } from '@/application/partner/partnerUseCases'
-import { fetchPartnersCollection } from '@/application/partner/partnerUseCases'
-import { httpPartnerGateway } from '@/infrastructure/partner/HttpPartnerGateway'
-import { httpPartnerListGateway } from '@/infrastructure/partner/HttpPartnerListGateway'
+import { partnerGateway } from '@/infrastructure/gateways'
 import { useAuthStore } from './useAuthStore'
-import { sanitizeCpf } from '@/utils/formatters'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
+import { PARTNER_REGISTRATION_DEFAULTS } from '@/domain/partner/entities/PartnerDefaults'
 
 export const usePartnerStore = defineStore('partner', () => {
-  // State
-  const partners = ref<Partner[]>([])
+  // ─── State ────────────────────────────────────────────────────────────────
   const partnersCollection = ref<PartnersCollection | null>(null)
   const isLoadingList = ref(false)
   const listError = ref<string | null>(null)
@@ -55,52 +51,35 @@ export const usePartnerStore = defineStore('partner', () => {
     },
   ])
 
-  // Getters
-  const totalShareholding = computed(() => {
-    return partners.value.reduce((sum, partner) => sum + partner.shareholding, 0)
-  })
+  // ─── Getters ──────────────────────────────────────────────────────────────
+  const hasPartners = computed(
+    () => (partnersCollection.value?.totalCount ?? 0) > 0,
+  )
 
-  const hasPartners = computed(() => {
-    return partnersCollection.value !== null && partnersCollection.value.totalCount > 0
-  })
+  const currentStepData = computed(
+    () => steps.value.find((s) => s.id === currentStep.value),
+  )
 
-  const currentStepData = computed(() => {
-    return steps.value.find((s) => s.id === currentStep.value)
-  })
-
-  const isShareholdingValid = computed(() => {
-    return Math.abs(totalShareholding.value - 100) < 0.01
-  })
-
-  const remainingShareholding = computed(() => {
-    return Math.max(0, 100 - totalShareholding.value)
-  })
-
-  const canSubmit = computed(() => {
-    return (
+  const canSubmit = computed(
+    () =>
       currentStep.value === PartnerRegistrationStep.REVIEW &&
-      formData.value.fullName &&
-      formData.value.cpf &&
-      formData.value.shareholding &&
-      !isSubmitting.value
-    )
-  })
+      !!formData.value.fullName &&
+      !!formData.value.cpf &&
+      !!formData.value.shareholding &&
+      !isSubmitting.value,
+  )
 
-  // Actions
+  // ─── Form navigation ──────────────────────────────────────────────────────
   const updateFormData = (data: Partial<PartnerFormValues>) => {
     formData.value = { ...formData.value, ...data }
   }
 
   const markStepCompleted = (stepId: number) => {
     const step = steps.value.find((s) => s.id === stepId)
-    if (step) {
-      step.isCompleted = true
-    }
+    if (step) step.isCompleted = true
   }
 
-  const goToStep = (stepId: number) => {
-    currentStep.value = stepId
-  }
+  const goToStep = (stepId: number) => { currentStep.value = stepId }
 
   const nextStep = () => {
     if (currentStep.value < PartnerRegistrationStep.REVIEW) {
@@ -110,74 +89,40 @@ export const usePartnerStore = defineStore('partner', () => {
   }
 
   const previousStep = () => {
-    if (currentStep.value > PartnerRegistrationStep.PERSONAL_INFO) {
-      currentStep.value--
-    }
+    if (currentStep.value > PartnerRegistrationStep.PERSONAL_INFO) currentStep.value--
   }
 
-  const submitPartner = async () => {
+  // ─── Actions ──────────────────────────────────────────────────────────────
+  const submitPartner = async (): Promise<boolean> => {
+    const authStore = useAuthStore()
+    if (!authStore.companyId) {
+      error.value = 'Company ID not found. Please login again.'
+      return false
+    }
+
     try {
       isSubmitting.value = true
       error.value = null
 
-      const authStore = useAuthStore()
-      const companyId = authStore.companyId
-
-      if (!companyId) {
-        throw new Error('Company ID not found. Please login again.')
-      }
-
-      // Sanitize CPF before sending to backend
-      const sanitizedCpf = sanitizeCpf(formData.value.cpf!)
-
-      const registration: PartnerRegistration = {
-        companyId,
+      const registered: PartnerSummary = await registerPartner(partnerGateway, {
+        companyId: authStore.companyId,
         fullName: formData.value.fullName!,
-        cpf: sanitizedCpf,
-        nationality: formData.value.nationality!,
+        cpf: formData.value.cpf!,
+        nationality: formData.value.nationality ?? PARTNER_REGISTRATION_DEFAULTS.nationality,
         shareholding: formData.value.shareholding!,
-        isPep: formData.value.isPep!,
-        documents: formData.value.documents?.map((doc) => ({
-          name: doc.name,
-          size: doc.size,
-          type: doc.type,
-        })) || [],
-      }
-
-      const registeredPartner = await registerPartnerViaGateway(
-        httpPartnerGateway,
-        registration
-      )
-
-      // Add to local partners list
-      const partner: Partner = {
-        id: registeredPartner.id,
-        fullName: registeredPartner.fullName,
-        cpf: registeredPartner.cpf,
-        nationality: registeredPartner.nationality,
-        shareholding: registeredPartner.shareholding,
-        isPep: registeredPartner.isPep,
-        documents: registeredPartner.documents.map((doc) => ({
-          id: doc.id,
-          name: doc.name,
-          size: doc.size,
-          type: doc.type,
-        })),
-      }
-
-      partners.value.push(partner)
-
-      // Clear form cache IMMEDIATELY after successful registration
-      // Do this BEFORE marking step complete to prevent persistence plugin from saving
-      storageService.remove(STORAGE_KEYS.PARTNER_FORM_CACHE)
-      
-      // Reset form data immediately
-      formData.value = {}
-      currentStep.value = PartnerRegistrationStep.PERSONAL_INFO
-      steps.value.forEach((step) => {
-        step.isCompleted = false
+        isPep: formData.value.isPep ?? PARTNER_REGISTRATION_DEFAULTS.isPep,
+        documents: formData.value.documents?.map((d) => ({
+          name: d.name,
+          size: d.size,
+          type: d.type,
+        })) ?? PARTNER_REGISTRATION_DEFAULTS.documents,
       })
 
+      // Refresh the collection so the list reflects the new partner
+      await loadPartners()
+
+      storageService.remove(STORAGE_KEYS.PARTNER_FORM_CACHE)
+      _resetFormState()
       return true
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to register partner'
@@ -187,30 +132,9 @@ export const usePartnerStore = defineStore('partner', () => {
     }
   }
 
-  const clearFormCache = () => {
-    storageService.remove(STORAGE_KEYS.PARTNER_FORM_CACHE)
-    formData.value = {}
-    currentStep.value = PartnerRegistrationStep.PERSONAL_INFO
-    steps.value.forEach((step) => {
-      step.isCompleted = false
-    })
-  }
-
-  const resetForm = () => {
-    formData.value = {}
-    currentStep.value = PartnerRegistrationStep.PERSONAL_INFO
-    steps.value.forEach((step) => {
-      step.isCompleted = false
-    })
-    error.value = null
-    clearFormCache()
-  }
-
-  const loadPartners = async () => {
+  const loadPartners = async (): Promise<void> => {
     const authStore = useAuthStore()
-    const companyId = authStore.companyId
-
-    if (!companyId) {
+    if (!authStore.companyId) {
       listError.value = 'Company ID is required'
       return
     }
@@ -219,8 +143,8 @@ export const usePartnerStore = defineStore('partner', () => {
       isLoadingList.value = true
       listError.value = null
       partnersCollection.value = await fetchPartnersCollection(
-        httpPartnerListGateway,
-        companyId
+        partnerGateway,
+        authStore.companyId,
       )
     } catch (err) {
       listError.value = err instanceof Error ? err.message : 'Failed to load partners'
@@ -230,47 +154,34 @@ export const usePartnerStore = defineStore('partner', () => {
     }
   }
 
-  const validateShareholding = async () => {
-    try {
-      const authStore = useAuthStore()
-      const companyId = authStore.companyId
-
-      if (!companyId) {
-        throw new Error('Company ID not found')
-      }
-
-      const result = await validateCompanyShareholding(httpPartnerGateway, companyId)
-      return result
-    } catch (err) {
-      // Fallback to local calculation
-      const total = totalShareholding.value
-      return {
-        isValid: Math.abs(total - 100) < 0.01,
-        total,
-        remaining: 100 - total,
-      }
+  const checkShareholding = async () => {
+    const authStore = useAuthStore()
+    if (!authStore.companyId) {
+      const local = partnersCollection.value?.totalShareholding ?? 0
+      return { isValid: Math.abs(local - 100) < 0.01, total: local, remaining: 100 - local }
     }
+    return validateShareholding(partnerGateway, authStore.companyId)
   }
 
-  const getRemainingShareholding = async () => {
-    try {
-      const authStore = useAuthStore()
-      const companyId = authStore.companyId
+  const resetForm = () => {
+    error.value = null
+    clearFormCache()
+  }
 
-      if (!companyId) {
-        return remainingShareholding.value
-      }
+  const clearFormCache = () => {
+    storageService.remove(STORAGE_KEYS.PARTNER_FORM_CACHE)
+    _resetFormState()
+  }
 
-      const info = await getCompanyShareholdingInfo(httpPartnerGateway, companyId)
-      return info.remaining
-    } catch (err) {
-      return remainingShareholding.value
-    }
+  // ─── Private helpers ──────────────────────────────────────────────────────
+  const _resetFormState = () => {
+    formData.value = {}
+    currentStep.value = PartnerRegistrationStep.PERSONAL_INFO
+    steps.value.forEach((s) => { s.isCompleted = false })
   }
 
   return {
     // State
-    partners,
     partnersCollection,
     isLoadingList,
     listError,
@@ -279,15 +190,10 @@ export const usePartnerStore = defineStore('partner', () => {
     isSubmitting,
     error,
     steps,
-
     // Getters
-    totalShareholding,
     hasPartners,
     currentStepData,
-    isShareholdingValid,
-    remainingShareholding,
     canSubmit,
-
     // Actions
     updateFormData,
     markStepCompleted,
@@ -295,10 +201,9 @@ export const usePartnerStore = defineStore('partner', () => {
     nextStep,
     previousStep,
     submitPartner,
-    resetForm,
     loadPartners,
-    validateShareholding,
-    getRemainingShareholding,
+    checkShareholding,
+    resetForm,
     clearFormCache,
   }
 })
