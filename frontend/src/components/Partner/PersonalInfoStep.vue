@@ -3,6 +3,7 @@ import { useForm } from 'vee-validate'
 import FormInputField from '@/components/Form/FormInputField.vue'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
+import PepCheckbox from '@/components/Form/PepCheckbox.vue'
 import { partnerPersonalInfoSchema, type PartnerPersonalInfoFormValues } from '@/domain/partner/partner.schema'
 import { useTranslation } from '@/composables/useTranslation'
 import { PARTNER_REGISTRATION_DEFAULTS } from '@/domain/partner/entities/PartnerDefaults'
@@ -68,25 +69,13 @@ const submit = handleSubmit((values) => {
       </div>
 
       <div class="col-12">
-        <div class="card border-primary-subtle bg-light">
-          <div class="card-body">
-            <div class="form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="isPep"
-                :checked="values.isPep"
-                @change="setFieldValue('isPep', !values.isPep)"
-              />
-              <label class="form-check-label fw-medium" for="isPep">
-                {{ t('partner.registration.personalInfo.pepLabel') }}
-              </label>
-            </div>
-            <p class="text-muted small mb-0 mt-2">
-              {{ t('partner.registration.personalInfo.pepDescription') }}
-            </p>
-          </div>
-        </div>
+        <PepCheckbox
+          :model-value="values.isPep"
+          input-id="partner-isPep"
+          label-key="partner.registration.personalInfo.pepLabel"
+          description-key="partner.registration.personalInfo.pepDescription"
+          @update:model-value="setFieldValue('isPep', $event)"
+        />
       </div>
     </div>
 

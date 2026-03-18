@@ -4,7 +4,7 @@ import { useForm } from 'vee-validate'
 import FileUpload from './FileUpload.vue'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
-import AlertCard from '@/components/UI/AlertCard.vue'
+import DocumentsRequiredInfo from '@/components/UI/DocumentsRequiredInfo.vue'
 import { partnerDocumentsSchema, type PartnerDocumentsFormValues } from '@/domain/partner/partner.schema'
 import type { PartnerDocument } from '@/domain/partner/partner.types'
 import { useTranslation } from '@/composables/useTranslation'
@@ -57,14 +57,7 @@ const submit = handleSubmit((values) => {
       </div>
 
       <div class="col-12">
-        <AlertCard variant="info">
-          <p class="fw-semibold mb-2">📄 {{ t('partner.registration.documents.requiredTitle') }}</p>
-          <ul class="mb-0 ps-3">
-            <li>{{ t('partner.registration.documents.idCard') }}</li>
-            <li>{{ t('partner.registration.documents.driversLicense') }}</li>
-            <li>{{ t('partner.registration.documents.proofOfAddress') }}</li>
-          </ul>
-        </AlertCard>
+        <DocumentsRequiredInfo />
       </div>
     </div>
 
