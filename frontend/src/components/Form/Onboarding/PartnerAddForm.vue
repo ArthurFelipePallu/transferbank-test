@@ -14,6 +14,7 @@ import PepCheckbox from "@/components/Form/PepCheckbox.vue"
 import FieldWarning from "@/components/UI/FieldWarning.vue"
 import DocumentsRequiredInfo from "@/components/UI/DocumentsRequiredInfo.vue"
 import FileUpload from "@/components/Partner/FileUpload.vue"
+import { AddPartnerResult } from "@/domain/onboarding/onboarding.types"
 import { ONBOARDING_PARTNER_DEFAULTS } from "@/domain/onboarding/entities/OnboardingDefaults"
 
 const emit = defineEmits<{ close: [] }>()
@@ -21,7 +22,7 @@ const emit = defineEmits<{ close: [] }>()
 const { t } = useTranslation()
 const store = useOnboardingStore()
 const uiStore = useUiStore()
-const { remainingOnboardingShareholding } = storeToRefs(store)
+const { remainingShareholding: remainingOnboardingShareholding } = storeToRefs(store)
 
 const documents = ref<PartnerDocument[]>([])
 
@@ -64,9 +65,17 @@ const save = handleSubmit(async (vals) => {
   uiStore.startLoading(t("onboarding.partnersStep.saving"))
   await new Promise((r) => setTimeout(r, 120))
   try {
-    const result = store.addOnboardingPartner({ ...vals, documents: vals.documents ?? [] })
-    if (result === "duplicate_cpf")  { uiStore.showWarning(t("onboarding.partnersStep.duplicateCpf"));  return }
-    if (result === "duplicate_name") { uiStore.showWarning(t("onboarding.partnersStep.duplicateName")); return }
+    const result = store.addPartner({
+      tempId: crypto.randomUUID(),
+      fullName: vals.fullName,
+      cpf: vals.cpf,
+      nationality: vals.nationality,
+      shareholding: vals.shareholding,
+      isPep: vals.isPep,
+      documents: vals.documents ?? [],
+    })
+    if (result === AddPartnerResult.DuplicateCpf)  { uiStore.showWarning(t("onboarding.partnersStep.duplicateCpf"));  return }
+    if (result === AddPartnerResult.DuplicateName) { uiStore.showWarning(t("onboarding.partnersStep.duplicateName")); return }
     close()
   } finally {
     uiStore.stopLoading()

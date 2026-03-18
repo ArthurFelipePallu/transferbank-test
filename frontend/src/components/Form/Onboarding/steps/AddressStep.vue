@@ -21,44 +21,30 @@ const { t } = useTranslation()
 const { isLoading: isCepLoading, lookup: lookupCep, reset: resetCep } = useCepLookup()
 const numeroRef = ref<HTMLDivElement | null>(null)
 
-// Apply mask to raw CEP coming from CNPJ lookup (e.g. "01310100" → "01310-100")
+// Only the CEP is passed in — address fields are always resolved via CEP lookup,
+// never pre-filled from cache (prevents stale address data across registrations).
 const maskedInitialCep = props.initialValues?.cep
   ? applyCepMask(props.initialValues.cep)
   : ''
 
-const { handleSubmit, meta, values, setFieldValue, setValues } = useForm<OnboardingAddressValues>({
+const { handleSubmit, meta, values, setFieldValue } = useForm<OnboardingAddressValues>({
   validationSchema: onboardingAddressSchema,
   initialValues: {
-    cep: maskedInitialCep,
-    logradouro: props.initialValues?.logradouro ?? ADDRESS_DEFAULTS.logradouro,
-    numero: props.initialValues?.numero ?? ADDRESS_DEFAULTS.numero,
-    complemento: props.initialValues?.complemento ?? ADDRESS_DEFAULTS.complemento,
-    bairro: props.initialValues?.bairro ?? ADDRESS_DEFAULTS.bairro,
-    cidade: props.initialValues?.cidade ?? ADDRESS_DEFAULTS.localidade,
-    uf: props.initialValues?.uf ?? ADDRESS_DEFAULTS.uf,
+    cep:         maskedInitialCep,
+    logradouro:  ADDRESS_DEFAULTS.logradouro,
+    numero:      ADDRESS_DEFAULTS.numero,
+    complemento: ADDRESS_DEFAULTS.complemento,
+    bairro:      ADDRESS_DEFAULTS.bairro,
+    cidade:      ADDRESS_DEFAULTS.localidade,
+    uf:          ADDRESS_DEFAULTS.uf,
   },
   validateOnMount: false,
 })
 
-// If a CEP came pre-filled from the CNPJ lookup and address fields are empty,
-// trigger the lookup immediately on mount so the user doesn't have to retype it.
+// If a CEP was pre-filled from the CNPJ lookup, auto-run the lookup on mount.
 onMounted(async () => {
-  if (props.initialValues) {
-    setValues({
-      cep: maskedInitialCep,
-      logradouro: props.initialValues.logradouro ?? ADDRESS_DEFAULTS.logradouro,
-      numero: props.initialValues.numero ?? ADDRESS_DEFAULTS.numero,
-      complemento: props.initialValues.complemento ?? ADDRESS_DEFAULTS.complemento,
-      bairro: props.initialValues.bairro ?? ADDRESS_DEFAULTS.bairro,
-      cidade: props.initialValues.cidade ?? ADDRESS_DEFAULTS.localidade,
-      uf: props.initialValues.uf ?? ADDRESS_DEFAULTS.uf,
-    })
-  }
-
   const sanitized = sanitizeCep(maskedInitialCep)
-  const hasNoAddress = !props.initialValues?.logradouro && !props.initialValues?.bairro
-  if (sanitized.length === 8 && hasNoAddress) {
-    // Wait a tick so the form is fully initialized before we write to fields
+  if (sanitized.length === 8) {
     await nextTick()
     await runCepLookup(sanitized)
   }
@@ -67,12 +53,10 @@ onMounted(async () => {
 // Watch for manual CEP changes typed by the user
 watch(
   () => values.cep,
-  async (newCep, oldCep) => {
+  async (newCep) => {
     const sanitized = sanitizeCep(newCep)
-    const oldSanitized = sanitizeCep(oldCep || '')
     resetCep()
-    // Only run when the sanitized value actually changed and is complete
-    if (sanitized.length === 8 && sanitized !== oldSanitized) {
+    if (sanitized.length === 8) {
       await runCepLookup(sanitized)
     }
   },
@@ -81,13 +65,10 @@ watch(
 async function runCepLookup(sanitizedCep: string) {
   const info = await lookupCep(sanitizedCep)
   if (info) {
-    // Only overwrite fields that are still empty
-    if (!values.logradouro) setFieldValue('logradouro', info.logradouro || '')
-    if (!values.bairro) setFieldValue('bairro', info.bairro || '')
-    if (!values.cidade) setFieldValue('cidade', info.localidade || '')
-    if (!values.uf) setFieldValue('uf', info.uf || '')
-
-    // Focus the number field — it's the only one ViaCEP can't fill
+    setFieldValue('logradouro', info.logradouro || '')
+    setFieldValue('bairro',     info.bairro     || '')
+    setFieldValue('cidade',     info.localidade  || '')
+    setFieldValue('uf',         info.uf          || '')
     await nextTick()
     numeroRef.value?.querySelector('input')?.focus()
   }

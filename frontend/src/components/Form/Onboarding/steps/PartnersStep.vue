@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { UserPlus, CheckCircle, Users } from 'lucide-vue-next'
 import { useOnboardingStore } from '@/stores/useOnboardingStore'
@@ -15,27 +15,22 @@ const emit = defineEmits<{ next: []; back: [] }>()
 const { t } = useTranslation()
 const store = useOnboardingStore()
 const {
-  onboardingPartners,
-  totalOnboardingShareholding,
-  remainingOnboardingShareholding,
+  partners: onboardingPartners,
+  totalShareholding: totalOnboardingShareholding,
+  remainingShareholding: remainingOnboardingShareholding,
+  canAddPartner: storeCanAddPartner,
   isPartnersStepComplete,
 } = storeToRefs(store)
 
-onMounted(() => store.ensureShareholdingDistributed())
-
-// ── UI state (presentation layer only) ───────────────────────────────────────
+// ── UI state ──────────────────────────────────────────────────────────────────
 const showForm = ref(false)
 
 const openForm  = () => { showForm.value = true }
 const closeForm = () => { showForm.value = false }
 
-// ── Derived presentation state (domain-driven, no raw logic in template) ─────
-
-/** True when partners were pre-loaded from CNPJ lookup — domain fact, not UI state */
+// ── Derived presentation state ────────────────────────────────────────────────
 const wasPrefilled = computed(() => onboardingPartners.value.length > 0)
-
-/** Controls add-button visibility: step not done AND form not already open */
-const canAddPartner = computed(() => !isPartnersStepComplete.value && !showForm.value)
+const canAddPartner = computed(() => storeCanAddPartner.value && !showForm.value)
 </script>
 
 <template>
@@ -57,6 +52,14 @@ const canAddPartner = computed(() => !isPartnersStepComplete.value && !showForm.
           {{ t('onboarding.partnersStep.prefilled') }}
         </AlertCard>
 
+        <AlertCard
+          v-if="onboardingPartners.some((p) => !p.cpf)"
+          variant="warning"
+          class="mb-3"
+        >
+          {{ t('onboarding.partnersStep.prefilledCpfWarning') }}
+        </AlertCard>
+
         <div class="mb-3">
           <ShareholdingProgress
             :total="totalOnboardingShareholding"
@@ -69,7 +72,7 @@ const canAddPartner = computed(() => !isPartnersStepComplete.value && !showForm.
             v-for="partner in onboardingPartners"
             :key="partner.tempId"
             :partner="partner"
-            @remove="store.removeOnboardingPartner($event)"
+            @remove="store.removePartner($event)"
           />
 
           <div v-if="onboardingPartners.length === 0" class="empty-state">
