@@ -2,11 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models.Requests;
 
-public class RegisterPartnerRequest
+/// <summary>
+/// Partner data submitted inline during company registration.
+/// Mirrors RegisterPartnerRequest but without CompanyId — the company ID
+/// is inferred from the parent RegisterCompanyRequest context.
+/// </summary>
+public class PartnerRegistrationDto
 {
-    [Required(ErrorMessage = "Company ID is required")]
-    public Guid CompanyId { get; set; }
-
     [Required(ErrorMessage = "Full name is required")]
     [MinLength(2, ErrorMessage = "Full name must be at least 2 characters")]
     public string FullName { get; set; } = string.Empty;
@@ -17,7 +19,6 @@ public class RegisterPartnerRequest
     [Required(ErrorMessage = "Nationality is required")]
     public string Nationality { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Shareholding is required")]
     [Range(0.01, 100, ErrorMessage = "Shareholding must be between 0.01 and 100")]
     public decimal Shareholding { get; set; }
 

@@ -12,5 +12,6 @@ public class CompanyResponse
     public string Phone { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public int PartnerCount { get; set; }
+    public List<PartnerResponse> Partners { get; set; } = new();
     public DateTime CreatedAt { get; set; }
 }

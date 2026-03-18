@@ -28,4 +28,10 @@ public class RegisterCompanyRequest
     [Required(ErrorMessage = "Password is required")]
     [MinLength(8, ErrorMessage = "Password must be at least 8 characters")]
     public string Password { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Partners collected during onboarding. Optional — a company may register
+    /// without partners and add them later via the dedicated partner endpoint.
+    /// </summary>
+    public List<PartnerRegistrationDto> Partners { get; set; } = new();
 }

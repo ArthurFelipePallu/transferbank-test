@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.Mappers;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Models.Requests;
@@ -19,48 +20,39 @@ public class PartnerService : IPartnerService
 
     public async Task<PartnerResponse> RegisterAsync(RegisterPartnerRequest request)
     {
-        var company = await _companyRepository.GetByIdAsync(request.CompanyId);
-        if (company == null)
-        {
-            throw new InvalidOperationException("Company not found");
-        }
+        var company = await _companyRepository.GetByIdAsync(request.CompanyId)
+            ?? throw new InvalidOperationException("Company not found");
 
-        var currentTotal = await GetTotalShareholdingByCompanyAsync(request.CompanyId);
-        if (currentTotal + request.Shareholding > 100)
-        {
-            throw new InvalidOperationException($"Total shareholding would exceed 100%. Current: {currentTotal}%, Attempting to add: {request.Shareholding}%");
-        }
+        await ValidateShareholdingCapAsync(request.CompanyId, request.Shareholding);
 
-        var partner = new Partner(
-            request.CompanyId,
-            request.FullName,
-            request.Cpf,
-            request.Nationality,
-            request.Shareholding,
-            request.IsPep
-        );
+        var partner = BuildPartner(request.CompanyId, request.FullName, request.Cpf,
+            request.Nationality, request.Shareholding, request.IsPep, request.Documents);
 
-        foreach (var doc in request.Documents)
-        {
-            var document = new Document(doc.Name, doc.Size, doc.Type);
-            partner.AddDocument(document);
-        }
+        var saved = await _partnerRepository.AddAsync(partner);
+        return PartnerMapper.ToResponse(saved);
+    }
 
-        var savedPartner = await _partnerRepository.AddAsync(partner);
+    public async Task<PartnerResponse> RegisterFromOnboardingAsync(Guid companyId, PartnerRegistrationDto dto)
+    {
+        await ValidateShareholdingCapAsync(companyId, dto.Shareholding);
 
-        return MapToResponse(savedPartner);
+        var partner = BuildPartner(companyId, dto.FullName, dto.Cpf,
+            dto.Nationality, dto.Shareholding, dto.IsPep, dto.Documents);
+
+        var saved = await _partnerRepository.AddAsync(partner);
+        return PartnerMapper.ToResponse(saved);
     }
 
     public async Task<PartnerResponse?> GetByIdAsync(Guid id)
     {
         var partner = await _partnerRepository.GetByIdAsync(id);
-        return partner != null ? MapToResponse(partner) : null;
+        return partner != null ? PartnerMapper.ToResponse(partner) : null;
     }
 
     public async Task<IEnumerable<PartnerResponse>> GetByCompanyIdAsync(Guid companyId)
     {
         var partners = await _partnerRepository.GetByCompanyIdAsync(companyId);
-        return partners.Select(MapToResponse);
+        return partners.Select(PartnerMapper.ToResponse);
     }
 
     public async Task<decimal> GetTotalShareholdingByCompanyAsync(Guid companyId)
@@ -69,26 +61,24 @@ public class PartnerService : IPartnerService
         return partners.Sum(p => p.Shareholding);
     }
 
-    private static PartnerResponse MapToResponse(Partner partner)
+    // ─── Private helpers ──────────────────────────────────────────────────────
+
+    private async Task ValidateShareholdingCapAsync(Guid companyId, decimal incoming)
     {
-        return new PartnerResponse
-        {
-            Id = partner.Id,
-            CompanyId = partner.CompanyId,
-            FullName = partner.FullName,
-            Cpf = partner.Cpf,
-            Nationality = partner.Nationality,
-            Shareholding = partner.Shareholding,
-            IsPep = partner.IsPep,
-            Documents = partner.Documents.Select(d => new DocumentResponse
-            {
-                Id = d.Id,
-                Name = d.Name,
-                Size = d.Size,
-                Type = d.Type,
-                UploadedAt = d.UploadedAt
-            }).ToList(),
-            CreatedAt = partner.CreatedAt
-        };
+        var current = await GetTotalShareholdingByCompanyAsync(companyId);
+        if (current + incoming > 100)
+            throw new InvalidOperationException(
+                $"Total shareholding would exceed 100%. Current: {current}%, Attempting to add: {incoming}%");
+    }
+
+    private static Partner BuildPartner(
+        Guid companyId, string fullName, string cpf,
+        string nationality, decimal shareholding, bool isPep,
+        IEnumerable<DocumentRequest> documents)
+    {
+        var partner = new Partner(companyId, fullName, cpf, nationality, shareholding, isPep);
+        foreach (var doc in documents)
+            partner.AddDocument(new Document(doc.Name, doc.Size, doc.Type));
+        return partner;
     }
 }
