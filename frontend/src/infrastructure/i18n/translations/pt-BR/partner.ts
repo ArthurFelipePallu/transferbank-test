@@ -69,4 +69,8 @@ export const partner = {
       failedToRegister: 'Falha ao cadastrar sócio',
     },
   },
+  editPage: {
+    title: 'Editar Sócios',
+    subtitle: 'Adicione, edite ou gerencie os sócios e a participação societária da sua empresa.',
+  },
 }

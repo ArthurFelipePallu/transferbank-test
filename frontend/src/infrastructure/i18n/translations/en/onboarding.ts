@@ -137,6 +137,11 @@ export const onboarding = {
     shareholdingCapped: 'Value capped to the remaining {remaining}%.',
     shareholdingExceeds: 'Cannot exceed the remaining {remaining}%.',
     saving: 'Saving partner...',
+    removePartner: 'Remove {name}',
+    editPartner: 'Edit {name}',
+    editPartnerTitle: 'Edit Partner',
+    editFormSubtitle: 'Update the partner information below.',
+    update: 'Update Partner',
     placeholders: {
       fullName: 'Partner full name',
       cpf: '000.000.000-00',

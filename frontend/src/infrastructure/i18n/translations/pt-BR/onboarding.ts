@@ -136,6 +136,11 @@ export const onboarding = {
     shareholdingCapped: 'Valor limitado ao restante de {remaining}%.',
     shareholdingExceeds: 'Não pode exceder o restante de {remaining}%.',
     saving: 'Salvando sócio...',
+    removePartner: 'Remover {name}',
+    editPartner: 'Editar {name}',
+    editPartnerTitle: 'Editar Sócio',
+    editFormSubtitle: 'Atualize as informações do sócio abaixo.',
+    update: 'Atualizar Sócio',
     placeholders: {
       fullName: 'Nome completo do sócio',
       cpf: '000.000.000-00',

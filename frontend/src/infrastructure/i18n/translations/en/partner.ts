@@ -71,4 +71,8 @@ export const partner = {
       failedToRegister: 'Failed to register partner',
     },
   },
+  editPage: {
+    title: 'Edit Partners',
+    subtitle: 'Add, edit or manage your company partners and shareholding.',
+  },
 }
