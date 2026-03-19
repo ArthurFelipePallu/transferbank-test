@@ -13,6 +13,9 @@ public interface IPartnerService
     /// </summary>
     Task<PartnerResponse> RegisterFromOnboardingAsync(Guid companyId, PartnerRegistrationDto dto);
 
+    Task<PartnerResponse> UpdateAsync(Guid id, UpdatePartnerRequest request);
+    Task<PartnerResponse> PatchAsync(Guid id, PatchPartnerRequest request);
+
     Task<PartnerResponse?> GetByIdAsync(Guid id);
     Task<IEnumerable<PartnerResponse>> GetByCompanyIdAsync(Guid companyId);
     Task<decimal> GetTotalShareholdingByCompanyAsync(Guid companyId);

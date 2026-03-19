@@ -43,6 +43,49 @@ public class PartnerService : IPartnerService
         return PartnerMapper.ToResponse(saved);
     }
 
+    public async Task<PartnerResponse> UpdateAsync(Guid id, UpdatePartnerRequest request)
+    {
+        var partner = await _partnerRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Partner {id} not found");
+
+        // Validate shareholding cap: exclude the partner's current shareholding from the total
+        var currentTotal = await GetTotalShareholdingByCompanyAsync(partner.CompanyId);
+        var totalWithoutSelf = currentTotal - partner.Shareholding;
+        if (totalWithoutSelf + request.Shareholding > 100)
+            throw new InvalidOperationException(
+                $"Total shareholding would exceed 100%. Available: {100 - totalWithoutSelf}%");
+
+        partner.Update(request.FullName, request.Nationality, request.Shareholding, request.IsPep);
+        partner.ReplaceDocuments(request.Documents.Select(d => new Document(d.Name, d.Size, d.Type)));
+
+        var saved = await _partnerRepository.UpdateAsync(partner);
+        return PartnerMapper.ToResponse(saved);
+    }
+
+    public async Task<PartnerResponse> PatchAsync(Guid id, PatchPartnerRequest request)
+    {
+        var partner = await _partnerRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Partner {id} not found");
+
+        // Only validate shareholding cap when shareholding is being changed
+        if (request.Shareholding.HasValue)
+        {
+            var currentTotal = await GetTotalShareholdingByCompanyAsync(partner.CompanyId);
+            var totalWithoutSelf = currentTotal - partner.Shareholding;
+            if (totalWithoutSelf + request.Shareholding.Value > 100)
+                throw new InvalidOperationException(
+                    $"Total shareholding would exceed 100%. Available: {100 - totalWithoutSelf}%");
+        }
+
+        partner.Patch(request.FullName, request.Nationality, request.Shareholding, request.IsPep);
+
+        if (request.Documents is not null)
+            partner.ReplaceDocuments(request.Documents.Select(d => new Document(d.Name, d.Size, d.Type)));
+
+        var saved = await _partnerRepository.UpdateAsync(partner);
+        return PartnerMapper.ToResponse(saved);
+    }
+
     public async Task<PartnerResponse?> GetByIdAsync(Guid id)
     {
         var partner = await _partnerRepository.GetByIdAsync(id);

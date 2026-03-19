@@ -46,6 +46,33 @@ public class Partner
         Documents.Add(document);
     }
 
+    public void Update(string fullName, string nationality, decimal shareholding, bool isPep)
+    {
+        FullName = fullName ?? throw new ArgumentNullException(nameof(fullName));
+        Nationality = nationality ?? throw new ArgumentNullException(nameof(nationality));
+        Shareholding = shareholding;
+        IsPep = isPep;
+        Validate();
+    }
+
+    /// <summary>
+    /// Applies only the non-null fields from a partial update.
+    /// Each field is independent — unset fields are left unchanged.
+    /// </summary>
+    public void Patch(string? fullName, string? nationality, decimal? shareholding, bool? isPep)
+    {
+        if (fullName is not null)     FullName     = fullName;
+        if (nationality is not null)  Nationality  = nationality;
+        if (shareholding is not null) Shareholding = shareholding.Value;
+        if (isPep is not null)        IsPep        = isPep.Value;
+        Validate();
+    }
+
+    public void ReplaceDocuments(IEnumerable<Document> documents)
+    {
+        Documents = documents?.ToList() ?? throw new ArgumentNullException(nameof(documents));
+    }
+
     private void Validate()
     {
         if (string.IsNullOrWhiteSpace(Cpf))

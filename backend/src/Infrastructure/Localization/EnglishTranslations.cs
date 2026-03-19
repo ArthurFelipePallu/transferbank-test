@@ -41,6 +41,7 @@ public static class EnglishTranslations
             // Success messages
             ["Success.CompanyRegistered"] = "Company registered successfully",
             ["Success.PartnerRegistered"] = "Partner registered successfully",
+            ["Success.PartnerUpdated"] = "Partner updated successfully",
             ["Success.LoginSuccessful"] = "Login successful",
         };
     }

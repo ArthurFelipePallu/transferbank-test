@@ -73,6 +73,94 @@ public class PartnerController : ControllerBase
         }
     }
 
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<PartnerResponse>> Update(Guid id, [FromBody] UpdatePartnerRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            return BadRequest(new ErrorResponseDto(
+                message: string.Join("; ", errors),
+                errorCode: "ValidationError",
+                statusCode: 400));
+        }
+
+        try
+        {
+            var response = await _partnerService.UpdateAsync(id, request);
+            return Ok(response);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound(new ErrorResponseDto(
+                message: _localizationService.GetString("Partner.NotFound"),
+                errorCode: "NotFound",
+                statusCode: 404));
+        }
+        catch (InvalidOperationException)
+        {
+            return BadRequest(new ErrorResponseDto(
+                message: _localizationService.GetString("Partner.ShareholdingExceeded"),
+                errorCode: "InvalidOperation",
+                statusCode: 400));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new ErrorResponseDto(
+                message: _localizationService.GetString("Error.InternalServer"),
+                errorCode: "InternalError",
+                statusCode: 500));
+        }
+    }
+
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult<PartnerResponse>> Patch(Guid id, [FromBody] PatchPartnerRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            return BadRequest(new ErrorResponseDto(
+                message: string.Join("; ", errors),
+                errorCode: "ValidationError",
+                statusCode: 400));
+        }
+
+        try
+        {
+            var response = await _partnerService.PatchAsync(id, request);
+            return Ok(response);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound(new ErrorResponseDto(
+                message: _localizationService.GetString("Partner.NotFound"),
+                errorCode: "NotFound",
+                statusCode: 404));
+        }
+        catch (InvalidOperationException)
+        {
+            return BadRequest(new ErrorResponseDto(
+                message: _localizationService.GetString("Partner.ShareholdingExceeded"),
+                errorCode: "InvalidOperation",
+                statusCode: 400));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new ErrorResponseDto(
+                message: _localizationService.GetString("Error.InternalServer"),
+                errorCode: "InternalError",
+                statusCode: 500));
+        }
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<PartnerResponse>> GetById(Guid id)
     {
