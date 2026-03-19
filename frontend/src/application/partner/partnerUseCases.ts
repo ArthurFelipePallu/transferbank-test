@@ -1,5 +1,5 @@
 import type { PartnerGateway } from '@/domain/partner/ports/PartnerGateway'
-import type { PartnerRegistration, ShareholdingInfo } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnerRegistration, PartnerUpdate, PartnerPatch, ShareholdingInfo } from '@/domain/partner/interfaces/partnerGatewayInterface'
 import type { PartnerSummary, PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
 import { sortPartnersByShareholding, calculateTotalShareholding } from '@/domain/partner/entities/PartnerSummary'
 import { sanitizeCpf } from '@/utils/formatters'
@@ -16,8 +16,31 @@ export const registerPartner = async (
 }
 
 /**
+ * Full update of a partner (PUT).
+ * All mutable fields must be provided — CPF is immutable and excluded.
+ */
+export const updatePartner = async (
+  gateway: PartnerGateway,
+  id: string,
+  data: PartnerUpdate,
+): Promise<PartnerSummary> => {
+  return gateway.update(id, data)
+}
+
+/**
+ * Partial update of a partner (PATCH).
+ * Only the provided fields are applied — omitted fields are left unchanged.
+ */
+export const patchPartner = async (
+  gateway: PartnerGateway,
+  id: string,
+  data: PartnerPatch,
+): Promise<PartnerSummary> => {
+  return gateway.patch(id, data)
+}
+
+/**
  * Fetch all partners for a company as a sorted, enriched collection.
- * Domain logic (sorting, totals) lives here — not in the store or component.
  */
 export const fetchPartnersCollection = async (
   gateway: PartnerGateway,
@@ -36,7 +59,6 @@ export const fetchPartnersCollection = async (
 
 /**
  * Validate whether a company's total shareholding equals 100%.
- * Returns structured result — caller decides how to surface it.
  */
 export const validateShareholding = async (
   gateway: PartnerGateway,

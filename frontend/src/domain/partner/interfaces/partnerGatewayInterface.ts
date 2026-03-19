@@ -18,6 +18,22 @@ export interface PartnerRegistration {
   documents: PartnerDocument[]
 }
 
+export interface PartnerUpdate {
+  fullName: string
+  nationality: string
+  shareholding: number
+  isPep: boolean
+  documents: PartnerDocument[]
+}
+
+export interface PartnerPatch {
+  fullName?: string
+  nationality?: string
+  shareholding?: number
+  isPep?: boolean
+  documents?: PartnerDocument[]
+}
+
 // ─── Query types (read side) ──────────────────────────────────────────────────
 
 /** Re-export so callers only need one import path */

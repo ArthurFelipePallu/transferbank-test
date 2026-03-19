@@ -119,6 +119,20 @@ export interface PartnerResponse {
   createdAt?: string;
 }
 
+export interface PatchPartnerRequest {
+  /** @minLength 2 */
+  fullName?: string | null;
+  nationality?: string | null;
+  /**
+   * @format double
+   * @min 0.01
+   * @max 100
+   */
+  shareholding?: number | null;
+  isPep?: boolean | null;
+  documents?: DocumentRequest[] | null;
+}
+
 export interface RegisterCompanyRequest {
   /** @minLength 1 */
   cnpj: string;
@@ -147,6 +161,21 @@ export interface RegisterPartnerRequest {
   fullName: string;
   /** @minLength 1 */
   cpf: string;
+  /** @minLength 1 */
+  nationality: string;
+  /**
+   * @format double
+   * @min 0.01
+   * @max 100
+   */
+  shareholding: number;
+  isPep?: boolean;
+  documents?: DocumentRequest[] | null;
+}
+
+export interface UpdatePartnerRequest {
+  /** @minLength 2 */
+  fullName: string;
   /** @minLength 1 */
   nationality: string;
   /**
@@ -493,6 +522,48 @@ export class Api<
       this.request<PartnerResponse, any>({
         path: `/api/Partner/register`,
         method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Partner
+     * @name PartnerUpdate
+     * @request PUT:/api/Partner/{id}
+     */
+    partnerUpdate: (
+      id: string,
+      data: UpdatePartnerRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<PartnerResponse, any>({
+        path: `/api/Partner/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Partner
+     * @name PartnerPartialUpdate
+     * @request PATCH:/api/Partner/{id}
+     */
+    partnerPartialUpdate: (
+      id: string,
+      data: PatchPartnerRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<PartnerResponse, any>({
+        path: `/api/Partner/${id}`,
+        method: "PATCH",
         body: data,
         type: ContentType.Json,
         format: "json",

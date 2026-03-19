@@ -1,6 +1,6 @@
 ﻿import { api } from '@/api/apiClient'
 import type { PartnerGateway } from '@/domain/partner/ports/PartnerGateway'
-import type { PartnerRegistration, ShareholdingInfo } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnerRegistration, PartnerUpdate, PartnerPatch, ShareholdingInfo } from '@/domain/partner/interfaces/partnerGatewayInterface'
 import type { PartnerSummary } from '@/domain/partner/entities/PartnerSummary'
 import type { PartnerResponse } from '@/api/backendApi'
 import { PARTNER_SUMMARY_DEFAULTS } from '@/domain/partner/entities/PartnerDefaults'
@@ -35,6 +35,28 @@ class HttpPartnerGatewayImpl implements PartnerGateway {
     return toPartnerSummary(response.data)
   }
 
+  async update(id: string, data: PartnerUpdate): Promise<PartnerSummary> {
+    const response = await api.partner.partnerUpdate(id, {
+      fullName: data.fullName,
+      nationality: data.nationality,
+      shareholding: data.shareholding,
+      isPep: data.isPep,
+      documents: data.documents.map((d) => ({ name: d.name, size: d.size, type: d.type })),
+    })
+    return toPartnerSummary(response.data)
+  }
+
+  async patch(id: string, data: PartnerPatch): Promise<PartnerSummary> {
+    const response = await api.partner.partnerPartialUpdate(id, {
+      fullName: data.fullName,
+      nationality: data.nationality,
+      shareholding: data.shareholding,
+      isPep: data.isPep,
+      documents: data.documents?.map((d) => ({ name: d.name, size: d.size, type: d.type })),
+    })
+    return toPartnerSummary(response.data)
+  }
+
   async getById(id: string): Promise<PartnerSummary> {
     const response = await api.partner.partnerDetail(id)
     return toPartnerSummary(response.data)
@@ -46,7 +68,6 @@ class HttpPartnerGatewayImpl implements PartnerGateway {
   }
 
   async getShareholdingInfo(companyId: string): Promise<ShareholdingInfo> {
-    // Backend returns a plain number — total shareholding for the company
     const response = await api.partner.partnerCompanyShareholdingList(companyId)
     const total = response.data ?? 0
     return {
