@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
 
 const { t } = useTranslation()

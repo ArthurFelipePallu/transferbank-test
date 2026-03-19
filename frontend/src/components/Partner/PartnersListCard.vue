@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { ChevronDown, Users } from 'lucide-vue-next'
 import type { PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
 import PartnerListItem from './PartnerListItem.vue'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 
 defineProps<{
   collection: PartnersCollection

@@ -4,7 +4,7 @@
  * Extracted from PartnerAddForm and DocumentsStep to avoid duplication.
  */
 import AlertCard from '@/components/UI/AlertCard.vue'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 
 const { t } = useTranslation()
 </script>

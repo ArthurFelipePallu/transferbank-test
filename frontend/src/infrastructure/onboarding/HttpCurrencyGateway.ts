@@ -1,7 +1,7 @@
 import { api } from '@/api/apiClient'
 import type { CryptoCurrencyDto } from '@/api/backendApi'
-import type { CryptoCurrencyOption } from '@/domain/onboarding/interfaces/currencyInterface'
-import type { CurrencyGateway } from '@/domain/onboarding/ports/CurrencyGateway'
+import type { CryptoCurrencyOption } from '@/domain/currency/interfaces/currencyInterface'
+import type { CurrencyGateway } from '@/domain/currency/ports/CurrencyGateway'
 
 const mapToCurrencyOption = (input: CryptoCurrencyDto): CryptoCurrencyOption => ({
   currency: input.value,

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import BaseButton from '@/components/UI/BaseButton.vue'
 import GradientSection from '@/components/UI/GradientSection.vue'
-import { useNavigation } from '@/composables/useNavigation'
+import { useNavigation } from '@/composables/navigation/useNavigation'
 
 const { t } = useTranslation()
 const { navigateToCta } = useNavigation()

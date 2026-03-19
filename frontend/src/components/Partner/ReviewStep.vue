@@ -5,7 +5,7 @@ import ReviewPersonalInfo from './Review/ReviewPersonalInfo.vue'
 import ReviewShareholding from './Review/ReviewShareholding.vue'
 import ReviewDocumentList from './Review/ReviewDocumentList.vue'
 import type { PartnerFormValues } from '@/domain/partner/partner.schema'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 
 defineProps<{
   formData: Partial<PartnerFormValues>

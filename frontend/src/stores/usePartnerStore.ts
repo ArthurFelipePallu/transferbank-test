@@ -11,7 +11,7 @@ import {
   fetchPartnersCollection,
   validateShareholding,
 } from '@/application/partner/partnerUseCases'
-import type { PartnerRegistration, PartnerUpdate, PartnerPatch } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnerRegistration, PartnerUpdate, PartnerPatch } from '@/domain/partner/ports/PartnerGateway'
 import { partnerGateway } from '@/infrastructure/gateways'
 import { useAuthStore } from './useAuthStore'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'

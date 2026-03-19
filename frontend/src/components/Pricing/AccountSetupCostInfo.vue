@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import InfoTooltip from '@/components/UI/InfoTooltip.vue'
 import { CurrencyCode } from '@/domain/pricing/entities/Currency'
 
@@ -21,6 +21,7 @@ const getCurrencyLabel = (source: CurrencyCode): string => {
     case CurrencyCode.USD: return '$100 USD'
     case CurrencyCode.BTC: return '0.00153 BTC'
     case CurrencyCode.ETH: return '0.521 ETH'
+    default: return ''
   }
 }
 

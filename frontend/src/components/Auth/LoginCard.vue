@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import ColoredContainer from '@/components/Layout/ColoredContainer.vue'
 import LoginForm from '@/components/Auth/LoginForm.vue'

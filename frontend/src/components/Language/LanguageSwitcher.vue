@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Globe } from 'lucide-vue-next'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { SUPPORTED_LOCALES, LOCALE_INFO } from '@/domain/i18n/types/Locale'
 import type { Locale } from '@/domain/i18n/types/Locale'
 

@@ -5,7 +5,7 @@ import DropdownMenuItem from './DropdownMenuItem.vue'
 import DropdownSubmenu from './DropdownSubmenu.vue'
 import type { NavItem } from '@/domain/navigation/types/NavItem'
 import type { DropdownItem } from './DropdownMenuItem.vue'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { dashboardLinks } from '@/config/navigation'
 
 defineProps<{

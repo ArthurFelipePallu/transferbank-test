@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PartnerSummary } from '@/domain/partner/entities/PartnerSummary'
 import { formatCpfDisplay } from '@/utils/formatters'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 
 defineProps<{
   partner: PartnerSummary

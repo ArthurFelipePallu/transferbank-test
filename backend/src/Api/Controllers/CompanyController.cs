@@ -2,7 +2,6 @@ using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Models.Requests;
 using Domain.Models.Responses;
-using Domain.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;

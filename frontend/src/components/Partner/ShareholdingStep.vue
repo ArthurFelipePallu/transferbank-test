@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
-import FormInputField from '@/components/Form/FormInputField.vue'
+import FormInputField from '@/components/UI/FormInputField.vue'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
 import StatCard from '@/components/UI/StatCard.vue'
 import AlertCard from '@/components/UI/AlertCard.vue'
 import { partnerShareholdingSchema, type PartnerShareholdingFormValues } from '@/domain/partner/partner.schema'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 
 const props = defineProps<{
   initialValues?: Partial<PartnerShareholdingFormValues>

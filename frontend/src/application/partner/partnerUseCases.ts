@@ -1,5 +1,5 @@
 import type { PartnerGateway } from '@/domain/partner/ports/PartnerGateway'
-import type { PartnerRegistration, PartnerUpdate, PartnerPatch, ShareholdingInfo } from '@/domain/partner/interfaces/partnerGatewayInterface'
+import type { PartnerRegistration, PartnerUpdate, PartnerPatch, ShareholdingInfo } from '@/domain/partner/ports/PartnerGateway'
 import type { PartnerSummary, PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
 import { sortPartnersByShareholding, calculateTotalShareholding } from '@/domain/partner/entities/PartnerSummary'
 import { sanitizeCpf } from '@/utils/formatters'

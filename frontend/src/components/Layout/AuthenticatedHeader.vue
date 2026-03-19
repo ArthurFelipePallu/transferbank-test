@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { useMobileMenu } from '@/composables/useMobileMenu'
+import { useMobileMenu } from '@/composables/ui/useMobileMenu'
 import { servicesLinks, supportLinks } from '@/config/navigation'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
 import BaseHeader from '@/components/Layout/BaseHeader.vue'

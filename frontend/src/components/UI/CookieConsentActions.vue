@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CookieChoice } from '@/stores/useCookieConsentStore'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 
 defineEmits<{ choose: [choice: CookieChoice] }>()
 

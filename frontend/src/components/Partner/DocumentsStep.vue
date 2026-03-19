@@ -7,7 +7,7 @@ import FormNavigation from '@/components/UI/FormNavigation.vue'
 import DocumentsRequiredInfo from '@/components/UI/DocumentsRequiredInfo.vue'
 import { partnerDocumentsSchema, type PartnerDocumentsFormValues } from '@/domain/partner/partner.schema'
 import type { PartnerDocument } from '@/domain/partner/partner.types'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 
 const props = defineProps<{
   initialValues?: Partial<PartnerDocumentsFormValues>

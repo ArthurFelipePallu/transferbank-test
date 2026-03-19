@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 
 const router = useRouter()

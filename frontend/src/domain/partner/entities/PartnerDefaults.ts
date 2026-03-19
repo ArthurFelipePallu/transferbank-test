@@ -1,5 +1,5 @@
 import type { PartnerSummary } from './PartnerSummary'
-import type { PartnerRegistration, PartnerDocument } from '../interfaces/partnerGatewayInterface'
+import type { PartnerRegistration, PartnerDocument } from '../ports/PartnerGateway'
 
 export const PARTNER_DOCUMENT_DEFAULTS: PartnerDocument = {
   name: '',

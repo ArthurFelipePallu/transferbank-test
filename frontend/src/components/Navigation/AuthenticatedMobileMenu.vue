@@ -2,7 +2,7 @@
 import { X, User, LogOut } from 'lucide-vue-next'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import LanguageSwitcher from '@/components/Language/LanguageSwitcher.vue'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import type { NavItem } from '@/domain/navigation/types/NavItem'
 import { ref } from 'vue'
 

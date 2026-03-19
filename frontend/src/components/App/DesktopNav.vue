@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import type { NavItem } from '@/domain/navigation/types/NavItem'
 import UserMenu from './UserMenu.vue'
 

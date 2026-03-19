@@ -12,6 +12,7 @@ export const partner = {
   totalAllocated: 'Total Alocado',
   remaining: 'Restante',
   companyPartners: 'Sócios da Empresa',
+  partner: 'sócio',
   partners: 'sócios',
   allocated: 'alocado',
   noPartnersYet: 'Nenhum sócio registrado ainda',

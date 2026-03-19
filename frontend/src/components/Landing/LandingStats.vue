@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { landingStats } from '@/config/landingConfig'
 import StatCard from '@/components/UI/StatCard.vue'
 import GradientSection from '@/components/UI/GradientSection.vue'

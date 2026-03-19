@@ -13,6 +13,7 @@ export const partner = {
   remaining: 'Remaining',
   // Partners list card
   companyPartners: 'Company Partners',
+  partner: 'partner',
   partners: 'partners',
   allocated: 'allocated',
   noPartnersYet: 'No partners registered yet',

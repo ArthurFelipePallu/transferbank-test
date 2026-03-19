@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useCookieConsentStore } from '@/stores/useCookieConsentStore'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import CookieConsentActions from './CookieConsentActions.vue'
 import CookieConsentLinks from './CookieConsentLinks.vue'
 

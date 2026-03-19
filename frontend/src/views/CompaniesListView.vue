@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import CompanyCard from '@/components/Company/CompanyCard.vue'
 import { getAllCompanies } from '@/application/company/companyUseCases'
 import { companyGateway } from '@/infrastructure/gateways'

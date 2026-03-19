@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { Upload, X, FileText } from 'lucide-vue-next'
 import type { PartnerDocument } from '@/domain/partner/partner.types'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 
 const props = defineProps<{
   modelValue: PartnerDocument[]

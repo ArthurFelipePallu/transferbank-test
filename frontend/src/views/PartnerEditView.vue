@@ -3,9 +3,9 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePartnerEditStore } from '@/stores/usePartnerEditStore'
 import { useUiStore } from '@/stores/useUiStore'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
-import PartnersStep from '@/components/Form/Onboarding/steps/PartnersStep.vue'
+import PartnersStep from '@/components/Onboarding/steps/PartnersStep.vue'
 
 const router = useRouter()
 const store = usePartnerEditStore()

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useUiStore } from '@/stores/useUiStore'
-import { useScrollVisibility } from '@/composables/useScrollVisibility'
+import { useScrollVisibility } from '@/composables/ui/useScrollVisibility'
 
 const uiStore = useUiStore()
 const { isHeaderVisible } = storeToRefs(uiStore)

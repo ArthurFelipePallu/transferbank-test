@@ -37,8 +37,8 @@
 import { computed, onMounted } from 'vue'
 import type { CompanyListItem } from '@/domain/company/interfaces/companyInterface'
 import { formatCnpj } from '@/utils/formatters'
-import { useTranslation } from '@/composables/useTranslation'
-import { useCryptoCurrencies } from '@/composables/useCryptoCurrencies'
+import { useTranslation } from '@/composables/i18n/useTranslation'
+import { useCryptoCurrencies } from '@/composables/domain/useCryptoCurrencies'
 
 interface Props {
   company: CompanyListItem

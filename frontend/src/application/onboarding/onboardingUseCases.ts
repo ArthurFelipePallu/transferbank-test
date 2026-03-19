@@ -1,7 +1,7 @@
 import type { OnboardingFormCache } from '@/domain/onboarding/onboarding.types'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
-import type { CurrencyGateway } from '@/domain/onboarding/ports/CurrencyGateway'
-import type { CryptoCurrencyOption } from '@/domain/onboarding/interfaces/currencyInterface'
+import type { CurrencyGateway } from '@/domain/currency/ports/CurrencyGateway'
+import type { CryptoCurrencyOption } from '@/domain/currency/interfaces/currencyInterface'
 import { applyCepMask } from '@/utils/formatters'
 
 export interface CnpjResult {

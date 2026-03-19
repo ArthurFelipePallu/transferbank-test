@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMousePosition } from '@/composables/useMousePosition'
+import { useMousePosition } from '@/composables/ui/useMousePosition'
 
 withDefaults(
   defineProps<{

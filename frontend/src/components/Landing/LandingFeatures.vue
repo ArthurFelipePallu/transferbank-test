@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { landingFeatures } from '@/config/landingConfig'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 

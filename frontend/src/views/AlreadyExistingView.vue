@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import StatusMessageCard from '@/components/UI/StatusMessageCard.vue'
 import type { StatusAction, StatusLink } from '@/components/UI/StatusMessageCard.vue'
 

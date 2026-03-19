@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
-import FormInputField from '@/components/Form/FormInputField.vue'
+import FormInputField from '@/components/UI/FormInputField.vue'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
-import PepCheckbox from '@/components/Form/PepCheckbox.vue'
+import PepCheckbox from '@/components/UI/PepCheckbox.vue'
 import { partnerPersonalInfoSchema, type PartnerPersonalInfoFormValues } from '@/domain/partner/partner.schema'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { PARTNER_REGISTRATION_DEFAULTS } from '@/domain/partner/entities/PartnerDefaults'
 
 const props = defineProps<{

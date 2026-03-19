@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useCurrencyStore } from '@/stores/useCurrencyStore'
 import { CurrencyDisplayService } from '@/application/currency/CurrencyDisplayService'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import CurrencyPanelHeader from '@/components/Currency/CurrencyPanelHeader.vue'
 import CurrencyRateCard from '@/components/Currency/CurrencyRateCard.vue'
 import MarketStatusBadge from '@/components/Currency/MarketStatusBadge.vue'

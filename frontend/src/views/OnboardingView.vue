@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
-import OnboardingForm from '@/components/Form/OnboardingForm.vue'
+import { useTranslation } from '@/composables/i18n/useTranslation'
+import OnboardingForm from '@/components/Onboarding/OnboardingForm.vue'
 
 const { t } = useTranslation()
 </script>

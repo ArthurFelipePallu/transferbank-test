@@ -1,7 +1,7 @@
 import { api } from '@/api/apiClient'
 import { type RegisterCompanyRequest } from '@/api/backendApi'
 import type { OnboardingFormValues } from '@/domain/onboarding/onboarding.schema'
-import type { RegistryGateway } from '@/domain/onboarding/ports/RegistryGateway'
+import type { RegistryGateway } from '@/domain/cnpj/ports/RegistryGateway'
 
 const mapToRegisterCompanyRequest = (input: OnboardingFormValues): RegisterCompanyRequest => ({
   cnpj: input.cnpj,

@@ -9,7 +9,7 @@ import { ref, computed } from 'vue'
 import { CoinGeckoCurrencyRateProvider } from '@/infrastructure/pricing/CoinGeckoCurrencyRateProvider'
 import { CurrencyCode } from '@/domain/pricing/entities/Currency'
 import type { Currency } from '@/domain/pricing/entities/Currency'
-import { usePriceChangeTracking } from '@/composables/usePriceChangeTracking'
+import { usePriceChangeTracking } from '@/composables/domain/usePriceChangeTracking'
 import { TIMING_CONFIG } from '@/config/timing.config'
 import { formatBRL } from '@/utils/PriceFormatter'
 

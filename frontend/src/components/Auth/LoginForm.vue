@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
-import FormInputField from '@/components/Form/FormInputField.vue'
+import FormInputField from '@/components/UI/FormInputField.vue'
 import { loginSchema, type LoginFormValues } from '@/domain/onboarding/login.schema'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useUiStore } from '@/stores/useUiStore'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { authPageLinks } from '@/config/navigation'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
 

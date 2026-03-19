@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import AppBrandLogo from './AppBrandLogo.vue'
 import FooterLinkColumn from '@/components/Footer/FooterLinkColumn.vue'
 import FooterContactColumn from '@/components/Footer/FooterContactColumn.vue'

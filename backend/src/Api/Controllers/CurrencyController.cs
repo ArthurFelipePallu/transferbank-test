@@ -1,7 +1,6 @@
 ﻿using Domain.Enums;
 using Domain.Extensions;
 using Domain.Models.Responses;
-using Domain.Responses;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { landingServices } from '@/config/landingConfig'
 import ActionCard from '@/components/Dashboard/ActionCard.vue'
 

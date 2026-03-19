@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { usePricingStore } from '@/stores/usePricingStore'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import PriceChangeIndicator from '@/components/Pricing/PriceChangeIndicator.vue'
 import AccountSetupCostInfo from '@/components/Pricing/AccountSetupCostInfo.vue'
 

@@ -3,7 +3,7 @@ import LanguageSwitcher from '@/components/Language/LanguageSwitcher.vue'
 import UserMenuButton from './UserMenuButton.vue'
 import UserDropdownMenu from './UserDropdownMenu.vue'
 import { ref } from 'vue'
-import { useClickOutside } from '@/composables/useClickOutside'
+import { useClickOutside } from '@/composables/ui/useClickOutside'
 import type { NavItem } from '@/domain/navigation/types/NavItem'
 
 defineProps<{

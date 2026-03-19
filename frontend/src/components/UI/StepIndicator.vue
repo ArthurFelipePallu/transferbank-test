@@ -1,6 +1,6 @@
 ﻿<script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import type { StepItem } from '@/domain/ui/types/StepItem'
 import StepBubble from '@/components/UI/StepBubble.vue'
 import StepConnector from '@/components/UI/StepConnector.vue'

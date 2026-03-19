@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import ReviewSection from './ReviewSection.vue'
 import type { PartnerDocument } from '@/domain/partner/partner.types'
 

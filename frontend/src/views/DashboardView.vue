@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
-import { useDashboard } from '@/composables/useDashboard'
+import { useDashboard } from '@/composables/domain/useDashboard'
 import { dashboardActionsConfig } from '@/config/dashboardActions'
 import WelcomeCard from '@/components/Dashboard/WelcomeCard.vue'
 import CompanyInfoCard from '@/components/Dashboard/CompanyInfoCard.vue'

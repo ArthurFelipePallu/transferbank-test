@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from 'lucide-vue-next'
-import { useTranslation } from '@/composables/useTranslation'
+import { useTranslation } from '@/composables/i18n/useTranslation'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
 import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 
