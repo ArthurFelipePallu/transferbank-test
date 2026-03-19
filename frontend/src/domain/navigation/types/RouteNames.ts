@@ -23,8 +23,8 @@ export enum RouteName {
   Dashboard         = 'dashboard',
 
   // ─── Partner ─────────────────────────────────────────────────────────────
-  PartnerRegistration = 'partner-registration',
-  PartnerRegistered   = 'partner-registered',
+  PartnerEdit       = 'partner-edit',
+  PartnerRegistered = 'partner-registered',
 
   // ─── Services ────────────────────────────────────────────────────────────
   Accounts          = 'accounts',

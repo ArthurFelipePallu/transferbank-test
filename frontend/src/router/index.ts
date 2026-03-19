@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
 import { browserScrollService } from '@/infrastructure/scroll/BrowserScrollService'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { useUiStore } from '@/stores/useUiStore'
-import { translationService } from '@/infrastructure/i18n/TranslationService'
+import { registerGuards } from '@/router/guards'
 
 // ─── Eager-loaded views (above the fold / always needed) ─────────────────────
 import LandingView from '@/views/LandingView.vue'
@@ -14,11 +12,11 @@ import NotFoundView from '@/views/NotFoundView.vue'
 import InDevelopmentView from '@/views/InDevelopmentView.vue'
 
 // ─── Lazy-loaded views ────────────────────────────────────────────────────────
-const AccountCreatedView     = () => import('@/views/AccountCreatedView.vue')
-const AlreadyExistingView    = () => import('@/views/AlreadyExistingView.vue')
-const PartnerRegistrationView = () => import('@/views/PartnerRegistrationView.vue')
-const PartnerRegisteredView  = () => import('@/views/PartnerRegisteredView.vue')
-const CompaniesListView      = () => import('@/views/CompaniesListView.vue')
+const AccountCreatedView  = () => import('@/views/AccountCreatedView.vue')
+const AlreadyExistingView = () => import('@/views/AlreadyExistingView.vue')
+const PartnerEditView     = () => import('@/views/PartnerEditView.vue')
+const PartnerRegisteredView = () => import('@/views/PartnerRegisteredView.vue')
+const CompaniesListView   = () => import('@/views/CompaniesListView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -112,10 +110,10 @@ const router = createRouter({
       path: '/partner',
       children: [
         {
-          path: 'registration',
-          name: RouteName.PartnerRegistration,
-          component: PartnerRegistrationView,
-          meta: { requiresAuth: true, titleKey: 'partner.registration.pageTitle' },
+          path: 'edit',
+          name: RouteName.PartnerEdit,
+          component: PartnerEditView,
+          meta: { requiresAuth: true, titleKey: 'partner.editPage.title' },
         },
         {
           path: 'registered',
@@ -235,25 +233,6 @@ const router = createRouter({
 })
 
 // ─── Navigation guards ────────────────────────────────────────────────────────
-router.beforeEach((to, _from, next) => {
-  const authStore = useAuthStore()
-  const uiStore = useUiStore()
-
-  const requiresAuth  = to.matched.some((r) => r.meta.requiresAuth)
-  const requiresGuest = to.matched.some((r) => r.meta.requiresGuest)
-
-  if (requiresAuth && !authStore.isAuthenticated) {
-    uiStore.showError(translationService.t('errors.pleaseLogin'), 5000)
-    next({ name: RouteName.Login, query: { redirect: to.fullPath } })
-    return
-  }
-
-  if (requiresGuest && authStore.isAuthenticated) {
-    next({ name: RouteName.Dashboard })
-    return
-  }
-
-  next()
-})
+registerGuards(router)
 
 export default router
