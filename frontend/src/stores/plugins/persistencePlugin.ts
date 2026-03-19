@@ -9,15 +9,9 @@ import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageSe
 interface PersistenceOptions {
   key: string
   paths?: string[]
-  beforeRestore?: (context: PiniaPluginContext) => void
-  afterRestore?: (context: PiniaPluginContext) => void
 }
 
 const PERSISTENCE_CONFIG: Record<string, PersistenceOptions> = {
-  onboarding: {
-    key: STORAGE_KEYS.ONBOARDING_FORM_CACHE,
-    paths: ['companyData'],
-  },
   partner: {
     key: STORAGE_KEYS.PARTNER_FORM_CACHE,
     paths: ['formData', 'currentStep', 'steps'],
@@ -36,10 +30,6 @@ export function createPersistencePlugin() {
     // Restore state from storage on initialization
     const savedState = storageService.get<any>(config.key)
     if (savedState) {
-      if (config.beforeRestore) {
-        config.beforeRestore(context)
-      }
-
       // Only restore specified paths or all state
       if (config.paths) {
         config.paths.forEach((path) => {
@@ -49,10 +39,6 @@ export function createPersistencePlugin() {
         })
       } else {
         store.$patch(savedState)
-      }
-
-      if (config.afterRestore) {
-        config.afterRestore(context)
       }
     }
 

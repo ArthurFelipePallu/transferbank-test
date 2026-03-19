@@ -76,3 +76,30 @@ export enum AddPartnerResult {
 export function arePartnersSubmittable(partners: OnboardingPartner[]): boolean {
   return partners.length > 0 && partners.every((p) => p.cpf.trim().length > 0)
 }
+
+/**
+ * Distributes 100% shareholding across a list of raw share values.
+ * Uses integer arithmetic (1/100 of a percent = 1 "cent") to avoid floating point drift.
+ * If the API values sum to ~100 (99–101), they are scaled proportionally.
+ * Otherwise an equal split is applied.
+ * The last entry always absorbs any rounding remainder so the total is always exactly 100.
+ */
+export function distributeShareholding(rawShares: number[]): number[] {
+  const TOTAL_CENTS = 10000 // 100.00% expressed in hundredths of a percent
+  const apiTotal = rawShares.reduce((sum, s) => sum + s, 0)
+  const hasValidShares = apiTotal >= 99 && apiTotal <= 101
+
+  let cents: number[]
+
+  if (hasValidShares) {
+    cents = rawShares.map((s) => Math.floor((s / apiTotal) * TOTAL_CENTS))
+  } else {
+    const base = Math.floor(TOTAL_CENTS / rawShares.length)
+    cents = rawShares.map(() => base)
+  }
+
+  const allocated = cents.reduce((a, b) => a + b, 0)
+  cents[cents.length - 1]! += TOTAL_CENTS - allocated
+
+  return cents.map((c) => c / 100)
+}
