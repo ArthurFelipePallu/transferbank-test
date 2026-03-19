@@ -1,28 +1,51 @@
 <script setup lang="ts">
-import { Users, Trash2 } from 'lucide-vue-next'
+import { Users, Pencil, Trash2 } from 'lucide-vue-next'
 import type { OnboardingPartner } from '@/domain/onboarding/onboarding.types'
 import { formatCpfDisplay } from '@/utils/formatters'
+import { useTranslation } from '@/composables/useTranslation'
 
 defineProps<{ partner: OnboardingPartner }>()
-const emit = defineEmits<{ remove: [tempId: string] }>()
+const emit = defineEmits<{
+  remove: [tempId: string]
+  edit: [tempId: string]
+}>()
+
+const { t } = useTranslation()
 </script>
 
 <template>
-  <div class="partner-card">
-    <div class="partner-avatar">
+  <div class="partner-card d-flex align-items-center gap-2 px-3 py-2 border rounded-3 bg-body overflow-hidden">
+    <!-- Avatar -->
+    <div class="partner-avatar d-flex align-items-center justify-content-center rounded-circle flex-shrink-0">
       <Users :size="14" />
     </div>
-    <div class="partner-info">
-      <p class="partner-name">{{ partner.fullName }}</p>
-      <p class="partner-cpf">{{ formatCpfDisplay(partner.cpf) }}</p>
+
+    <!-- Info -->
+    <div class="flex-grow-1 min-w-0 overflow-hidden">
+      <p class="fw-semibold small mb-0 text-truncate">{{ partner.fullName }}</p>
+      <p class="text-secondary mb-0 font-monospace text-truncate" style="font-size: var(--font-size-xs)">
+        {{ formatCpfDisplay(partner.cpf) }}
+      </p>
     </div>
-    <div class="partner-actions">
-      <span class="partner-share">{{ partner.shareholding.toFixed(2) }}%</span>
+
+    <!-- Actions -->
+    <div class="d-flex align-items-center gap-1 flex-shrink-0">
+      <span class="fw-bold small text-nowrap" style="color: var(--color-primary-teal)">
+        {{ partner.shareholding.toFixed(2) }}%
+      </span>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary p-1"
+        @click="emit('edit', partner.tempId)"
+        :aria-label="t('onboarding.partnersStep.editPartner', { name: partner.fullName })"
+      >
+        <Pencil :size="13" />
+      </button>
       <button
         type="button"
         class="btn btn-sm btn-outline-danger p-1"
         @click="emit('remove', partner.tempId)"
-        :aria-label="`Remove ${partner.fullName}`"
+        :aria-label="t('onboarding.partnersStep.removePartner', { name: partner.fullName })"
       >
         <Trash2 :size="13" />
       </button>
@@ -32,64 +55,16 @@ const emit = defineEmits<{ remove: [tempId: string] }>()
 
 <style scoped>
 .partner-card {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--border-radius-md);
-  background: var(--bs-body-bg);
   transition: border-color 0.2s ease;
-  min-width: 0;
-  overflow: hidden;
 }
-.partner-card:hover { border-color: var(--color-primary-teal); }
+.partner-card:hover {
+  border-color: var(--color-primary-teal) !important;
+}
 
 .partner-avatar {
   width: 1.75rem;
   height: 1.75rem;
-  border-radius: 50%;
   background: var(--color-primary-teal);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.partner-info {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
-.partner-name {
-  font-size: 0.82rem;
-  font-weight: 600;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.partner-cpf {
-  font-size: 0.7rem;
-  color: var(--bs-secondary-color);
-  margin: 0;
-  font-family: monospace;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.partner-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex-shrink: 0;
-}
-.partner-share {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-primary-teal);
-  white-space: nowrap;
+  color: var(--color-white);
 }
 </style>

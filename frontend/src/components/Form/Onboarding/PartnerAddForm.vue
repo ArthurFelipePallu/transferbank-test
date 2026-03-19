@@ -1,54 +1,81 @@
 ﻿<script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, isRef } from "vue"
 import { useForm } from "vee-validate"
 import { X } from "lucide-vue-next"
-import { storeToRefs } from "pinia"
-import { useOnboardingStore } from "@/stores/useOnboardingStore"
 import { useUiStore } from "@/stores/useUiStore"
 import { useTranslation } from "@/composables/useTranslation"
 import { usePartnerFormValidation } from "@/composables/usePartnerFormValidation"
 import { createOnboardingPartnerSchema, type OnboardingPartnerValues } from "@/domain/onboarding/onboarding.schema"
 import type { PartnerDocument } from "@/domain/partner/partner.types"
+import type { OnboardingPartner } from "@/domain/onboarding/onboarding.types"
+import { AddPartnerResult } from "@/domain/onboarding/onboarding.types"
+import { ONBOARDING_PARTNER_DEFAULTS } from "@/domain/onboarding/entities/OnboardingDefaults"
+import type { PartnerPanelStore } from "@/composables/usePartnerPanel"
 import FormInputField from "@/components/Form/FormInputField.vue"
 import PepCheckbox from "@/components/Form/PepCheckbox.vue"
 import FieldWarning from "@/components/UI/FieldWarning.vue"
 import DocumentsRequiredInfo from "@/components/UI/DocumentsRequiredInfo.vue"
 import FileUpload from "@/components/Partner/FileUpload.vue"
-import { AddPartnerResult } from "@/domain/onboarding/onboarding.types"
-import { ONBOARDING_PARTNER_DEFAULTS } from "@/domain/onboarding/entities/OnboardingDefaults"
 
+interface Props {
+  store: PartnerPanelStore
+  editingPartner?: OnboardingPartner | null
+}
+
+const props = withDefaults(defineProps<Props>(), { editingPartner: null })
 const emit = defineEmits<{ close: [] }>()
 
 const { t } = useTranslation()
-const store = useOnboardingStore()
 const uiStore = useUiStore()
-const { remainingShareholding: remainingOnboardingShareholding } = storeToRefs(store)
 
-const documents = ref<PartnerDocument[]>([])
+const isEditMode = computed(() => props.editingPartner !== null)
 
-const validationSchema = computed(() =>
-  createOnboardingPartnerSchema(remainingOnboardingShareholding.value),
+const documents = ref<PartnerDocument[]>(
+  (props.editingPartner?.documents as PartnerDocument[] | undefined) ?? [],
 )
+
+// Normalize — Pinia store properties are reactive but not wrapped in Ref when accessed directly
+const unwrap = <T>(v: T | { value: T }): T => (isRef(v) ? (v as { value: T }).value : v as T)
+
+// Snapshot cap at mount — prevents schema from shifting while form is open
+const snapshotRemaining = unwrap<number>(props.store.remainingShareholding as number)
+const snapshotCap = isEditMode.value && props.editingPartner
+  ? snapshotRemaining + props.editingPartner.shareholding
+  : snapshotRemaining
 
 const { handleSubmit, meta, resetForm, values, setFieldValue, errors } =
   useForm<OnboardingPartnerValues>({
-    validationSchema,
-    initialValues: {
-      fullName:     ONBOARDING_PARTNER_DEFAULTS.fullName,
-      cpf:          ONBOARDING_PARTNER_DEFAULTS.cpf,
-      nationality:  ONBOARDING_PARTNER_DEFAULTS.nationality,
-      shareholding: undefined as unknown as number,
-      isPep:        ONBOARDING_PARTNER_DEFAULTS.isPep,
-      documents:    ONBOARDING_PARTNER_DEFAULTS.documents,
-    },
+    validationSchema: createOnboardingPartnerSchema(snapshotCap),
+    initialValues: props.editingPartner
+      ? {
+          fullName:     props.editingPartner.fullName,
+          cpf:          props.editingPartner.cpf,
+          nationality:  props.editingPartner.nationality,
+          shareholding: props.editingPartner.shareholding,
+          isPep:        props.editingPartner.isPep,
+          documents:    (props.editingPartner.documents as PartnerDocument[]) ?? [],
+        }
+      : {
+          fullName:     ONBOARDING_PARTNER_DEFAULTS.fullName,
+          cpf:          ONBOARDING_PARTNER_DEFAULTS.cpf,
+          nationality:  ONBOARDING_PARTNER_DEFAULTS.nationality,
+          shareholding: undefined as unknown as number,
+          isPep:        ONBOARDING_PARTNER_DEFAULTS.isPep,
+          documents:    ONBOARDING_PARTNER_DEFAULTS.documents,
+        },
+    validateOnMount: true,
   })
 
-const shareholdingRef = computed(() => values.shareholding)
-const fullNameRef     = computed(() => values.fullName)
-const cpfRef          = computed(() => values.cpf)
-
 const { shareholdingWarning, duplicateNameWarning, duplicateCpfWarning } =
-  usePartnerFormValidation(fullNameRef, cpfRef, shareholdingRef, (v) => setFieldValue("shareholding", v))
+  usePartnerFormValidation(
+    computed(() => values.fullName),
+    computed(() => values.cpf),
+    computed(() => values.shareholding),
+    (v) => setFieldValue("shareholding", v),
+    computed(() => unwrap<OnboardingPartner[]>(props.store.partners as OnboardingPartner[])),
+    computed(() => unwrap<number>(props.store.remainingShareholding as number)),
+    props.editingPartner?.tempId,
+  )
 
 const updateDocuments = (files: PartnerDocument[]) => {
   documents.value = files
@@ -63,16 +90,27 @@ const close = () => {
 
 const save = handleSubmit(async (vals) => {
   uiStore.startLoading(t("onboarding.partnersStep.saving"))
-  await new Promise((r) => setTimeout(r, 120))
   try {
-    const result = store.addPartner({
-      tempId: crypto.randomUUID(),
-      fullName: vals.fullName,
-      cpf: vals.cpf,
-      nationality: vals.nationality,
-      shareholding: vals.shareholding,
-      isPep: vals.isPep,
-      documents: vals.documents ?? [],
+    if (isEditMode.value && props.editingPartner) {
+      await props.store.updatePartner(props.editingPartner.tempId, {
+        fullName:     vals.fullName,
+        nationality:  vals.nationality,
+        shareholding: Number(vals.shareholding),
+        isPep:        vals.isPep,
+        documents:    vals.documents ?? [],
+      })
+      close()
+      return
+    }
+
+    const result = await props.store.addPartner({
+      tempId:       crypto.randomUUID(),
+      fullName:     vals.fullName,
+      cpf:          vals.cpf,
+      nationality:  vals.nationality,
+      shareholding: Number(vals.shareholding),
+      isPep:        vals.isPep,
+      documents:    vals.documents ?? [],
     })
     if (result === AddPartnerResult.DuplicateCpf)  { uiStore.showWarning(t("onboarding.partnersStep.duplicateCpf"));  return }
     if (result === AddPartnerResult.DuplicateName) { uiStore.showWarning(t("onboarding.partnersStep.duplicateName")); return }
@@ -84,12 +122,15 @@ const save = handleSubmit(async (vals) => {
 </script>
 
 <template>
-  <div class="add-form">
-    <!-- Header -->
-    <div class="form-header">
+  <div class="p-3 border rounded-3 bg-body">
+    <div class="d-flex align-items-start justify-content-between gap-2 mb-3 pb-3 border-bottom">
       <div>
-        <h5 class="form-title">{{ t("onboarding.partnersStep.addPartnerTitle") }}</h5>
-        <p class="form-subtitle text-muted small mb-0">{{ t("onboarding.partnersStep.formSubtitle") }}</p>
+        <h5 class="fw-semibold mb-1" style="font-size: 0.95rem">
+          {{ isEditMode ? t("onboarding.partnersStep.editPartnerTitle") : t("onboarding.partnersStep.addPartnerTitle") }}
+        </h5>
+        <p class="text-muted small mb-0" style="font-size: var(--font-size-xs)">
+          {{ isEditMode ? t("onboarding.partnersStep.editFormSubtitle") : t("onboarding.partnersStep.formSubtitle") }}
+        </p>
       </div>
       <button type="button" class="btn-close-form" @click="close" :aria-label="t('common.close')">
         <X :size="16" />
@@ -98,7 +139,6 @@ const save = handleSubmit(async (vals) => {
 
     <form @submit.prevent="save" novalidate>
       <div class="row g-2">
-
         <div class="col-12">
           <FormInputField name="fullName" :label="t('onboarding.partnersStep.fullName')" :placeholder="t('onboarding.partnersStep.placeholders.fullName')">
             <template #below><FieldWarning :message="duplicateNameWarning" /></template>
@@ -106,7 +146,7 @@ const save = handleSubmit(async (vals) => {
         </div>
 
         <div class="col-12">
-          <FormInputField name="cpf" :label="t('onboarding.partnersStep.cpf')" :placeholder="t('onboarding.partnersStep.placeholders.cpf')" inputmode="numeric" mask="cpf">
+          <FormInputField name="cpf" :label="t('onboarding.partnersStep.cpf')" :placeholder="t('onboarding.partnersStep.placeholders.cpf')" inputmode="numeric" mask="cpf" :disabled="isEditMode">
             <template #below><FieldWarning :message="duplicateCpfWarning" /></template>
           </FormInputField>
         </div>
@@ -122,33 +162,21 @@ const save = handleSubmit(async (vals) => {
         </div>
 
         <div class="col-12">
-          <PepCheckbox
-            :model-value="values.isPep"
-            input-id="onboarding-isPep"
-            @update:model-value="setFieldValue('isPep', $event)"
-          />
+          <PepCheckbox :model-value="values.isPep" input-id="partner-isPep" @update:model-value="setFieldValue('isPep', $event)" />
         </div>
 
         <div class="col-12">
-          <FileUpload
-            :model-value="documents"
-            :label="t('partner.registration.documents.uploadLabel')"
-            :error="errors.documents as string | undefined"
-            @update:model-value="updateDocuments"
-          />
-          <div class="mt-2">
-            <DocumentsRequiredInfo />
-          </div>
+          <FileUpload :model-value="documents" :label="t('partner.registration.documents.uploadLabel')" :error="errors.documents as string | undefined" @update:model-value="updateDocuments" />
+          <div class="mt-2"><DocumentsRequiredInfo /></div>
         </div>
-
       </div>
 
       <div class="d-flex gap-2 mt-3">
         <button type="button" class="btn btn-outline-secondary flex-fill" @click="close">
           {{ t("onboarding.partnersStep.cancel") }}
         </button>
-        <button type="submit" class="btn btn-primary flex-fill" :disabled="!meta.valid">
-          {{ t("onboarding.partnersStep.save") }}
+        <button type="submit" class="btn btn-gradient-primary flex-fill" :disabled="!meta.valid">
+          {{ isEditMode ? t("onboarding.partnersStep.update") : t("onboarding.partnersStep.save") }}
         </button>
       </div>
     </form>
@@ -156,33 +184,12 @@ const save = handleSubmit(async (vals) => {
 </template>
 
 <style scoped>
-.add-form {
-  padding: 1rem;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--border-radius-lg);
-  background: var(--bs-body-bg);
-}
-
-.form-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--bs-border-color);
-}
-
-.form-title   { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
-.form-subtitle { font-size: 0.78rem; }
-
 .btn-close-form {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 1.75rem;
   height: 1.75rem;
-  min-height: unset;
   padding: 0;
   border-radius: var(--border-radius-sm);
   color: var(--bs-secondary-color);
@@ -196,11 +203,4 @@ const save = handleSubmit(async (vals) => {
   border-color: var(--color-danger);
   color: var(--color-danger);
 }
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
-  border: none;
-  color: white;
-}
-.btn-primary:hover:not(:disabled) { opacity: 0.9; }
 </style>

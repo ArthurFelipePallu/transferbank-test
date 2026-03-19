@@ -9,15 +9,13 @@ import { useTranslation } from '@/composables/useTranslation'
 import { OnboardingStep } from '@/domain/onboarding/onboarding.types'
 import { RegistrationResult } from '@/domain/onboarding/types/RegistrationResult'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
-import { applyCepMask } from '@/utils/formatters'
+import { buildCnpjPatch } from '@/application/onboarding/onboardingUseCases'
 import type {
   OnboardingCnpjValues,
-  OnboardingCompanyValues,
-  OnboardingCryptoValues,
-  OnboardingAddressValues,
   OnboardingPasswordValues,
 } from '@/domain/onboarding/onboarding.schema'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
+import type { OnboardingFormCache } from '@/domain/onboarding/onboarding.types'
 import StepIndicator from '@/components/UI/StepIndicator.vue'
 import CnpjStep from './Onboarding/steps/CnpjStep.vue'
 import CompanyStep from './Onboarding/steps/CompanyStep.vue'
@@ -35,7 +33,7 @@ const { t } = useTranslation()
 
 const { currentStep, steps, companyData, isSubmitting, formKey } = storeToRefs(onboardingStore)
 
-// Password is never stored in the cache for security — held in memory only
+// Password is intentionally never cached — held in memory only for security
 const pendingPassword = ref('')
 
 // ─── Step handlers ────────────────────────────────────────────────────────────
@@ -43,56 +41,29 @@ const pendingPassword = ref('')
 const handleCnpjNext = (
   vals: OnboardingCnpjValues & { companyInfo: CompanyInfo | null; isTestCnpj: boolean },
 ) => {
-  // Always clear all previous form data and partners before applying new CNPJ result
-  onboardingStore.clearFormCache()
+  const { patch, shouldClearPrevious, shouldPrefillSocios } = buildCnpjPatch(vals, companyData.value)
 
-  onboardingStore.updateCompanyData({ cnpj: vals.cnpj })
-
-  if (vals.companyInfo) {
-    onboardingStore.updateCompanyData({
-      companyName: vals.companyInfo.razaoSocial || '',
-      fantasyName: vals.companyInfo.nomeFantasia || vals.companyInfo.razaoSocial || '',
-      phone: vals.companyInfo.telefone || '',
-      email: vals.companyInfo.email || '',
-      cep: vals.companyInfo.cep ? applyCepMask(vals.companyInfo.cep) : '',
-    })
-
-    if (vals.companyInfo.socios?.length) {
-      onboardingStore.prefillPartnersFromSocios(vals.companyInfo.socios)
-    }
-  }
+  if (shouldClearPrevious) onboardingStore.clearFormCache()
+  onboardingStore.updateCompanyData(patch)
+  if (shouldPrefillSocios) onboardingStore.prefillPartnersFromSocios(vals.companyInfo!.socios!)
 
   onboardingStore.nextStep()
   scrollToTop()
 }
 
-const handleCompanyNext = (vals: OnboardingCompanyValues) => {
-  onboardingStore.updateCompanyData(vals)
-  onboardingStore.nextStep()
-  scrollToTop()
-}
-
-const handleCryptoNext = (vals: OnboardingCryptoValues) => {
-  onboardingStore.updateCompanyData({ cryptoCurrencies: vals.cryptoCurrencies })
-  onboardingStore.nextStep()
-  scrollToTop()
-}
-
-const handleAddressNext = (vals: OnboardingAddressValues) => {
-  onboardingStore.updateCompanyData(vals)
+const handleStepNext = (data: Partial<OnboardingFormCache>) => {
+  onboardingStore.updateCompanyData(data)
   onboardingStore.nextStep()
   scrollToTop()
 }
 
 const handlePasswordNext = (vals: OnboardingPasswordValues) => {
   pendingPassword.value = vals.password
-  onboardingStore.markStepCompleted(OnboardingStep.PASSWORD)
   onboardingStore.nextStep()
   scrollToTop()
 }
 
 const handlePartnersNext = () => {
-  onboardingStore.markStepCompleted(OnboardingStep.PARTNERS)
   onboardingStore.nextStep()
   scrollToTop()
 }
@@ -102,18 +73,15 @@ const handleBack = (targetStep: OnboardingStep) => {
   scrollToTop()
 }
 
+// Live update — called as user types in any step, before Next is clicked
+const handleUpdate = (data: Partial<OnboardingFormCache>) => {
+  onboardingStore.updateCompanyData(data)
+}
+
 const handleSubmit = async () => {
   const d = companyData.value
 
-  if (
-    !d.cnpj ||
-    !d.companyName ||
-    !d.fantasyName ||
-    !d.phone ||
-    !d.email ||
-    !d.cryptoCurrencies?.length ||
-    !pendingPassword.value
-  ) {
+  if (!d.cnpj || !d.companyName || !d.fantasyName || !d.phone || !d.email || !d.cryptoCurrencies?.length || !pendingPassword.value) {
     uiStore.showError(t('onboarding.toasts.failed'))
     return
   }
@@ -122,23 +90,14 @@ const handleSubmit = async () => {
     uiStore.startLoading(t('onboarding.toasts.registering'))
 
     const result = await onboardingStore.submitOnboarding(
-      d.cnpj,
-      d.companyName,
-      d.fantasyName,
-      d.cryptoCurrencies,
-      d.phone,
-      d.email,
-      pendingPassword.value,
+      d.cnpj, d.companyName, d.fantasyName, d.cryptoCurrencies, d.phone, d.email, pendingPassword.value,
     )
 
     if (result === RegistrationResult.Success) {
-      // Backend confirmed registration — navigate to success view
       router.push({ name: RouteName.AccountCreated })
     } else if (result === RegistrationResult.AlreadyExists) {
-      // Backend says company already exists — navigate to the dedicated view
       router.push({ name: RouteName.AccountExists })
     } else {
-      // Genuine error — show message and reset so user can try again
       uiStore.showError(onboardingStore.error || t('onboarding.toasts.failed'))
       pendingPassword.value = ''
       onboardingStore.resetOnboarding()
@@ -169,7 +128,8 @@ const handleSubmit = async () => {
             v-else-if="currentStep === OnboardingStep.COMPANY"
             :key="`${formKey}-${OnboardingStep.COMPANY}`"
             :initial-values="companyData"
-            @next="handleCompanyNext"
+            @next="handleStepNext"
+            @update="handleUpdate"
             @back="handleBack(OnboardingStep.CNPJ)"
           />
 
@@ -177,7 +137,8 @@ const handleSubmit = async () => {
             v-else-if="currentStep === OnboardingStep.CRYPTO"
             :key="`${formKey}-${OnboardingStep.CRYPTO}`"
             :initial-values="{ cryptoCurrencies: companyData.cryptoCurrencies }"
-            @next="handleCryptoNext"
+            @next="(v) => handleStepNext({ cryptoCurrencies: v.cryptoCurrencies })"
+            @update="(v) => handleUpdate({ cryptoCurrencies: v.cryptoCurrencies })"
             @back="handleBack(OnboardingStep.COMPANY)"
           />
 
@@ -185,13 +146,16 @@ const handleSubmit = async () => {
             v-else-if="currentStep === OnboardingStep.ADDRESS"
             :key="`${formKey}-${OnboardingStep.ADDRESS}`"
             :initial-values="companyData"
-            @next="handleAddressNext"
+            @next="handleStepNext"
+            @update="handleUpdate"
             @back="handleBack(OnboardingStep.CRYPTO)"
           />
 
           <PartnersStep
             v-else-if="currentStep === OnboardingStep.PARTNERS"
             :key="`${formKey}-${OnboardingStep.PARTNERS}`"
+            :store="onboardingStore"
+            :show-prefill-alert="true"
             @next="handlePartnersNext"
             @back="handleBack(OnboardingStep.ADDRESS)"
           />
