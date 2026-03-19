@@ -6,9 +6,12 @@ import type { PartnerFormValues } from '@/domain/partner/partner.schema'
 import type { PartnerSummary, PartnersCollection } from '@/domain/partner/entities/PartnerSummary'
 import {
   registerPartner,
+  updatePartner as updatePartnerUseCase,
+  patchPartner as patchPartnerUseCase,
   fetchPartnersCollection,
   validateShareholding,
 } from '@/application/partner/partnerUseCases'
+import type { PartnerRegistration, PartnerUpdate, PartnerPatch } from '@/domain/partner/interfaces/partnerGatewayInterface'
 import { partnerGateway } from '@/infrastructure/gateways'
 import { useAuthStore } from './useAuthStore'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
@@ -180,6 +183,19 @@ export const usePartnerStore = defineStore('partner', () => {
     steps.value.forEach((s) => { s.isCompleted = false })
   }
 
+  // ─── Direct API actions (used by usePartnerEditStore) ─────────────────────
+  const submitPartnerDirect = async (data: PartnerRegistration): Promise<PartnerSummary> => {
+    return registerPartner(partnerGateway, data)
+  }
+
+  const updatePartnerById = async (id: string, data: PartnerUpdate): Promise<PartnerSummary> => {
+    return updatePartnerUseCase(partnerGateway, id, data)
+  }
+
+  const patchPartnerById = async (id: string, data: PartnerPatch): Promise<PartnerSummary> => {
+    return patchPartnerUseCase(partnerGateway, id, data)
+  }
+
   return {
     // State
     partnersCollection,
@@ -201,6 +217,9 @@ export const usePartnerStore = defineStore('partner', () => {
     nextStep,
     previousStep,
     submitPartner,
+    submitPartnerDirect,
+    updatePartnerById,
+    patchPartnerById,
     loadPartners,
     checkShareholding,
     resetForm,
