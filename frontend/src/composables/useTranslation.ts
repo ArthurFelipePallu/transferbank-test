@@ -26,8 +26,27 @@ export const useTranslation = () => {
     return translationService.has(key)
   }
 
+  /**
+   * Resolves a vee-validate error string that may be a VM translation key.
+   * VM keys use the format: "validation.someKey|param1=value1,param2=value2"
+   * Plain strings (not dot-notation keys) are returned as-is.
+   */
+  const tError = (msg: string): string => {
+    const [key, paramStr] = msg.split('|')
+    if (!key?.includes('.')) return msg
+    const params: Record<string, string> = {}
+    if (paramStr) {
+      for (const pair of paramStr.split(',')) {
+        const [k, v] = pair.split('=')
+        if (k && v !== undefined) params[k] = v
+      }
+    }
+    return t(key as TranslationKey, params)
+  }
+
   return {
     t,
+    tError,
     currentLocale,
     localeInfo,
     setLocale,

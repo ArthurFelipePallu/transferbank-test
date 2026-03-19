@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import CryptoChip from '@/components/Form/CryptoChip.vue'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
@@ -18,6 +18,7 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
   next: [values: OnboardingCryptoValues]
   back: []
+  update: [values: Partial<OnboardingCryptoValues>]
 }>()
 
 const { t } = useTranslation()
@@ -45,6 +46,9 @@ const toggle = (currency: CryptoCurrencyEnum) => {
     ? current.filter((c) => c !== currency)
     : [...current, currency]
 }
+
+// Persist selection to store as user toggles
+watch(selectedCurrencies, (v) => emit('update', { cryptoCurrencies: v ?? [] }))
 
 const submit = handleSubmit((vals) => emit('next', vals))
 </script>

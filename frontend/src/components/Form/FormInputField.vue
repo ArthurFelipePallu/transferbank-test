@@ -2,6 +2,11 @@
 import { Field } from 'vee-validate'
 import { ref, computed } from 'vue'
 import { applyCnpjMask, applyCpfMask, applyPhoneMask, applyCepMask } from '@/utils/formatters'
+import { useTranslation } from '@/composables/useTranslation'
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+
+const { tError } = useTranslation()
+
 
 type InputMode =
   | 'text'
@@ -111,7 +116,7 @@ const applyMask = (value: string): string => {
       </div>
 
       <div v-if="meta.touched && errorMessage" class="invalid-feedback d-block">
-        {{ errorMessage }}
+        {{ tError(errorMessage) }}
       </div>
 
       <slot name="below" :meta="meta" :value="field.value" />

@@ -15,34 +15,40 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits<{ next: [values: OnboardingAddressValues]; back: [] }>()
+const emit = defineEmits<{ next: [values: OnboardingAddressValues]; back: []; update: [values: Partial<OnboardingAddressValues>] }>()
 
 const { t } = useTranslation()
 const { isLoading: isCepLoading, lookup: lookupCep, reset: resetCep } = useCepLookup()
 const numeroRef = ref<HTMLDivElement | null>(null)
 
-// Only the CEP is passed in — address fields are always resolved via CEP lookup,
-// never pre-filled from cache (prevents stale address data across registrations).
 const maskedInitialCep = props.initialValues?.cep
   ? applyCepMask(props.initialValues.cep)
   : ''
+
+// If cached address fields exist, restore them directly — no CEP lookup needed.
+const hasCachedAddress = !!(
+  props.initialValues?.logradouro ||
+  props.initialValues?.cidade ||
+  props.initialValues?.uf
+)
 
 const { handleSubmit, meta, values, setFieldValue } = useForm<OnboardingAddressValues>({
   validationSchema: onboardingAddressSchema,
   initialValues: {
     cep:         maskedInitialCep,
-    logradouro:  ADDRESS_DEFAULTS.logradouro,
-    numero:      ADDRESS_DEFAULTS.numero,
-    complemento: ADDRESS_DEFAULTS.complemento,
-    bairro:      ADDRESS_DEFAULTS.bairro,
-    cidade:      ADDRESS_DEFAULTS.localidade,
-    uf:          ADDRESS_DEFAULTS.uf,
+    logradouro:  props.initialValues?.logradouro  ?? ADDRESS_DEFAULTS.logradouro,
+    numero:      props.initialValues?.numero      ?? ADDRESS_DEFAULTS.numero,
+    complemento: props.initialValues?.complemento ?? ADDRESS_DEFAULTS.complemento,
+    bairro:      props.initialValues?.bairro      ?? ADDRESS_DEFAULTS.bairro,
+    cidade:      props.initialValues?.cidade      ?? ADDRESS_DEFAULTS.localidade,
+    uf:          props.initialValues?.uf          ?? ADDRESS_DEFAULTS.uf,
   },
   validateOnMount: false,
 })
 
-// If a CEP was pre-filled from the CNPJ lookup, auto-run the lookup on mount.
+// Only auto-run CEP lookup on mount when there are no cached address fields.
 onMounted(async () => {
+  if (hasCachedAddress) return
   const sanitized = sanitizeCep(maskedInitialCep)
   if (sanitized.length === 8) {
     await nextTick()
@@ -61,6 +67,9 @@ watch(
     }
   },
 )
+
+// Persist all address fields to store as user types
+watch(values, (v) => emit('update', { ...v }), { deep: true })
 
 async function runCepLookup(sanitizedCep: string) {
   const info = await lookupCep(sanitizedCep)

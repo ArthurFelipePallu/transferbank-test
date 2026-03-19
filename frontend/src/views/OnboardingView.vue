@@ -1,19 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { useTranslation } from '@/composables/useTranslation'
 import OnboardingForm from '@/components/Form/OnboardingForm.vue'
-import { useOnboardingStore } from '@/stores/useOnboardingStore'
 
-const onboardingStore = useOnboardingStore()
 const { t } = useTranslation()
-
-onMounted(() => {
-  // If the user navigates back to the form after a completed registration,
-  // reset so they start fresh instead of seeing stale state
-  if (onboardingStore.isCompleted) {
-    onboardingStore.resetOnboarding()
-  }
-})
 </script>
 
 <template>

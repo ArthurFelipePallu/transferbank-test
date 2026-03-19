@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { CheckCircle, XCircle, AlertTriangle, Search, Ban } from 'lucide-vue-next'
 import FormInputField from '@/components/Form/FormInputField.vue'
@@ -21,6 +21,7 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   next: [values: OnboardingCnpjValues & { companyInfo: CompanyInfo | null; isTestCnpj: boolean }]
+  update: [values: Partial<OnboardingCnpjValues>]
 }>()
 
 const { t } = useTranslation()
@@ -47,10 +48,12 @@ const resetState = () => {
   resetCheck()
 }
 
-// ── Auto-lookup when CNPJ reaches 14 digits ───────────────────────────────────
+// ── Single watcher: persist + auto-lookup when CNPJ changes ──────────────────
 watch(
   () => values.cnpj,
   async (newVal) => {
+    emit('update', { cnpj: newVal })
+
     const sanitized = sanitizeCnpj(newVal)
     resetState()
 
@@ -59,7 +62,6 @@ watch(
     if (isTestCnpj(sanitized)) {
       isTestCnpjValue.value = true
       lookupDone.value      = true
-      // Test CNPJs can still be already registered — check anyway
       await checkRegistration(sanitized)
       return
     }
@@ -72,7 +74,6 @@ watch(
       return
     }
 
-    // Only check registration if the company is active (no status error)
     if (!statusError.value) {
       await checkRegistration(sanitized)
     }
@@ -80,15 +81,17 @@ watch(
 )
 
 // ── Proceed guard — all blocking conditions named ─────────────────────────────
-const isBlocked = () =>
-  !lookupDone.value     ||
-  !!statusError.value   ||
-  isLoading.value       ||
-  isChecking.value      ||
-  isRegistered.value
+const isBlocked = computed(
+  () =>
+    !lookupDone.value   ||
+    !!statusError.value ||
+    isLoading.value     ||
+    isChecking.value    ||
+    isRegistered.value,
+)
 
 const submit = handleSubmit((vals) => {
-  if (isBlocked()) return
+  if (isBlocked.value) return
   emit('next', {
     ...vals,
     companyInfo: companyInfo.value ?? null,
@@ -161,7 +164,7 @@ const submit = handleSubmit((vals) => {
     <FormNavigation
       :show-back="false"
       :next-label="t('common.next')"
-      :next-disabled="!meta.valid || isBlocked()"
+      :next-disabled="!meta.valid || isBlocked"
       @next="submit"
     />
   </form>

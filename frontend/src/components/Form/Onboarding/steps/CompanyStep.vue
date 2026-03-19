@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import FormInputField from '@/components/Form/FormInputField.vue'
 import PhoneInputField from '@/components/Form/PhoneInputField.vue'
@@ -17,12 +17,13 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
   next: [values: OnboardingCompanyValues]
   back: []
+  update: [values: Partial<OnboardingCompanyValues>]
 }>()
 
 const { t } = useTranslation()
 const phoneInputRef = ref<InstanceType<typeof PhoneInputField> | null>(null)
 
-const { handleSubmit, meta, setValues } = useForm<OnboardingCompanyValues>({
+const { handleSubmit, meta, values } = useForm<OnboardingCompanyValues>({
   validationSchema: onboardingCompanySchema,
   initialValues: {
     companyName: props.initialValues?.companyName ?? '',
@@ -33,22 +34,14 @@ const { handleSubmit, meta, setValues } = useForm<OnboardingCompanyValues>({
   validateOnMount: false,
 })
 
-onMounted(() => {
-  if (props.initialValues) {
-    setValues({
-      companyName: props.initialValues.companyName ?? '',
-      fantasyName: props.initialValues.fantasyName ?? '',
-      phone: props.initialValues.phone ?? '',
-      email: props.initialValues.email ?? '',
-    })
-  }
-})
-
 const submit = handleSubmit((vals) => {
   // fullPhoneNumber is a computed ref — access .value
   const fullPhone = phoneInputRef.value?.fullPhoneNumber.value || vals.phone
   emit('next', { ...vals, phone: fullPhone })
 })
+
+// Persist field values to store as user types
+watch(values, (v) => emit('update', { ...v }), { deep: true })
 </script>
 
 <template>
