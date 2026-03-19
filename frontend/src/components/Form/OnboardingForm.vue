@@ -43,6 +43,9 @@ const pendingPassword = ref('')
 const handleCnpjNext = (
   vals: OnboardingCnpjValues & { companyInfo: CompanyInfo | null; isTestCnpj: boolean },
 ) => {
+  // Always clear all previous form data and partners before applying new CNPJ result
+  onboardingStore.clearFormCache()
+
   onboardingStore.updateCompanyData({ cnpj: vals.cnpj })
 
   if (vals.companyInfo) {
@@ -51,9 +54,12 @@ const handleCnpjNext = (
       fantasyName: vals.companyInfo.nomeFantasia || vals.companyInfo.razaoSocial || '',
       phone: vals.companyInfo.telefone || '',
       email: vals.companyInfo.email || '',
-      // Apply mask so AddressStep receives "01310-100" not "01310100"
       cep: vals.companyInfo.cep ? applyCepMask(vals.companyInfo.cep) : '',
     })
+
+    if (vals.companyInfo.socios?.length) {
+      onboardingStore.prefillPartnersFromSocios(vals.companyInfo.socios)
+    }
   }
 
   onboardingStore.nextStep()

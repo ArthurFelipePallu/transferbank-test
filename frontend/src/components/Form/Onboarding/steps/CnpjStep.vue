@@ -11,7 +11,6 @@ import { useCnpjLookup } from '@/composables/useCnpjLookup'
 import { useCnpjRegistrationCheck } from '@/composables/useCnpjRegistrationCheck'
 import { sanitizeCnpj, isTestCnpj } from '@/utils/formatters'
 import { useTranslation } from '@/composables/useTranslation'
-import { useOnboardingStore } from '@/stores/useOnboardingStore'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
 
 interface Props {
@@ -27,7 +26,6 @@ const emit = defineEmits<{
 const { t } = useTranslation()
 const { isLoading, statusError, companyInfo, lookup, reset: resetLookup } = useCnpjLookup()
 const { isChecking, isRegistered, check: checkRegistration, reset: resetCheck } = useCnpjRegistrationCheck()
-const onboardingStore = useOnboardingStore()
 
 // ── UI state (presentation only) ──────────────────────────────────────────────
 const isTestCnpjValue = ref(false)
@@ -72,10 +70,6 @@ watch(
     if (!companyInfo.value && !statusError.value) {
       cnpjNotFound.value = true
       return
-    }
-
-    if (companyInfo.value?.socios?.length) {
-      onboardingStore.prefillPartnersFromSocios(companyInfo.value.socios)
     }
 
     // Only check registration if the company is active (no status error)

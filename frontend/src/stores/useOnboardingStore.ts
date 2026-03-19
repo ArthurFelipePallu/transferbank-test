@@ -74,7 +74,6 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   }
 
   const prefillPartnersFromSocios = (socios: CompanySocio[]) => {
-    if (partners.value.length > 0) return
     const total = socios.reduce((sum, s) => sum + (s.participacao ?? 0), 0)
     const hasValidShares = total >= 99 && total <= 101
     const equalShare = Math.floor((100 / socios.length) * 100) / 100
@@ -119,7 +118,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   }
 
   const resetOnboarding = () => _resetAll()
-  const clearFormCache = () => { companyData.value = { ...ONBOARDING_FORM_CACHE_DEFAULTS } }
+  const clearFormCache = () => { companyData.value = { ...ONBOARDING_FORM_CACHE_DEFAULTS }; partners.value = [] }
   const _resetAll = () => {
     currentStep.value = OnboardingStep.CNPJ
     companyData.value = { ...ONBOARDING_FORM_CACHE_DEFAULTS }
