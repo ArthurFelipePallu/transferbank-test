@@ -10,9 +10,9 @@ import { RouteName } from '@/domain/navigation/types/RouteNames'
 
 export const dashboardActionsConfig: QuickAction[] = [
   {
-    title: 'dashboard.registerPartners' as TranslationKey,
-    description: 'dashboard.addPartners' as TranslationKey,
-    route: RouteName.PartnerRegistration,
+    title: 'dashboard.editPartners' as TranslationKey,
+    description: 'dashboard.managePartners' as TranslationKey,
+    route: RouteName.PartnerEdit,
     variant: 'primary',
   },
   {
