@@ -42,7 +42,7 @@ const { t } = useTranslation()
   border-radius: 0.5rem;
   box-shadow: 0 8px 24px var(--color-black-alpha-20);
   padding: 0.5rem;
-  z-index: 10;
+  z-index: var(--z-dropdown);
   display: flex;
   flex-direction: column;
   gap: 0.25rem;

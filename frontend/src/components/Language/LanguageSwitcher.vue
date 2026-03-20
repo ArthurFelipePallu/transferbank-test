@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Globe } from 'lucide-vue-next'
+import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import { useTranslation } from '@/composables/i18n/useTranslation'
 import { SUPPORTED_LOCALES, LOCALE_INFO } from '@/domain/i18n/types/Locale'
 import type { Locale } from '@/domain/i18n/types/Locale'
@@ -10,18 +10,12 @@ const isOpen = ref(false)
 let closeTimer: ReturnType<typeof setTimeout> | null = null
 
 const open = () => {
-  if (closeTimer) {
-    clearTimeout(closeTimer)
-    closeTimer = null
-  }
+  if (closeTimer) { clearTimeout(closeTimer); closeTimer = null }
   isOpen.value = true
 }
 
 const scheduleClose = () => {
-  closeTimer = setTimeout(() => {
-    isOpen.value = false
-    closeTimer = null
-  }, 150)
+  closeTimer = setTimeout(() => { isOpen.value = false; closeTimer = null }, 150)
 }
 
 const changeLocale = (locale: Locale) => {
@@ -32,25 +26,23 @@ const changeLocale = (locale: Locale) => {
 </script>
 
 <template>
-  <div
-    class="language-switcher"
-    @mouseenter="open"
-    @mouseleave="scheduleClose"
-  >
+  <div class="language-switcher" @mouseenter="open" @mouseleave="scheduleClose">
     <button
       class="language-button"
       :aria-expanded="isOpen"
       :aria-label="`Current language: ${LOCALE_INFO[currentLocale].name}`"
       @click="isOpen = !isOpen"
     >
-      <Globe :size="18" />
-      <span class="language-flag">{{ LOCALE_INFO[currentLocale].flag }}</span>
+      <BaseLucideIcon name="Globe" :size="16" aria-hidden="true" />
+      <span class="lang-abbr">{{ LOCALE_INFO[currentLocale].abbr }}</span>
     </button>
 
     <Transition name="dropdown">
       <div
         v-if="isOpen"
         class="language-dropdown"
+        role="listbox"
+        :aria-label="'Select language'"
         @mouseenter="open"
         @mouseleave="scheduleClose"
       >
@@ -59,9 +51,11 @@ const changeLocale = (locale: Locale) => {
           :key="locale"
           class="language-option"
           :class="{ active: locale === currentLocale }"
+          role="option"
+          :aria-selected="locale === currentLocale"
           @click="changeLocale(locale)"
         >
-          <span class="option-flag">{{ LOCALE_INFO[locale].flag }}</span>
+          <span class="option-abbr">{{ LOCALE_INFO[locale].abbr }}</span>
           <span class="option-name">{{ LOCALE_INFO[locale].name }}</span>
         </button>
       </div>
@@ -77,14 +71,16 @@ const changeLocale = (locale: Locale) => {
 .language-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
   background: transparent;
   border: 1px solid var(--color-white-alpha-25);
-  border-radius: 0.5rem;
-  color: white;
+  border-radius: var(--border-radius-md);
+  color: var(--color-white);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  min-height: 2.5rem;
+  font-size: var(--font-size-sm);
 }
 
 .language-button:hover,
@@ -93,26 +89,36 @@ const changeLocale = (locale: Locale) => {
   border-color: var(--color-white-alpha-40);
 }
 
-.language-flag {
+.lang-flag {
   font-size: 1.1rem;
   line-height: 1;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
-/* Invisible bridge between button and dropdown so mouse can travel without triggering close */
+.lang-abbr {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* Dropdown */
 .language-dropdown {
   position: absolute;
   top: calc(100% + 0.25rem);
   right: 0;
-  min-width: 160px;
-  padding: 0.375rem;
+  min-width: 170px;
+  padding: var(--spacing-xs);
   background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
   border: 1px solid var(--color-white-alpha-20);
-  border-radius: 0.5rem;
+  border-radius: var(--border-radius-md);
   box-shadow: 0 8px 24px var(--color-black-alpha-25);
-  z-index: 1000;
+  z-index: var(--z-dropdown);
 }
 
-/* Pseudo-element bridge fills the gap between button bottom and dropdown top */
+/* Bridge gap so mouse can travel without triggering close */
 .language-dropdown::before {
   content: '';
   position: absolute;
@@ -126,45 +132,43 @@ const changeLocale = (locale: Locale) => {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
   background: transparent;
   border: none;
-  border-radius: 0.375rem;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   transition: background-color 0.15s ease;
   text-align: left;
   color: var(--color-white-alpha-85);
+  min-height: unset;
 }
 
-.language-option:hover {
-  background: var(--color-white-alpha-15);
-  color: white;
-}
-
-.language-option.active {
-  background: var(--color-white-alpha-20);
-  color: white;
-}
+.language-option:hover  { background: var(--color-white-alpha-15); color: var(--color-white); }
+.language-option.active { background: var(--color-white-alpha-20); color: var(--color-white); }
 
 .option-flag {
   font-size: 1.1rem;
   line-height: 1;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.option-abbr {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  min-width: 2.5rem;
+  vertical-align: middle;
 }
 
 .option-name {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  opacity: 0.8;
+  vertical-align: middle;
 }
 
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: all 0.15s ease;
-}
-
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
-}
+.dropdown-enter-active, .dropdown-leave-active { transition: opacity 0.15s ease, transform 0.15s ease; }
+.dropdown-enter-from,  .dropdown-leave-to      { opacity: 0; transform: translateY(-6px); }
 </style>

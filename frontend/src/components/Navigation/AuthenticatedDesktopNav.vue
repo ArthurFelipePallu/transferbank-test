@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import LanguageSwitcher from '@/components/Language/LanguageSwitcher.vue'
 import UserMenuButton from './UserMenuButton.vue'
 import UserDropdownMenu from './UserDropdownMenu.vue'
-import { ref } from 'vue'
-import { useClickOutside } from '@/composables/ui/useClickOutside'
 import type { NavItem } from '@/domain/navigation/types/NavItem'
 
 defineProps<{
   companyName: string
+  companyEmail: string
+  dashboard: NavItem[]
   services: NavItem[]
   support: NavItem[]
 }>()
@@ -17,72 +18,50 @@ const emit = defineEmits<{
   logout: []
 }>()
 
-const isDropdownOpen = ref(false)
+const isOpen = ref(false)
+const toggle = () => { isOpen.value = !isOpen.value }
+const close  = () => { isOpen.value = false }
 
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value
-  
-  // Enable click-outside detection after dropdown opens
-  if (isDropdownOpen.value) {
-    clickOutside.enable()
-  } else {
-    clickOutside.disable()
-  }
-}
-
-const closeDropdown = () => {
-  isDropdownOpen.value = false
-  clickOutside.disable()
-}
-
-// Use click-outside composable with 100ms delay
-const clickOutside = useClickOutside('.user-menu-container', closeDropdown, {
-  enabled: isDropdownOpen,
-  delay: 100,
-})
-
-const handleToggle = () => {
-  toggleDropdown()
-}
-
-const handleNavigation = (route: string) => {
+const handleNavigate = (route: string) => {
   emit('navigate', route)
-  closeDropdown()
+  close()
 }
 
 const handleLogout = () => {
   emit('logout')
-  closeDropdown()
+  close()
 }
 </script>
 
 <template>
   <nav class="d-none d-md-inline-flex align-items-center gap-3">
-    <!-- Language Switcher -->
     <LanguageSwitcher />
 
-    <!-- User Dropdown Menu -->
-    <div class="user-menu-container" @click.stop>
-      <UserMenuButton 
+    <!-- Relative wrapper anchors the dropdown -->
+    <div class="user-menu-anchor">
+      <UserMenuButton
         :company-name="companyName"
-        :is-open="isDropdownOpen"
-        @toggle="handleToggle"
+        :is-open="isOpen"
+        @toggle="toggle"
       />
-      
-      <UserDropdownMenu 
-        :is-visible="isDropdownOpen"
+
+      <UserDropdownMenu
+        :is-visible="isOpen"
+        :company-name="companyName"
+        :company-email="companyEmail"
+        :dashboard="dashboard"
         :services="services"
         :support="support"
-        @navigate="handleNavigation"
+        @navigate="handleNavigate"
         @logout="handleLogout"
+        @close="close"
       />
     </div>
   </nav>
 </template>
 
 <style scoped>
-.user-menu-container {
+.user-menu-anchor {
   position: relative;
-  z-index: 1001;
 }
 </style>

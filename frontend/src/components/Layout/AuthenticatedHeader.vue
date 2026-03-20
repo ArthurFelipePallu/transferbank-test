@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useMobileMenu } from '@/composables/ui/useMobileMenu'
-import { servicesLinks, supportLinks } from '@/config/navigation'
+import { servicesLinks, supportLinks, dashboardLinks } from '@/config/navigation'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
 import BaseHeader from '@/components/Layout/BaseHeader.vue'
 import AppBrandLogo from '@/components/App/AppBrandLogo.vue'
@@ -34,6 +34,8 @@ const navigateTo = (routeName: string) => {
     <!-- Desktop Navigation (hidden on mobile) -->
     <AuthenticatedDesktopNav 
       :company-name="authStore.companyName || 'Company'"
+      :company-email="authStore.userEmail || ''"
+      :dashboard="dashboardLinks"
       :services="servicesLinks"
       :support="supportLinks"
       @navigate="navigateTo"
@@ -51,6 +53,7 @@ const navigateTo = (routeName: string) => {
       :is-open="isMobileMenuOpen"
       :company-name="authStore.companyName || 'Company'"
       :company-email="authStore.userEmail || ''"
+      :dashboard="dashboardLinks"
       :services="servicesLinks"
       :support="supportLinks"
       @navigate="navigateTo"

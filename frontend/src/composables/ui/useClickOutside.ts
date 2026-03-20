@@ -1,11 +1,14 @@
 import { ref, onMounted, onUnmounted, type Ref } from 'vue'
 
 /**
- * Composable for handling click-outside detection
- * Following DDD/SOLID principles - Single Responsibility
+ * Composable: useClickOutside
+ * UI Layer — Single Responsibility
+ *
+ * Accepts either a CSS selector string or a template ref.
+ * Calls the callback when a click occurs outside the target.
  */
 export function useClickOutside(
-  targetSelector: string,
+  target: string | Ref<HTMLElement | null>,
   onClickOutside: () => void,
   options: { enabled?: Ref<boolean>; delay?: number } = {}
 ) {
@@ -15,37 +18,32 @@ export function useClickOutside(
   const handleClickOutside = (event: MouseEvent) => {
     if (!enabled.value || !isEnabled.value) return
 
-    const target = event.target as HTMLElement
-    if (!target.closest(targetSelector)) {
-      onClickOutside()
-    }
+    const el = event.target as HTMLElement
+    const isOutside = typeof target === 'string'
+      ? !el.closest(target)
+      : !!target.value && !target.value.contains(el)
+
+    if (isOutside) onClickOutside()
   }
 
   const enable = () => {
     if (delay > 0) {
-      setTimeout(() => {
-        isEnabled.value = true
-      }, delay)
+      setTimeout(() => { isEnabled.value = true }, delay)
     } else {
       isEnabled.value = true
     }
   }
 
-  const disable = () => {
-    isEnabled.value = false
-  }
+  const disable = () => { isEnabled.value = false }
 
   onMounted(() => {
-    document.addEventListener('click', handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside)
+    enable()
   })
 
   onUnmounted(() => {
-    document.removeEventListener('click', handleClickOutside)
+    document.removeEventListener('mousedown', handleClickOutside)
   })
 
-  return {
-    enable,
-    disable,
-    isEnabled,
-  }
+  return { enable, disable, isEnabled }
 }
