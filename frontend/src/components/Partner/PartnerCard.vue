@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Users, Pencil, Trash2 } from 'lucide-vue-next'
+import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import type { OnboardingPartner } from '@/domain/onboarding/onboarding.types'
 import { formatCpfDisplay } from '@/utils/formatters'
 import { useTranslation } from '@/composables/i18n/useTranslation'
@@ -16,21 +16,21 @@ const { t } = useTranslation()
 <template>
   <div class="partner-card d-flex align-items-center gap-2 px-3 py-2 border rounded-3 bg-body overflow-hidden">
     <!-- Avatar -->
-    <div class="partner-avatar d-flex align-items-center justify-content-center rounded-circle flex-shrink-0">
-      <Users :size="14" />
+    <div class="avatar-circle avatar-circle--sm partner-avatar flex-shrink-0">
+      <BaseLucideIcon name="Users" :size="14" />
     </div>
 
     <!-- Info -->
     <div class="flex-grow-1 min-w-0 overflow-hidden">
       <p class="fw-semibold small mb-0 text-truncate">{{ partner.fullName }}</p>
-      <p class="text-secondary mb-0 font-monospace text-truncate" style="font-size: var(--font-size-xs)">
+      <p class="text-secondary mb-0 font-monospace text-truncate partner-cpf">
         {{ formatCpfDisplay(partner.cpf) }}
       </p>
     </div>
 
     <!-- Actions -->
     <div class="d-flex align-items-center gap-1 flex-shrink-0">
-      <span class="fw-bold small text-nowrap" style="color: var(--color-primary-teal)">
+      <span class="fw-bold small text-nowrap partner-share">
         {{ partner.shareholding.toFixed(2) }}%
       </span>
       <button
@@ -39,7 +39,7 @@ const { t } = useTranslation()
         @click="emit('edit', partner.tempId)"
         :aria-label="t('onboarding.partnersStep.editPartner', { name: partner.fullName })"
       >
-        <Pencil :size="13" />
+        <BaseLucideIcon name="Pencil" :size="13" />
       </button>
       <button
         type="button"
@@ -47,7 +47,7 @@ const { t } = useTranslation()
         @click="emit('remove', partner.tempId)"
         :aria-label="t('onboarding.partnersStep.removePartner', { name: partner.fullName })"
       >
-        <Trash2 :size="13" />
+        <BaseLucideIcon name="Trash2" :size="13" />
       </button>
     </div>
   </div>
@@ -62,9 +62,17 @@ const { t } = useTranslation()
 }
 
 .partner-avatar {
-  width: 1.75rem;
-  height: 1.75rem;
   background: var(--color-primary-teal);
   color: var(--color-white);
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.partner-cpf {
+  font-size: var(--font-size-xs);
+}
+
+.partner-share {
+  color: var(--color-primary-teal);
 }
 </style>
