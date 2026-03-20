@@ -39,14 +39,12 @@ import CurrencyInfoPanel from '@/components/Currency/CurrencyInfoPanel.vue'
 /* Login form: natural width with constraints */
 .login-form-wrapper {
     flex: 0 1 auto;
-    min-width: 400px;
     max-width: 450px;
 }
 
 /* Currency panel: takes remaining space with constraints */
 .currency-panel-wrapper {
     flex: 1 1 auto;
-    min-width: 500px;
     max-width: 550px;
 }
 
@@ -59,7 +57,6 @@ import CurrencyInfoPanel from '@/components/Currency/CurrencyInfoPanel.vue'
     
     .login-form-wrapper {
         flex: 1 1 100%;
-        min-width: 0;
         max-width: 100%;
     }
     

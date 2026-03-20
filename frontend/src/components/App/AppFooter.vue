@@ -15,8 +15,8 @@ const { t } = useTranslation()
       <div class="row g-4 g-md-5">
 
         <!-- Brand -->
-        <div class="col-12 col-sm-6 col-lg-3">
-          <AppBrandLogo />
+        <div class="col-12 col-sm-6 col-lg-3 footer-brand-col">
+          <AppBrandLogo class="footer-brand-logo" />
           <p class="mt-3 small text-muted user-select-none">{{ t('footer.tagline') }}</p>
         </div>
 
@@ -24,7 +24,7 @@ const { t } = useTranslation()
         <div
           v-for="group in footerLinkGroups"
           :key="group.titleKey"
-          class="col-6 col-sm-6 col-lg-3"
+          class="col-6 col-sm-6 col-lg-3 footer-links-col"
         >
           <FooterLinkColumn :title="t(group.titleKey)" :links="group.links">
             <template #default="{ link }">
@@ -34,7 +34,7 @@ const { t } = useTranslation()
         </div>
 
         <!-- Contact -->
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-lg-3 footer-contact-col">
           <FooterContactColumn
             :title="t('footer.contact')"
             :email-label="t('footer.email')"
@@ -70,6 +70,56 @@ const { t } = useTranslation()
   .footer-bg {
     padding-top: 2rem !important;
     padding-bottom: 2rem !important;
+  }
+}
+
+/* Below 570px: brand column goes full-width, logo scales up to fill the space */
+@media (max-width: 569px) {
+  /* Tighten the row gap so columns sit closer together */
+  .footer-bg .row {
+    --bs-gutter-y: 1.25rem;
+  }
+
+  /* Brand — centered */
+  .footer-brand-col {
+    text-align: center;
+  }
+
+  .footer-brand-logo {
+    justify-content: center;
+  }
+
+  .footer-brand-logo :deep(.brand-logo) {
+    width: 72px;
+    height: 72px;
+  }
+
+  .footer-brand-logo :deep(.brand-name) {
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-brand-col p {
+    text-align: center;
+  }
+
+  /* Link columns — centered text and links */
+  .footer-links-col {
+    text-align: center;
+  }
+
+  .footer-links-col :deep(.footer-link) {
+    display: block;
+    text-align: center;
+  }
+
+  /* Contact — centered */
+  .footer-contact-col {
+    text-align: center;
+  }
+
+  .footer-contact-col :deep(.footer-link) {
+    display: inline;
   }
 }
 

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import AppLogo from './AppLogo.vue';
-
+import { RouterLink } from 'vue-router'
+import AppLogo from './AppLogo.vue'
+import { RouteName } from '@/domain/navigation/types/RouteNames'
 </script>
 
-
 <template>
-    <div class="brand">
-        <AppLogo />
-        <span class="brand-name">Mediteranian Bank</span>
-    </div>
+  <RouterLink :to="{ name: RouteName.Home }" class="brand" aria-label="Go to home">
+    <AppLogo />
+    <span class="brand-name">Mediteranian Bank</span>
+  </RouterLink>
 </template>
 
 
@@ -17,6 +17,14 @@ import AppLogo from './AppLogo.vue';
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  min-height: unset; /* override base.css link min-height */
+}
+
+.brand:hover {
+  color: inherit;
+  opacity: 0.85;
 }
 
 .brand-name {

@@ -1,10 +1,12 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
+import { ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
+import SideMenu from '@/components/UI/SideMenu.vue'
+import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import { useTranslation } from '@/composables/i18n/useTranslation'
 import type { NavItem } from '@/domain/navigation/types/NavItem'
-import BaseLucideIcon from '../BaseLucideIcon.vue'
 
-defineProps<{
+const props = defineProps<{
   isOpen: boolean
   mainLinks: NavItem[]
   authLinks: NavItem[]
@@ -13,191 +15,91 @@ defineProps<{
 const emit = defineEmits<{ close: [] }>()
 const { t } = useTranslation()
 
-const handleLinkClick = () => emit('close')
+const isMenuOpen = ref(props.isOpen)
+watch(() => props.isOpen, (val) => { isMenuOpen.value = val })
+watch(isMenuOpen, (val) => { if (!val) emit('close') })
 </script>
 
 <template>
-  <Transition name="overlay">
-    <div v-if="isOpen" class="mobile-menu-overlay" @click="$emit('close')" />
-  </Transition>
-
-  <Transition name="slide">
-    <nav v-if="isOpen" class="mobile-menu">
-      <div class="mobile-menu-header">
-        <span class="mobile-menu-title">{{ t('navigation.menu') }}</span>
-        <button class="mobile-menu-close" @click="$emit('close')" :aria-label="t('common.close')">
-          <BaseLucideIcon name="X" :size="24" />
-        </button>
-      </div>
-      
-      <div class="mobile-menu-content">
-        <RouterLink 
-          v-for="link in mainLinks" 
-          :key="link.routeName"
-          class="nav-link" 
-          :to="{ name: link.routeName }"
-          @click="handleLinkClick"
-        >
-          {{ t(link.label as any) }}
-        </RouterLink>
-
-        <div class="mobile-menu-divider" />
-
-        <RouterLink 
-          v-for="link in authLinks" 
-          :key="link.routeName"
-          class="nav-link"
-          :class="{
-            'nav-link--ghost': link.variant === 'ghost',
-            'nav-link--primary': link.variant === 'primary'
-          }"
-          :to="{ name: link.routeName }"
-          @click="handleLinkClick"
-        >
-          {{ t(link.label as any) }}
-        </RouterLink>
-      </div>
+  <SideMenu v-model="isMenuOpen" :title="t('navigation.menu')">
+    <nav :aria-label="t('navigation.menu')">
+      <RouterLink
+        v-for="link in mainLinks"
+        :key="link.routeName"
+        class="nav-item"
+        :to="{ name: link.routeName }"
+        @click="emit('close')"
+      >
+        <BaseLucideIcon v-if="link.icon" :name="link.icon" :size="16" class="nav-icon" />
+        {{ t(link.label) }}
+      </RouterLink>
     </nav>
-  </Transition>
+
+    <hr class="nav-divider" />
+
+    <nav :aria-label="t('navigation.menu')">
+      <RouterLink
+        v-for="link in authLinks"
+        :key="link.routeName"
+        class="nav-item"
+        :class="{
+          'nav-item--ghost':   link.variant === 'ghost',
+          'nav-item--primary': link.variant === 'primary',
+        }"
+        :to="{ name: link.routeName }"
+        @click="emit('close')"
+      >
+        <BaseLucideIcon v-if="link.icon" :name="link.icon" :size="16" class="nav-icon" />
+        {{ t(link.label) }}
+      </RouterLink>
+    </nav>
+  </SideMenu>
 </template>
 
 <style scoped>
-/* Mobile Menu Overlay */
-.mobile-menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--color-black-alpha-50);
-  z-index: 200;
-  backdrop-filter: blur(2px);
+.nav-divider {
+  border: none;
+  border-top: 1px solid var(--color-white-alpha-15);
+  margin: var(--spacing-sm) 0;
 }
 
-/* Mobile Side Menu */
-.mobile-menu {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 280px;
-  max-width: 85vw;
-  background: linear-gradient(135deg, var(--color-primary-bg-start), var(--color-primary-bg-end));
-  box-shadow: -4px 0 24px var(--color-black-alpha-30);
-  z-index: 300;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.mobile-menu-header {
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--color-white-alpha-15);
+.nav-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.mobile-menu-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-white);
-}
-
-.mobile-menu-close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
   background: transparent;
   border: none;
+  border-radius: var(--border-radius-md);
   color: var(--color-white);
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s ease;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.mobile-menu-close:hover {
-  background-color: var(--color-white-alpha-12);
-}
-
-.mobile-menu-close:active {
-  background-color: var(--color-white-alpha-20);
-}
-
-.mobile-menu-content {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  gap: 0.5rem;
-}
-
-.mobile-menu-divider {
-  height: 1px;
-  background: var(--color-white-alpha-15);
-  margin: 0.75rem 0;
-}
-
-.nav-link {
-  border: none;
-  background: transparent;
-  color: var(--color-white);
-  font-size: 1rem;
+  font-size: var(--font-size-sm);
   font-weight: 500;
-  padding: 0.85rem 1rem;
-  cursor: pointer;
-  border-radius: 0.75rem;
   text-decoration: none;
-  text-align: left;
-  transition:
-    background-color 0.15s ease,
-    transform 0.1s ease;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  min-height: var(--touch-target-min);
 }
 
-.nav-link:hover {
-  background-color: var(--color-white-alpha-12);
+.nav-item:hover  { background: var(--color-white-alpha-12); }
+.nav-item:active { background: var(--color-white-alpha-20); }
+
+.nav-icon {
+  flex-shrink: 0;
+  opacity: 0.8;
 }
 
-.nav-link:active {
-  transform: scale(0.98);
-}
+.nav-item--ghost   { background: var(--color-white-alpha-8); }
 
-.nav-link--ghost {
-  background: var(--color-white-alpha-8);
-}
-
-.nav-link--primary {
+.nav-item--primary {
   background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
   box-shadow: var(--shadow-button-primary);
   font-weight: 600;
 }
 
-.nav-link--primary:hover {
+.nav-item--primary:hover {
   box-shadow: var(--shadow-button-primary-active);
-}
-
-/* Transitions */
-.overlay-enter-active,
-.overlay-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.overlay-enter-from,
-.overlay-leave-to {
-  opacity: 0;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s ease;
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateX(100%);
+  background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
 }
 </style>
