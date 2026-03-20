@@ -16,4 +16,9 @@ export const common = {
   clear: 'Clear',
   yes: 'Yes',
   no: 'No',
+  showMore: 'Show more',
+  showLess: 'Show less',
+  explore: 'Explore',
+  openExploreMenu: 'Open explore menu',
+  closeExploreMenu: 'Close explore menu',
 }

@@ -16,4 +16,9 @@ export const common = {
   clear: 'Limpar',
   yes: 'Sim',
   no: 'Não',
+  showMore: 'Ver mais',
+  showLess: 'Ver menos',
+  explore: 'Explorar',
+  openExploreMenu: 'Abrir menu explorar',
+  closeExploreMenu: 'Fechar menu explorar',
 }

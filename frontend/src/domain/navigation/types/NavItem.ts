@@ -1,4 +1,5 @@
 import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+import type { IconName } from '@/utils/LucideIconMap'
 
 /**
  * Domain type for a navigable item.
@@ -10,6 +11,6 @@ export interface NavItem {
   label: TranslationKey
   routeName: string
   variant?: 'default' | 'ghost' | 'primary'
-  icon?: string
+  icon?: IconName
   isDanger?: boolean
 }

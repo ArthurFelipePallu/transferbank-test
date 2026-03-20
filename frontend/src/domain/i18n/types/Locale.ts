@@ -11,17 +11,20 @@ export interface LocaleInfo {
   code: Locale
   name: string
   flag: string
+  abbr: string
 }
 
 export const LOCALE_INFO: Record<Locale, LocaleInfo> = {
   'en': {
     code: 'en',
     name: 'English',
-    flag: '🇺🇸'
+    flag: 'us',
+    abbr: 'EN',
   },
   'pt-BR': {
     code: 'pt-BR',
     name: 'Português',
-    flag: '🇧🇷'
-  }
+    flag: '🇧🇷',
+    abbr: 'PT-BR',
+  },
 }

@@ -18,13 +18,13 @@ import type {
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
 import type { OnboardingFormCache } from '@/domain/onboarding/onboarding.types'
 import StepIndicator from '@/components/UI/StepIndicator.vue'
-import CnpjStep from './Onboarding/steps/CnpjStep.vue'
-import CompanyStep from './Onboarding/steps/CompanyStep.vue'
-import CryptoStep from './Onboarding/steps/CryptoStep.vue'
-import AddressStep from './Onboarding/steps/AddressStep.vue'
-import PasswordStep from './Onboarding/steps/PasswordStep.vue'
-import PartnersStep from './Onboarding/steps/PartnersStep.vue'
-import ReviewStep from './Onboarding/steps/ReviewStep.vue'
+import CnpjStep from './steps/CnpjStep.vue'
+import CompanyStep from './steps/CompanyStep.vue'
+import CryptoStep from './steps/CryptoStep.vue'
+import AddressStep from './steps/AddressStep.vue'
+import PasswordStep from './steps/PasswordStep.vue'
+import PartnersStep from './steps/PartnersStep.vue'
+import ReviewStep from './steps/ReviewStep.vue'
 
 const onboardingStore = useOnboardingStore()
 const uiStore = useUiStore()

@@ -4,34 +4,34 @@ import { RouteName } from '@/domain/navigation/types/RouteNames'
 // ─── Public navigation ────────────────────────────────────────────────────────
 
 export const mainLinks: NavItem[] = [
-  { label: 'navigation.companies', routeName: RouteName.Companies },
-  { label: 'navigation.solutions', routeName: RouteName.Solutions },
-  { label: 'navigation.pricing',   routeName: RouteName.Pricing },
-  { label: 'navigation.resources', routeName: RouteName.Resources },
+  { label: 'navigation.companies',  routeName: RouteName.Companies,  icon: 'Building2' },
+  { label: 'navigation.solutions',  routeName: RouteName.Solutions,  icon: 'Zap' },
+  { label: 'navigation.pricing',    routeName: RouteName.Pricing,    icon: 'DollarSign' },
+  { label: 'navigation.resources',  routeName: RouteName.Resources,  icon: 'Info' },
 ]
 
 export const authLinks: NavItem[] = [
-  { label: 'navigation.login',       routeName: RouteName.Login,    variant: 'ghost' },
-  { label: 'navigation.openAccount', routeName: RouteName.Register, variant: 'primary' },
+  { label: 'navigation.login',       routeName: RouteName.Login,    variant: 'ghost',   icon: 'User' },
+  { label: 'navigation.openAccount', routeName: RouteName.Register, variant: 'primary', icon: 'ArrowRight' },
 ]
 
 // ─── Authenticated navigation ─────────────────────────────────────────────────
 
 export const dashboardLinks: NavItem[] = [
-  { label: 'navigation.dashboard', routeName: RouteName.Dashboard, icon: 'User' },
+  { label: 'navigation.dashboard', routeName: RouteName.Dashboard, icon: 'BarChart3' },
 ]
 
 export const servicesLinks: NavItem[] = [
-  { label: 'navigation.accounts',    routeName: RouteName.Accounts },
-  { label: 'navigation.transfers',   routeName: RouteName.Transfers },
-  { label: 'navigation.loans',       routeName: RouteName.Loans },
-  { label: 'navigation.investments', routeName: RouteName.Investments },
+  { label: 'navigation.accounts',    routeName: RouteName.Accounts,    icon: 'Wallet' },
+  { label: 'navigation.transfers',   routeName: RouteName.Transfers,   icon: 'ArrowRight' },
+  { label: 'navigation.loans',       routeName: RouteName.Loans,       icon: 'Landmark' },
+  { label: 'navigation.investments', routeName: RouteName.Investments, icon: 'TrendingUp' },
 ]
 
 export const supportLinks: NavItem[] = [
-  { label: 'navigation.helpCenter', routeName: RouteName.HelpCenter },
-  { label: 'navigation.security',   routeName: RouteName.Security },
-  { label: 'navigation.contactUs',  routeName: RouteName.ContactUs },
+  { label: 'navigation.helpCenter', routeName: RouteName.HelpCenter, icon: 'Headphones' },
+  { label: 'navigation.security',   routeName: RouteName.Security,   icon: 'Shield' },
+  { label: 'navigation.contactUs',  routeName: RouteName.ContactUs,  icon: 'Mail' },
 ]
 
 // ─── Auth page links ──────────────────────────────────────────────────────────

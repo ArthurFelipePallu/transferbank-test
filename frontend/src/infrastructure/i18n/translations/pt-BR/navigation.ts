@@ -20,4 +20,8 @@ export const navigation = {
   resources: 'Recursos',
   openAccount: 'Abrir conta',
   login: 'Entrar',
+  activityHistory: 'Histórico de Atividades',
+  newsletter: 'Newsletter',
+  products: 'Produtos',
+  bankContent: 'Conteúdo do Banco',
 }

@@ -32,6 +32,12 @@ export enum RouteName {
   Loans             = 'loans',
   Investments       = 'investments',
 
+  // ─── Activity & Content ───────────────────────────────────────────────────
+  ActivityHistory   = 'activity-history',
+  Newsletter        = 'newsletter',
+  Products          = 'products',
+  BankContent       = 'bank-content',
+
   // ─── Support ─────────────────────────────────────────────────────────────
   HelpCenter        = 'help-center',
   Security          = 'security',

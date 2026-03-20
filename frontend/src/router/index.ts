@@ -155,7 +155,67 @@ const router = createRouter({
       ],
     },
 
-    // ─── Support ────────────────────────────────────────────────────────────
+    // ─── Services ───────────────────────────────────────────────────────────
+    {
+      path: '/services',
+      children: [
+        {
+          path: 'accounts',
+          name: RouteName.Accounts,
+          component: InDevelopmentView,
+          meta: { requiresAuth: true, titleKey: 'navigation.accounts' },
+        },
+        {
+          path: 'transfers',
+          name: RouteName.Transfers,
+          component: InDevelopmentView,
+          meta: { requiresAuth: true, titleKey: 'navigation.transfers' },
+        },
+        {
+          path: 'loans',
+          name: RouteName.Loans,
+          component: InDevelopmentView,
+          meta: { requiresAuth: true, titleKey: 'navigation.loans' },
+        },
+        {
+          path: 'investments',
+          name: RouteName.Investments,
+          component: InDevelopmentView,
+          meta: { requiresAuth: true, titleKey: 'navigation.investments' },
+        },
+      ],
+    },
+
+    // ─── Explore (authenticated content hub) ────────────────────────────────
+    {
+      path: '/explore',
+      children: [
+        {
+          path: 'activity',
+          name: RouteName.ActivityHistory,
+          component: InDevelopmentView,
+          meta: { requiresAuth: true, titleKey: 'navigation.activityHistory' },
+        },
+        {
+          path: 'newsletter',
+          name: RouteName.Newsletter,
+          component: InDevelopmentView,
+          meta: { requiresAuth: true, titleKey: 'navigation.newsletter' },
+        },
+        {
+          path: 'products',
+          name: RouteName.Products,
+          component: InDevelopmentView,
+          meta: { requiresAuth: true, titleKey: 'navigation.products' },
+        },
+        {
+          path: 'bank-content',
+          name: RouteName.BankContent,
+          component: InDevelopmentView,
+          meta: { requiresAuth: true, titleKey: 'navigation.bankContent' },
+        },
+      ],
+    },
     {
       path: '/support',
       children: [
