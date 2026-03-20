@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { User } from 'lucide-vue-next'
+import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 
 defineProps<{
   title: string
@@ -9,13 +9,13 @@ defineProps<{
 
 <template>
   <section class="card mb-4 text-white welcome-card">
-    <div class="card-body d-flex justify-content-between align-items-center p-4">
-      <div class="flex-grow-1">
-        <h1 class="h2 fw-bold mb-2">{{ title }}</h1>
-        <p class="mb-0 fs-5 opacity-90">{{ subtitle }}</p>
+    <div class="card-body d-flex align-items-center justify-content-between gap-3 p-3 p-md-4">
+      <div class="min-w-0 flex-grow-1">
+        <h1 class="h3 h2-md fw-bold mb-1 mb-md-2 text-truncate">{{ title }}</h1>
+        <p class="mb-0 opacity-90 text-truncate">{{ subtitle }}</p>
       </div>
-      <div class="d-none d-sm-flex welcome-icon">
-        <User :size="48" />
+      <div class="welcome-icon flex-shrink-0 avatar-circle avatar-circle--ghost avatar-circle--xl">
+        <BaseLucideIcon name="User" class="welcome-icon__svg" />
       </div>
     </div>
   </section>
@@ -26,12 +26,20 @@ defineProps<{
   background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
 }
 
-.welcome-icon {
-  width: 4rem;
-  height: 4rem;
-  background: var(--color-white-alpha-20);
-  border-radius: 50%;
-  align-items: center;
-  justify-content: center;
+.welcome-icon__svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@media (min-width: 576px) {
+  .welcome-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .welcome-icon__svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 }
 </style>

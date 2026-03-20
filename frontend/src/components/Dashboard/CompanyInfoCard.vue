@@ -18,36 +18,48 @@ const { t } = useTranslation()
 
 <template>
   <section class="card mb-4">
-    <div class="card-body p-4">
-      <h2 class="h4 fw-semibold mb-4">{{ title }}</h2>
-      
-      <div class="row g-4">
-        <div class="col-12 col-sm-6 col-lg-4">
-          <InfoItem 
-            :label="t('company.companyName')" 
-            :value="info.name || 'N/A'" 
-          />
-        </div>
+    <div class="card-body p-3 p-md-4">
+      <h2 class="h4 fw-semibold mb-3">{{ title }}</h2>
 
-        <div class="col-12 col-sm-6 col-lg-4">
-          <InfoItem 
-            :label="t('company.email')" 
-            :value="info.email || 'N/A'" 
-          />
-        </div>
-
-        <div class="col-12 col-sm-6 col-lg-4">
-          <InfoItem 
-            :label="t('dashboard.status')" 
-            :value="info.status" 
-            variant="success"
-          />
-        </div>
+      <div class="company-info-grid">
+        <InfoItem
+          :label="t('company.companyName')"
+          :value="info.name || 'N/A'"
+        />
+        <InfoItem
+          :label="t('company.email')"
+          :value="info.email || 'N/A'"
+        />
+        <InfoItem
+          :label="t('dashboard.status')"
+          :value="info.status"
+          variant="success"
+        />
       </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-/* Minimal styling - relies on Bootstrap */
+.company-info-grid {
+  display: grid;
+  gap: var(--spacing-sm);
+
+  /* Below 400px: single column */
+  grid-template-columns: 1fr;
+}
+
+/* 400px+: 2 per row */
+@media (min-width: 400px) {
+  .company-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* lg+: 3 per row */
+@media (min-width: 992px) {
+  .company-info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 </style>

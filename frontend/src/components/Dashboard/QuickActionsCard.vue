@@ -2,12 +2,14 @@
 import ActionCard from './ActionCard.vue'
 import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 import type { RouteName } from '@/domain/navigation/types/RouteNames'
+import type { IconName } from '@/utils/LucideIconMap'
 
 export interface QuickAction {
   title: TranslationKey
   description: TranslationKey
   route: RouteName
   variant?: 'default' | 'primary'
+  icon?: IconName
 }
 
 export interface TranslatedAction {
@@ -15,6 +17,7 @@ export interface TranslatedAction {
   description: string
   route: RouteName
   variant?: 'default' | 'primary'
+  icon?: IconName
 }
 
 defineProps<{
@@ -29,27 +32,35 @@ const emit = defineEmits<{
 
 <template>
   <section class="card">
-    <div class="card-body p-4">
-      <h2 class="h4 fw-semibold mb-4">{{ title }}</h2>
-      
-      <div class="row g-3">
-        <div 
-          v-for="action in actions" 
+    <div class="card-body p-3 p-md-4">
+      <h2 class="h4 fw-semibold mb-3">{{ title }}</h2>
+
+      <div class="actions-grid">
+        <ActionCard
+          v-for="action in actions"
           :key="action.route"
-          class="col-12 col-sm-6"
-        >
-          <ActionCard
-            :title="action.title"
-            :description="action.description"
-            :variant="action.variant"
-            @click="emit('navigate', action.route)"
-          />
-        </div>
+          :title="action.title"
+          :description="action.description"
+          :variant="action.variant"
+          :icon="action.icon"
+          @click="emit('navigate', action.route)"
+        />
       </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-/* Minimal styling - relies on Bootstrap */
+.actions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+}
+
+@media (min-width: 500px) {
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+}
 </style>
