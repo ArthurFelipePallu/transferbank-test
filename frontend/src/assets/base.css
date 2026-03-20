@@ -162,6 +162,16 @@
   /* Neutral */
   --color-neutral-alpha-10:    rgba(107, 114, 128, 0.1);
 
+  /* Primary brand bg alpha — for tinted overlays on dark sections */
+  --color-primary-bg-alpha-50: rgba(68, 15, 71, 0.5);
+
+  /* Black — additional alpha stops */
+  --color-black-alpha-45:      rgba(0, 0, 0, 0.45);
+  --color-black-alpha-72:      rgba(0, 0, 0, 0.72);
+
+  /* Surface card — light card background */
+  --color-surface-card:        #ffffff;
+
   /* ----------------------------------------------------------
      1e. Shadows
      ---------------------------------------------------------- */
@@ -229,6 +239,7 @@
   --z-fixed:          1030;
   --z-modal-backdrop: 1040;
   --z-modal:          1050;
+  --z-mobile-menu:    1055;
   --z-popover:        1060;
   --z-tooltip:        1070;
 }
@@ -459,11 +470,17 @@ ul, ol    { padding-left: var(--spacing-lg); }
   padding-bottom: var(--section-spacing);
 }
 
-/* 80% content width — consistent across all views */
+/* Content width — 100% on mobile, 80% on desktop */
 .standard-container {
-  width: var(--container-standard-max-width-desktop);
-  max-width: var(--container-standard-max-width-desktop);
+  width: 100%;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .standard-container {
+    width: var(--container-standard-max-width-desktop);
+    max-width: var(--container-standard-max-width-desktop);
+  }
 }
 
 @media (min-width: 1920px) {
@@ -547,6 +564,69 @@ ul, ol    { padding-left: var(--spacing-lg); }
 
 .icon-wrapper-lg { width: 48px; height: 48px; }
 .icon-wrapper-sm { width: 28px; height: 28px; }
+
+/* Avatar circle — reusable round avatar with gradient teal background */
+.avatar-circle {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.avatar-circle--teal {
+  background: linear-gradient(135deg, var(--color-primary-teal), var(--color-accent-teal-1));
+  color: var(--color-white);
+}
+
+.avatar-circle--ghost {
+  background: var(--color-white-alpha-20);
+  color: var(--color-white);
+}
+
+.avatar-circle--sm  { width: 1.75rem; height: 1.75rem; font-size: var(--font-size-xs); }
+.avatar-circle--md  { width: 2rem;    height: 2rem;    font-size: var(--font-size-sm); }
+.avatar-circle--lg  { width: 2.25rem; height: 2.25rem; font-size: var(--font-size-base); }
+.avatar-circle--xl  { width: 3rem;    height: 3rem;    font-size: var(--font-size-lg); }
+.avatar-circle--2xl { width: 4rem;    height: 4rem;    font-size: var(--font-size-xl); }
+
+/* Footer link — shared between FooterLinkColumn and FooterContactColumn */
+.footer-link-item {
+  color: var(--color-input-border);
+  font-size: var(--font-size-sm);
+  transition: color 0.2s ease;
+  display: inline-block;
+  padding: 0.125rem 0;
+}
+
+.footer-link-item:hover {
+  color: var(--color-white);
+  text-decoration: underline !important;
+}
+
+.footer-link-item:focus-visible {
+  outline: 2px solid var(--color-primary-teal);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
+@media (max-width: 767px) {
+  .footer-link-item {
+    min-height: 36px;
+    line-height: 36px;
+    padding: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .footer-link-item {
+    min-height: auto;
+    line-height: 1.5;
+    padding: 0.125rem 0;
+  }
+}
 
 /* Cards */
 .card-hover {
