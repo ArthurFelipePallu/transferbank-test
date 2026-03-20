@@ -53,7 +53,7 @@ export class PhoneFormattingService {
     if (!phoneString) return ''
     
     const match = phoneString.match(/^(\+\d+)/)
-    return match ? match[1] : ''
+    return match ? match[1]! : ''
   }
 
   /**

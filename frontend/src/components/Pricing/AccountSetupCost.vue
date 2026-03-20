@@ -37,7 +37,7 @@ onUnmounted(() => {
       
       <div class="cost-value-wrapper">
         <Transition name="fade" mode="out-in">
-          <div :key="pricingStore.currentPrice" class="cost-value">
+          <div :key="pricingStore.currentPrice ?? 0" class="cost-value">
             {{ pricingStore.formatPrice() }}
           </div>
         </Transition>

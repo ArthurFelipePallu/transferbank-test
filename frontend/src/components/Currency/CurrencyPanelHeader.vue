@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
+import type { IconName } from '@/utils/LucideIconMap'
 
 defineProps<{
   title?: string
   subtitle?: string
-  iconName?: string
+  iconName?: IconName
 }>()
 </script>
 

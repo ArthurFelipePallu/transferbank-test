@@ -30,7 +30,7 @@ export class PhoneNumber {
       throw new Error('Invalid phone format')
     }
 
-    return new PhoneNumber(match[1], match[2].trim())
+    return new PhoneNumber(match[1]!, match[2]!.trim())
   }
 
   /**

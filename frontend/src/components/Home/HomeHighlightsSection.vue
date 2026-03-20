@@ -4,14 +4,15 @@ import { useTranslation } from '@/composables/i18n/useTranslation'
 import { useRouter } from 'vue-router'
 import { RouteName } from '@/domain/navigation/types/RouteNames'
 import type { IconName } from '@/utils/LucideIconMap'
+import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
 
 const { t } = useTranslation()
 const router = useRouter()
 
 interface Highlight {
   icon: IconName
-  titleKey: string
-  descKey: string
+  titleKey: TranslationKey
+  descKey: TranslationKey
   route: RouteName
   accentClass: string
 }

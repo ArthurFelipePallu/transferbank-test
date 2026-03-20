@@ -35,8 +35,8 @@ const { handleSubmit, meta, values } = useForm<OnboardingCompanyValues>({
 })
 
 const submit = handleSubmit((vals) => {
-  // fullPhoneNumber is a computed ref — access .value
-  const fullPhone = phoneInputRef.value?.fullPhoneNumber.value || vals.phone
+  // fullPhoneNumber is a ComputedRef<string> exposed by PhoneInputField
+  const fullPhone = (phoneInputRef.value?.fullPhoneNumber as { value: string } | undefined)?.value || vals.phone
   emit('next', { ...vals, phone: fullPhone })
 })
 

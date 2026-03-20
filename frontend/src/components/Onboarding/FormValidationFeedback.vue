@@ -53,7 +53,7 @@ const totalErrors = computed(() => {
 <template>
   <div v-if="hasErrors" class="validation-feedback">
     <div class="feedback-header">
-      <BaseLucideIcon name="alert-circle" :size="20" />
+      <BaseLucideIcon name="AlertCircle" :size="20" />
       <span class="feedback-title">
         {{ totalErrors }} {{ totalErrors === 1 ? t('onboarding.validation.issuesSingular') : t('onboarding.validation.issuesPlural') }}
       </span>

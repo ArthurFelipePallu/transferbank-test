@@ -3,9 +3,12 @@ import { setActivePinia, createPinia } from 'pinia'
 import { useOnboardingStore } from '../useOnboardingStore'
 import * as companyUseCases from '@/application/company/companyUseCases'
 import { CryptoCurrencyEnum } from '@/api/backendApi'
-import type { Company } from '@/domain/company/interfaces/companyInterface'
+import { RegistrationResult } from '@/domain/onboarding/types/RegistrationResult'
+import { OnboardingStep } from '@/domain/onboarding/onboarding.types'
+import { CompanyAlreadyExistsError } from '@/domain/onboarding/errors/CompanyAlreadyExistsError'
 
 vi.mock('@/application/company/companyUseCases')
+vi.mock('@/infrastructure/gateways', () => ({ companyGateway: {} }))
 
 describe('useOnboardingStore', () => {
   beforeEach(() => {
@@ -15,10 +18,9 @@ describe('useOnboardingStore', () => {
   })
 
   describe('Initial State', () => {
-    it('should have empty company data initially', () => {
+    it('should start at CNPJ step', () => {
       const store = useOnboardingStore()
-      expect(store.companyData).toEqual({})
-      expect(store.hasCompanyData).toBe(false)
+      expect(store.currentStep).toBe(OnboardingStep.CNPJ)
     })
 
     it('should not be submitting initially', () => {
@@ -26,27 +28,21 @@ describe('useOnboardingStore', () => {
       expect(store.isSubmitting).toBe(false)
     })
 
-    it('should not be completed initially', () => {
+    it('should have no partners initially', () => {
       const store = useOnboardingStore()
-      expect(store.isCompleted).toBe(false)
+      expect(store.partners).toEqual([])
+    })
+
+    it('should have no error initially', () => {
+      const store = useOnboardingStore()
+      expect(store.error).toBeNull()
     })
   })
 
   describe('submitOnboarding', () => {
-    it('should register company successfully', async () => {
+    it('should return Success on successful registration', async () => {
       const store = useOnboardingStore()
-      const mockCompany: Company = {
-        id: 'company-123',
-        cnpj: '12345678000190',
-        companyName: 'Test Company',
-        fantasyName: 'Test Fantasy Name',
-        cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin],
-        phone: '+5511999999999',
-        email: 'test@example.com',
-        createdAt: new Date().toISOString(),
-      }
-
-      vi.mocked(companyUseCases.registerCompany).mockResolvedValue(mockCompany)
+      vi.mocked(companyUseCases.registerCompany).mockResolvedValue(undefined as never)
 
       const result = await store.submitOnboarding(
         '12345678000190',
@@ -55,67 +51,17 @@ describe('useOnboardingStore', () => {
         [CryptoCurrencyEnum.Bitcoin],
         '+5511999999999',
         'test@example.com',
-        'password123'
+        'password123',
       )
 
-      expect(result).toBe(true)
-      expect(store.isCompleted).toBe(true)
-      expect(store.registeredCompany?.id).toBe('company-123')
-      expect(store.registeredCompany?.cnpj).toBe('12345678000190')
+      expect(result).toBe(RegistrationResult.Success)
       expect(store.error).toBeNull()
     })
 
-    it('should store company data in localStorage', async () => {
-      const store = useOnboardingStore()
-      const mockCompany: Company = {
-        id: 'company-123',
-        cnpj: '12345678000190',
-        companyName: 'Test Company',
-        fantasyName: 'Test Fantasy Name',
-        cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin],
-        phone: '+5511999999999',
-        email: 'test@example.com',
-        createdAt: new Date().toISOString(),
-      }
-
-      vi.mocked(companyUseCases.registerCompany).mockResolvedValue(mockCompany)
-
-      await store.submitOnboarding(
-        '12345678000190',
-        'Test Company',
-        'Test Fantasy Name',
-        [CryptoCurrencyEnum.Bitcoin],
-        '+5511999999999',
-        'test@example.com',
-        'password123'
-      )
-
-      expect(localStorage.getItem('onboarding_data')).toBeTruthy()
-    })
-
-    it('should handle duplicate company error', async () => {
+    it('should return AlreadyExists on duplicate company error', async () => {
       const store = useOnboardingStore()
       vi.mocked(companyUseCases.registerCompany).mockRejectedValue(
-        new Error('Company with this CNPJ or Email already exists')
-      )
-
-      await expect(
-        store.submitOnboarding(
-          '12345678000190',
-          'Test Company',
-          'Test Fantasy Name',
-          [CryptoCurrencyEnum.Bitcoin],
-          '+5511999999999',
-          'test@example.com',
-          'password123'
-        )
-      ).rejects.toThrow('DUPLICATE_COMPANY')
-    })
-
-    it('should handle general errors', async () => {
-      const store = useOnboardingStore()
-      vi.mocked(companyUseCases.registerCompany).mockRejectedValue(
-        new Error('Network error')
+        new CompanyAlreadyExistsError(),
       )
 
       const result = await store.submitOnboarding(
@@ -125,104 +71,93 @@ describe('useOnboardingStore', () => {
         [CryptoCurrencyEnum.Bitcoin],
         '+5511999999999',
         'test@example.com',
-        'password123'
+        'password123',
       )
 
-      expect(result).toBe(false)
+      expect(result).toBe(RegistrationResult.AlreadyExists)
+    })
+
+    it('should return Error and set error message on general failure', async () => {
+      const store = useOnboardingStore()
+      vi.mocked(companyUseCases.registerCompany).mockRejectedValue(new Error('Network error'))
+
+      const result = await store.submitOnboarding(
+        '12345678000190',
+        'Test Company',
+        'Test Fantasy Name',
+        [CryptoCurrencyEnum.Bitcoin],
+        '+5511999999999',
+        'test@example.com',
+        'password123',
+      )
+
+      expect(result).toBe(RegistrationResult.Error)
       expect(store.error).toBe('Network error')
     })
   })
 
   describe('resetOnboarding', () => {
-    it('should reset all state', async () => {
+    it('should reset step and partners', () => {
       const store = useOnboardingStore()
-      const mockCompany: Company = {
-        id: 'company-123',
-        cnpj: '12345678000190',
-        companyName: 'Test Company',
-        fantasyName: 'Test Fantasy Name',
-        cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin],
-        phone: '+5511999999999',
-        email: 'test@example.com',
-        createdAt: new Date().toISOString(),
-      }
-
-      vi.mocked(companyUseCases.registerCompany).mockResolvedValue(mockCompany)
-      await store.submitOnboarding(
-        '12345678000190',
-        'Test Company',
-        'Test Fantasy Name',
-        [CryptoCurrencyEnum.Bitcoin],
-        '+5511999999999',
-        'test@example.com',
-        'password123'
-      )
+      store.nextStep()
+      store.addPartner({
+        tempId: 'abc',
+        fullName: 'John',
+        cpf: '123.456.789-00',
+        nationality: 'Brazilian',
+        shareholding: 50,
+        isPep: false,
+        documents: [],
+      })
 
       store.resetOnboarding()
 
-      expect(store.companyData).toEqual({})
-      expect(store.isCompleted).toBe(false)
+      expect(store.currentStep).toBe(OnboardingStep.CNPJ)
+      expect(store.partners).toEqual([])
       expect(store.error).toBeNull()
-      expect(localStorage.getItem('onboarding_data')).toBeNull()
     })
   })
 
-  describe('loadOnboardingData', () => {
-    it('should load data from localStorage', () => {
+  describe('updateCompanyData', () => {
+    it('should merge partial data into companyData', () => {
       const store = useOnboardingStore()
-      const mockData = {
-        id: 'company-123',
-        cnpj: '12345678000190',
-        companyName: 'Test Company',
-        fantasyName: 'Test Fantasy Name',
-        cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin],
-        phone: '+5511999999999',
-        email: 'test@example.com',
-      }
-
-      localStorage.setItem('onboarding_data', JSON.stringify(mockData))
-
-      const result = store.loadOnboardingData()
-
-      expect(result).toBe(true)
-      expect(store.companyData).toEqual(mockData)
-      expect(store.isCompleted).toBe(true)
-    })
-
-    it('should return false if no data in localStorage', () => {
-      const store = useOnboardingStore()
-      const result = store.loadOnboardingData()
-
-      expect(result).toBe(false)
+      store.updateCompanyData({ companyName: 'Acme Corp' })
+      expect(store.companyData.companyName).toBe('Acme Corp')
     })
   })
 
-  describe('Computed Properties', () => {
-    it('should compute hasCompanyData correctly', () => {
+  describe('Partner management', () => {
+    it('should add a partner and update totalShareholding', () => {
       const store = useOnboardingStore()
-      expect(store.hasCompanyData).toBe(false)
-
-      store.updateCompanyData({
-        cnpj: '12345678000190',
-        companyName: 'Test Company',
-        email: 'test@example.com',
+      store.addPartner({
+        tempId: 'p1',
+        fullName: 'Alice',
+        cpf: '111.222.333-44',
+        nationality: 'Brazilian',
+        shareholding: 60,
+        isPep: false,
+        documents: [],
       })
 
-      expect(store.hasCompanyData).toBe(true)
+      expect(store.partners).toHaveLength(1)
+      expect(store.totalShareholding).toBe(60)
+      expect(store.remainingShareholding).toBe(40)
     })
 
-    it('should compute selectedCurrencies correctly', () => {
+    it('should remove a partner by tempId', () => {
       const store = useOnboardingStore()
-      expect(store.selectedCurrencies).toEqual([])
-
-      store.updateCompanyData({
-        cryptoCurrencies: [CryptoCurrencyEnum.Bitcoin, CryptoCurrencyEnum.Ethereum],
+      store.addPartner({
+        tempId: 'p1',
+        fullName: 'Alice',
+        cpf: '111.222.333-44',
+        nationality: 'Brazilian',
+        shareholding: 60,
+        isPep: false,
+        documents: [],
       })
 
-      expect(store.selectedCurrencies).toEqual([
-        CryptoCurrencyEnum.Bitcoin,
-        CryptoCurrencyEnum.Ethereum,
-      ])
+      store.removePartner('p1')
+      expect(store.partners).toHaveLength(0)
     })
   })
 })

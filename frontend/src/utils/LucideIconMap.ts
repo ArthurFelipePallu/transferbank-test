@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   ArrowLeft,
   ArrowLeftRight,
   ArrowRight,
@@ -51,6 +52,7 @@ import {
 } from 'lucide-vue-next'
 
 export const iconMap = {
+  AlertCircle,
   ArrowLeft,
   ArrowLeftRight,
   ArrowRight,
