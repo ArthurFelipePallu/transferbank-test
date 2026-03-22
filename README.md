@@ -125,6 +125,14 @@ Quando o usuário faz o upload do contrato social em PDF, o documento passa por 
 Upload do PDF → OCR (API OCR.space) → Extração de Texto → Análise GPT (OpenAI) → Resultado Estruturado
 ```
 
+### Documento de Teste
+
+Para testar o pipeline de validação no deploy em produção, utilize o contrato social de exemplo incluído neste repositório:
+
+📄 **[Baixar contrato_social_teste.pdf](frontend/contrato_social_teste.pdf)**
+
+Faça o upload deste arquivo na etapa de contrato social durante o onboarding em [mediteranianbank.netlify.app](https://mediteranianbank.netlify.app) para verificar o funcionamento completo da análise por IA.
+
 ### Etapa 1 — OCR (Extração de Texto)
 
 O PDF é enviado para a API **OCR.space**. O texto bruto extraído é repassado para a próxima etapa.
