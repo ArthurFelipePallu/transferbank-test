@@ -1,153 +1,298 @@
-# Transfer Bank Project
+# Mediteranian Bank
 
-A modern banking application with cryptocurrency integration, built with Vue 3 and .NET.
+A full-stack corporate banking platform for opening and managing business accounts, with crypto-native support, AI-powered document validation, and real-time currency rates.
 
-## Account Setup Cost Calculation
+---
 
-The account setup cost is displayed in Brazilian Reais (BRL) and is calculated from one of three base costs:
-- $100 USD
-- 0.00153 BTC
-- 0.521 ETH
+## Table of Contents
 
-The system automatically selects the most favorable rate (lowest cost) and applies the following fees:
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [AI Document Analysis Pipeline](#ai-document-analysis-pipeline)
+- [Currency Rate Formulas](#currency-rate-formulas)
+- [Account Setup Cost Formula](#account-setup-cost-formula)
+- [External APIs](#external-apis)
+- [Environment Variables](#environment-variables)
+- [Running Locally](#running-locally)
+- [Deployment](#deployment)
 
-### Formula
+---
 
-The final cost in BRL is calculated using the following formula:
+## Overview
 
-```
-Cost_BRL = Base_Cost × Exchange_Rate × (1 + Spread) × (1 + IOF)
-```
+Mediteranian Bank is a corporate account opening platform targeting businesses that operate in both traditional finance and the crypto economy. Companies can register, upload their social contract for AI validation, manage partners with KYC controls, and monitor live currency and crypto rates — all from a single interface.
 
-Where:
-- **Base_Cost**: $100 USD, 0.00153 BTC, or 0.521 ETH (whichever is most favorable)
-- **Exchange_Rate**: Current exchange rate to BRL
-- **Spread**: 1% (0.01)
-- **IOF**: 3.5% (0.035) - Brazilian tax on financial transactions
-
-### LaTeX Notation
-
-$$
-\text{Cost}_{\text{BRL}} = \text{Base}_{\text{Cost}} \times \text{Exchange}_{\text{Rate}} \times (1 + 0.01) \times (1 + 0.035)
-$$
-
-Or expanded:
-
-$$
-\text{Cost}_{\text{BRL}} = \text{Base}_{\text{Cost}} \times \text{Exchange}_{\text{Rate}} \times 1.01 \times 1.035
-$$
-
-### Example Calculation
-
-If the current rates are:
-- 1 USD = 5.00 BRL
-- 1 BTC = 350,000 BRL
-- 1 ETH = 12,000 BRL
-
-Then:
-- Cost from USD: $100 × 5.00 = R$ 500.00
-- Cost from BTC: 0.00153 × 350,000 = R$ 535.50
-- Cost from ETH: 0.521 × 12,000 = R$ 6,252.00
-
-The system selects USD (R$ 500.00) as the most favorable rate.
-
-Applying fees:
-1. Apply 1% spread: R$ 500.00 × 1.01 = R$ 505.00
-2. Apply 3.5% IOF: R$ 505.00 × 1.035 = R$ 522.675
-3. Round up to 2 decimals: R$ 522.68
-
-### Real-Time Updates
-
-The cost is updated every 5 seconds using real-time cryptocurrency prices from the CoinGecko API.
+---
 
 ## Features
 
-- Real-time cryptocurrency price tracking
-- Automatic currency conversion with spread and IOF
-- Mobile-first responsive design
-- Bootstrap 5 integration
-- International phone input with country flags
-- CNPJ validation and lookup
-- Multi-step onboarding process
+### Onboarding Flow
+A multi-step guided registration process for companies:
 
-## Technology Stack
+1. **CNPJ Validation** — Brazilian company tax ID is validated locally using the official digit-verification algorithm before any API call is made.
+2. **Company Data** — Legal name, trading name, address (with automatic CEP lookup via ViaCEP), and business type.
+3. **Partner Management** — Add, edit, and remove company partners with full KYC fields: CPF/RG, nationality, shareholding percentage, and PEP (Politically Exposed Person) declaration.
+4. **Social Contract Upload** — PDF upload with preview. The document is sent through an OCR + AI analysis pipeline to verify authenticity.
+5. **Password & Review** — Secure password creation and a full review step before final submission.
+
+### Dashboard
+Post-login view showing company info, quick actions, and partner list.
+
+### Live Currency Rates
+Real-time rates for USD, EUR, GBP, JPY, BTC, and ETH against BRL, updated every 10 seconds. Displayed in the login sidebar on desktop and as a dedicated section on mobile.
+
+### Account Setup Cost
+The account opening fee is calculated dynamically from live exchange rates, applying spread and IOF, and displayed in BRL with a price-change indicator.
+
+### Internationalisation
+Full EN / PT-BR support via a custom `useTranslation` composable backed by a typed translation tree.
+
+---
+
+## Architecture
+
+The project follows **DDD (Domain-Driven Design)** and **SOLID** principles across both frontend and backend.
+
+```
+.
+├── frontend/          # Vue 3 SPA (Vite)
+│   ├── src/
+│   │   ├── domain/        # Entities, value objects, ports, domain errors
+│   │   ├── application/   # Use cases, services, orchestration
+│   │   ├── infrastructure/# API gateways, i18n, external providers
+│   │   ├── stores/        # Pinia state (Repository pattern)
+│   │   ├── composables/   # Reusable Vue composition logic
+│   │   ├── components/    # UI components
+│   │   └── views/         # Route-level pages
+│
+└── backend/           # ASP.NET Core 9 Web API
+    └── src/
+        ├── Domain/        # Models, value objects
+        ├── Application/   # Interfaces, services, mappers
+        ├── Infrastructure/# EF Core, OCR, OpenAI, external HTTP
+        └── Api/           # Controllers, middleware, DI wiring
+```
+
+---
+
+## Tech Stack
 
 ### Frontend
-- Vue 3 with TypeScript
-- Bootstrap 5
-- Vee-Validate for form validation
-- Pinia for state management
-- Vue Router for navigation
+
+| Category | Library / Tool | Version |
+|---|---|---|
+| Framework | Vue 3 (Composition API) | ^3.5 |
+| Build | Vite | ^7.3 |
+| Language | TypeScript | ~5.9 |
+| State | Pinia | ^3.0 |
+| Routing | Vue Router | ^5.0 |
+| Forms & Validation | VeeValidate + Yup + Zod | ^4.15 / ^1.7 / ^4.3 |
+| UI Framework | Bootstrap 5 | ^5.3 |
+| Icons | Lucide Vue Next | ^0.577 |
+| HTTP Client | Axios + axios-retry | ^1.13 |
+| i18n | Custom composable (typed) | — |
+| Testing | Vitest + Vue Test Utils | ^4.0 |
+| Linting | ESLint + oxlint + Prettier | — |
+| API codegen | swagger-typescript-api | ^13.2 |
 
 ### Backend
-- .NET 9
-- Entity Framework Core
-- RESTful API architecture
 
-## Getting Started
+| Category | Library / Tool | Version |
+|---|---|---|
+| Runtime | .NET 9 / ASP.NET Core | 9.0 |
+| ORM | Entity Framework Core + SQLite | 9.0 |
+| Password hashing | BCrypt.Net-Next | 4.0.3 |
+| API docs | Swashbuckle (Swagger) | 10.1.4 |
+| HTTP factory | Microsoft.Extensions.Http | 9.0 |
+| Containerisation | Docker | — |
 
-### Prerequisites
-- Node.js 18+
-- .NET 9 SDK
-- npm or yarn
+---
 
-### Installation
+## AI Document Analysis Pipeline
 
-1. Clone the repository
-```bash
-git clone <repository-url>
-cd transfer-bank-project
+When a user uploads a social contract PDF, it goes through a two-stage pipeline:
+
+```
+PDF Upload → OCR (OCR.space API) → Text Extraction → OpenAI GPT Analysis → Structured Result
 ```
 
-2. Install frontend dependencies
+### Stage 1 — OCR (Text Extraction)
+The PDF is sent to the **OCR.space** API. The raw text is extracted and passed to the next stage.
+
+### Stage 2 — AI Analysis (OpenAI GPT)
+The extracted text is sent to **OpenAI Chat Completions** (`gpt-4o-mini` by default) with a structured system prompt that instructs the model to evaluate five weighted criteria:
+
+| Criterion | Weight |
+|---|---|
+| Company Identification | 0.20 |
+| Partner Data | 0.25 |
+| Signatures | 0.25 |
+| Required Clauses | 0.15 |
+| Document Integrity | 0.15 |
+
+The model returns a JSON object with per-criterion scores (0.0–1.0), a `confidenceIndex`, and an `isValid` flag. The backend enforces a minimum confidence threshold of **0.70** server-side, regardless of what the model returns.
+
+The confidence index formula is described in the [Currency Rate Formulas](#currency-rate-formulas) section below.
+
+---
+
+## Currency Rate Formulas
+
+### Confidence Index (AI Document Validation)
+
+$$
+C = \sum_{i=1}^{n} s_i \cdot w_i
+$$
+
+Where:
+- $C$ = confidence index $\in [0, 1]$
+- $s_i$ = score for criterion $i$, $s_i \in [0, 1]$
+- $w_i$ = weight for criterion $i$
+
+Expanded with the five criteria:
+
+$$
+C = (s_{\text{company}} \times 0.20) + (s_{\text{partners}} \times 0.25) + (s_{\text{signatures}} \times 0.25) + (s_{\text{clauses}} \times 0.15) + (s_{\text{integrity}} \times 0.15)
+$$
+
+The document is considered valid when:
+
+$$
+C \geq 0.70
+$$
+
+### Currency Conversion to BRL
+
+For any foreign currency with exchange rate $r$ (units of BRL per 1 unit of foreign currency):
+
+$$
+P_{\text{BRL}} = Q \times r
+$$
+
+Where:
+- $Q$ = quantity in the foreign currency
+- $r$ = live exchange rate (BRL per unit)
+- $P_{\text{BRL}}$ = equivalent value in Brazilian Reais
+
+---
+
+## Account Setup Cost Formula
+
+The account opening fee is denominated in a reference foreign currency (the one yielding the lowest BRL cost across all supported currencies) and converted to BRL with spread and IOF applied.
+
+### Step 1 — Base Cost in BRL
+
+$$
+B_{\text{BRL}} = Q_{\text{base}} \times r
+$$
+
+Where $Q_{\text{base}}$ is the fixed base cost in the reference currency (e.g. USD 100, EUR 100, BTC 0.00153) and $r$ is the live rate.
+
+### Step 2 — Apply Spread (1%)
+
+$$
+P_{\text{spread}} = B_{\text{BRL}} \times (1 + s), \quad s = 0.01
+$$
+
+### Step 3 — Apply IOF (3.5%)
+
+$$
+P_{\text{IOF}} = P_{\text{spread}} \times (1 + \tau), \quad \tau = 0.035
+$$
+
+### Step 4 — Round Up to Cent
+
+$$
+P_{\text{final}} = \left\lceil P_{\text{IOF}} \times 100 \right\rceil \div 100
+$$
+
+### Combined Formula
+
+$$
+P_{\text{final}} = \left\lceil Q_{\text{base}} \times r \times (1 + s) \times (1 + \tau) \times 100 \right\rceil \div 100
+$$
+
+The system evaluates this for every supported currency and selects the one that minimises $P_{\text{final}}$ for the user.
+
+---
+
+## External APIs
+
+| API | Purpose | Docs |
+|---|---|---|
+| [CoinGecko](https://www.coingecko.com/en/api) | Live BTC / ETH rates in BRL | Free tier, ~30 req/min |
+| [ExchangeRate-API](https://www.exchangerate-api.com) | Live USD / EUR / GBP / JPY rates | Free tier, hourly updates |
+| [OCR.space](https://ocr.space/ocrapi) | PDF text extraction | Free tier available |
+| [OpenAI](https://platform.openai.com/docs) | Social contract AI analysis | Paid, GPT-4o-mini |
+| [ViaCEP](https://viacep.com.br) | Brazilian postal code lookup | Free, no key required |
+
+---
+
+## Environment Variables
+
+### Frontend (`frontend/.env`)
+
+```env
+VITE_API_BASE_URL=https://your-backend-url
+```
+
+### Backend (Cloud Run / `appsettings.json`)
+
+```env
+OcrSpace__ApiKey=your_ocr_space_key
+OpenAi__ApiKey=your_openai_key
+OpenAi__Model=gpt-4o-mini
+OpenAi__MaxTokens=1000
+```
+
+> Real API keys must never be committed. Set them via Cloud Run environment variables or your secrets manager.
+
+---
+
+## Running Locally
+
+### Frontend
+
 ```bash
 cd frontend
-npm install
+yarn install
+yarn dev
 ```
 
-3. Install backend dependencies
+### Backend
+
 ```bash
 cd backend
-dotnet restore
+dotnet run --project src/Api
 ```
 
-4. Run the development servers
+The API will be available at `http://localhost:5287` with Swagger at `/swagger`.
 
-Frontend:
+---
+
+## Deployment
+
+| Layer | Platform |
+|---|---|
+| Frontend | [Netlify](https://netlify.com) — auto-deploys on push to `main` |
+| Backend | [Google Cloud Run](https://cloud.google.com/run) — containerised via Docker |
+| Database | SQLite (embedded in the container, suitable for demo/staging) |
+
+### Deploy backend to Cloud Run
+
 ```bash
-cd frontend
-npm run dev
+gcloud run deploy transferbank-api \
+  --source ./backend \
+  --region us-central1 \
+  --allow-unauthenticated
 ```
 
-Backend:
+### Update a secret on Cloud Run
+
 ```bash
-cd backend/src/Api
-dotnet run
+gcloud run services update transferbank-api \
+  --region us-central1 \
+  --update-env-vars "OpenAi__ApiKey=sk-your-new-key"
 ```
-
-## Project Structure
-
-```
-transfer-bank-project/
-├── frontend/               # Vue 3 frontend application
-│   ├── src/
-│   │   ├── assets/        # Styles and static assets
-│   │   ├── components/    # Vue components
-│   │   ├── composables/   # Vue composables
-│   │   ├── domain/        # Domain models and schemas
-│   │   ├── services/      # API services
-│   │   ├── stores/        # Pinia stores
-│   │   └── views/         # Page views
-│   └── package.json
-├── backend/               # .NET backend application
-│   ├── src/
-│   │   ├── Api/          # API controllers
-│   │   ├── Application/  # Business logic
-│   │   └── Domain/       # Domain entities
-│   └── Backend.sln
-└── README.md
-```
-
-## License
-
-[Your License Here]
