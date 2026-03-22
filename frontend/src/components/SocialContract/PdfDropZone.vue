@@ -64,16 +64,20 @@ const handleBrowseClick = (): void => { fileInputRef.value?.click() }
       </template>
 
       <template v-else>
-        <div class="d-flex align-items-center gap-3 w-100">
-          <BaseLucideIcon name="FileText" :size="32" class="text-primary flex-shrink-0" />
-          <div class="flex-grow-1 overflow-hidden">
-            <p class="mb-0 fw-semibold text-truncate small">{{ fileName }}</p>
-            <p class="mb-0 text-muted small opacity-75">{{ formatFileSize(fileSizeBytes ?? 0) }}</p>
+        <div class="d-flex flex-column align-items-center gap-2 w-100">
+          <!-- Icon + file info — always on top -->
+          <div class="d-flex align-items-center gap-2 w-100">
+            <BaseLucideIcon name="FileText" :size="28" class="text-primary flex-shrink-0" />
+            <div class="flex-grow-1 overflow-hidden">
+              <p class="mb-0 fw-semibold text-truncate small">{{ fileName }}</p>
+              <p class="mb-0 text-muted small opacity-75">{{ formatFileSize(fileSizeBytes ?? 0) }}</p>
+            </div>
           </div>
-          <div class="d-flex gap-2 flex-shrink-0">
+          <!-- Action buttons — below on all screen sizes -->
+          <div class="d-flex gap-2 w-100">
             <button
               type="button"
-              class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
+              class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 flex-grow-1"
               :disabled="disabled"
               @click.stop="emit('preview')"
             >
@@ -82,7 +86,7 @@ const handleBrowseClick = (): void => { fileInputRef.value?.click() }
             </button>
             <button
               type="button"
-              class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+              class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center gap-1"
               :disabled="disabled"
               @click.stop="emit('remove')"
             >
@@ -122,5 +126,6 @@ const handleBrowseClick = (): void => { fileInputRef.value?.click() }
   cursor: default;
   border-style: solid !important;
   border-color: var(--bs-success) !important;
+  min-height: unset;
 }
 </style>
