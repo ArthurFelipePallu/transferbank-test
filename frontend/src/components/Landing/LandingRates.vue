@@ -18,56 +18,70 @@ onUnmounted(() => currencyStore.stopAutoUpdate())
 <template>
   <!-- Only visible on mobile — desktop already shows this in the login page sidebar -->
   <section
-    class="d-lg-none section-spacing landing-rates"
+    class="d-lg-none landing-rates"
     aria-labelledby="landing-rates-title"
   >
-    <div class="standard-container px-3">
+    <!-- Divider strip matching the light sections (bg-white) -->
+    <div class="landing-rates__divider" />
 
-      <!-- Section header -->
-      <div class="d-flex align-items-center gap-2 mb-4">
-        <BaseLucideIcon name="TrendingUp" :size="22" class="text-primary-teal" />
-        <div>
-          <h2 id="landing-rates-title" class="h5 fw-bold mb-0">
-            {{ t('landing.rates.title') }}
-          </h2>
-          <p class="text-muted small mb-0">{{ t('landing.rates.subtitle') }}</p>
+    <!-- Dark gradient panel — same background as CurrencyInfoPanel -->
+    <div class="landing-rates__panel section-spacing">
+      <div class="standard-container px-3">
+
+        <!-- Section header -->
+        <div class="d-flex align-items-center gap-2 mb-4">
+          <BaseLucideIcon name="TrendingUp" :size="22" color="var(--color-white)" />
+          <div>
+            <h2 id="landing-rates-title" class="h5 fw-bold mb-0 text-white">
+              {{ t('landing.rates.title') }}
+            </h2>
+            <p class="small mb-0" style="color: var(--color-white-alpha-60)">
+              {{ t('landing.rates.subtitle') }}
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- Rate cards — single column on mobile -->
-      <div class="d-flex flex-column gap-3">
-        <CurrencyRateCard
-          v-for="display in currencyDisplays"
-          :key="display.code"
-          :icon-name="display.iconName"
-          :symbol="display.symbol"
-          :currency-code="display.code"
-          :currency-name="display.name"
-          :current-rate="currencyStore.formatRate(display.code)"
-          :current-value="currencyStore.getDisplayValues(display.code).currentValue"
-          :previous-value="currencyStore.getDisplayValues(display.code).previousValue"
-        />
-      </div>
+        <!-- Rate cards -->
+        <div class="d-flex flex-column gap-3">
+          <CurrencyRateCard
+            v-for="display in currencyDisplays"
+            :key="display.code"
+            :icon-name="display.iconName"
+            :symbol="display.symbol"
+            :currency-code="display.code"
+            :currency-name="display.name"
+            :current-rate="currencyStore.formatRate(display.code)"
+            :current-value="currencyStore.getDisplayValues(display.code).currentValue"
+            :previous-value="currencyStore.getDisplayValues(display.code).previousValue"
+          />
+        </div>
 
-      <!-- Market status -->
-      <div class="mt-3">
-        <MarketStatusBadge
-          :is-active="true"
-          :status-text="t('currency.marketActive')"
-          :description="t('currency.realTimeDataSource')"
-        />
-      </div>
+        <!-- Market status -->
+        <div class="mt-3">
+          <MarketStatusBadge
+            :is-active="true"
+            :status-text="t('currency.marketActive')"
+            :description="t('currency.realTimeDataSource')"
+          />
+        </div>
 
+      </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-.landing-rates {
-  background: var(--color-surface);
+.landing-rates__divider {
+  height: 2rem;
+  background: #ffffff;
 }
 
-.text-primary-teal {
-  color: var(--color-primary-teal);
+.landing-rates__panel {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-bg-start),
+    var(--color-primary-bg-mid),
+    var(--color-primary-bg-end)
+  );
 }
 </style>
