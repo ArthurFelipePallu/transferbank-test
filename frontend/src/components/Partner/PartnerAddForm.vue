@@ -14,7 +14,6 @@ import type { PartnerPanelStore } from "@/composables/form/usePartnerPanel"
 import FormInputField from "@/components/UI/FormInputField.vue"
 import PepCheckbox from "@/components/UI/PepCheckbox.vue"
 import FieldWarning from "@/components/UI/FieldWarning.vue"
-import DocumentsRequiredInfo from "@/components/UI/DocumentsRequiredInfo.vue"
 import FileUpload from "@/components/Partner/FileUpload.vue"
 
 interface Props {
@@ -167,7 +166,6 @@ const save = handleSubmit(async (vals) => {
 
         <div class="col-12">
           <FileUpload :model-value="documents" :label="t('partner.registration.documents.uploadLabel')" :error="errors.documents as string | undefined" @update:model-value="updateDocuments" />
-          <div class="mt-2"><DocumentsRequiredInfo /></div>
         </div>
       </div>
 
