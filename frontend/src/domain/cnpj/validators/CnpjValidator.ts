@@ -19,7 +19,7 @@ const CHECK_DIGIT_THRESHOLD = 2
 const CHECK_DIGIT_BASE = 11
 
 function calcCheckDigit(digits: number[], weights: number[]): number {
-  const sum = digits.reduce((acc, d, i) => acc + d * weights[i], 0)
+  const sum = digits.reduce((acc, d, i) => acc + d * (weights[i] ?? 0), 0)
   const remainder = sum % CHECK_DIGIT_BASE
   return remainder < CHECK_DIGIT_THRESHOLD ? 0 : CHECK_DIGIT_BASE - remainder
 }
