@@ -11,7 +11,7 @@ import { InvalidCnpjError } from '@/domain/cnpj/errors/InvalidCnpjError'
  * Works in dev (localhost backend), Netlify (Cloud Run backend), and anywhere else
  * as long as VITE_API_URL is set correctly.
  */
-const BACKEND_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5287'
+const BACKEND_URL = import.meta.env.VITE_API_URL ?? 'https://localhost:5287'
 const CNPJ_BASE_URL = `${BACKEND_URL}/api/cnpj`
 const CNPJ_REQUIRED_LENGTH = 14
 const CNPJ_TIMEOUT_MS = 10_000
