@@ -91,6 +91,15 @@ axiosInstance.interceptors.response.use(
         ui.showError(errorMessage)
         break
 
+      case 404:
+        // Not found — callers handle this via null/false returns; no toast needed
+        break
+
+      case 400:
+        // Bad request — callers (gateways) handle domain-level 400s themselves;
+        // only show a toast if it bubbles up unhandled
+        break
+
       case 409:
         // Conflict — gateways are responsible for translating 409 into domain errors.
         // If a 409 reaches here it wasn't handled by a gateway, so show the message.
