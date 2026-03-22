@@ -21,7 +21,7 @@ onUnmounted(() => currencyStore.stopAutoUpdate())
     class="d-lg-none landing-rates"
     aria-labelledby="landing-rates-title"
   >
-    <!-- Divider strip matching the light sections (bg-white) -->
+    <!-- Divider strip — teal-tinted light strip matching the lighter landing sections -->
     <div class="landing-rates__divider" />
 
     <!-- Dark gradient panel — same background as CurrencyInfoPanel -->
@@ -71,17 +71,26 @@ onUnmounted(() => currencyStore.stopAutoUpdate())
 </template>
 
 <style scoped>
+/* Teal-tinted light strip — matches the lighter sections (LandingFeatures bg-white with teal accent) */
 .landing-rates__divider {
-  height: 2rem;
-  background: #ffffff;
+  height: 2.5rem;
+  background: linear-gradient(
+    180deg,
+    var(--color-teal-alpha-5) 0%,
+    var(--color-accent-teal-alpha-5) 100%
+  );
+  border-top: 1px solid var(--color-teal-alpha-10);
+  border-bottom: 1px solid var(--color-teal-alpha-10);
 }
 
+/* Dark gradient panel — identical to CurrencyInfoPanel background */
 .landing-rates__panel {
   background: linear-gradient(
     135deg,
-    var(--color-primary-bg-start),
-    var(--color-primary-bg-mid),
-    var(--color-primary-bg-end)
+    var(--color-primary-bg-start) 0%,
+    var(--color-primary-bg-mid)   50%,
+    var(--color-primary-bg-end)   100%
   );
+  color: var(--color-white);
 }
 </style>
