@@ -69,4 +69,8 @@ export const landing = {
     login: 'Already have an account?',
     loginLink: 'Sign in',
   },
+  rates: {
+    title: 'Live market rates',
+    subtitle: 'Real-time currency and crypto rates',
+  },
 }

@@ -69,4 +69,8 @@ export const landing = {
     login: 'Já tem uma conta?',
     loginLink: 'Entrar',
   },
+  rates: {
+    title: 'Cotações em tempo real',
+    subtitle: 'Câmbio e cripto atualizados ao vivo',
+  },
 }
