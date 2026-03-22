@@ -5,7 +5,7 @@ export type Locale = 'en' | 'pt-BR'
 
 export const SUPPORTED_LOCALES: Locale[] = ['en', 'pt-BR']
 
-export const DEFAULT_LOCALE: Locale = 'en'
+export const DEFAULT_LOCALE: Locale = 'pt-BR'
 
 export interface LocaleInfo {
   code: Locale
