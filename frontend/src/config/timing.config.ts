@@ -7,8 +7,8 @@ export const TIMING_CONFIG = {
   /**
    * Update intervals (in milliseconds)
    */
-  CURRENCY_UPDATE_INTERVAL: 60000, // 60 seconds - respects API rate limits
-  PRICING_UPDATE_INTERVAL: 60000, // 60 seconds - synced with currency updates
+  CURRENCY_UPDATE_INTERVAL: 10000, // 10 seconds - ~6 req/min, within CoinGecko free tier limits
+  PRICING_UPDATE_INTERVAL: 10000, // 10 seconds - synced with currency updates
   
   /**
    * Debounce delays (in milliseconds)
