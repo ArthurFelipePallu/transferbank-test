@@ -2,66 +2,55 @@
 import ColoredContainer from '@/components/Layout/ColoredContainer.vue'
 import LoginCard from '@/components/Auth/LoginCard.vue'
 import CurrencyInfoPanel from '@/components/Currency/CurrencyInfoPanel.vue'
+
+const CONTAINER_BG = 'var(--color-bg-section-dark)'
+const CONTAINER_PADDING = '1.25rem'
 </script>
 
 <template>
-    <main class="login-page min-vh-100 d-flex align-items-center justify-content-center py-4 px-3">
-        <ColoredContainer :background-color="'var(--color-bg-section-dark)'" :padding="'1.75rem 2.5rem'">
-            <div class="login-layout">
-                <!-- Login Form Column -->
-                <div class="login-form-wrapper">
-                    <LoginCard />
-                </div>
+  <main class="login-page min-vh-100 d-flex align-items-center justify-content-center py-4">
 
-                <!-- Currency Info Panel Column -->
-                <div class="currency-panel-wrapper">
-                    <CurrencyInfoPanel />
-                </div>
-            </div>
-        </ColoredContainer>
-    </main>
+    <!-- Mobile: bare card, full-width, no dark container, no currency panel -->
+    <div class="d-lg-none w-100 px-3">
+      <LoginCard />
+    </div>
+
+    <!-- Desktop: dark container with card + currency panel side by side -->
+    <div class="d-none d-lg-flex justify-content-center w-100 px-4">
+      <ColoredContainer :background-color="CONTAINER_BG" :padding="CONTAINER_PADDING">
+        <div class="desktop-layout">
+          <div class="desktop-layout__form">
+            <LoginCard />
+          </div>
+          <div class="desktop-layout__panel">
+            <CurrencyInfoPanel />
+          </div>
+        </div>
+      </ColoredContainer>
+    </div>
+
+  </main>
 </template>
 
 <style scoped>
 .login-page {
-    background: var(--color-surface);
+  background: var(--color-surface);
 }
 
-/* Custom flexbox layout - components side by side with natural widths */
-.login-layout {
-    display: flex;
-    gap: 1.5rem;
-    align-items: stretch;
-    max-width: 1400px; /* Constrain maximum width */
-    margin: 0 auto; /* Center the layout */
+.desktop-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: stretch;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-/* Login form: natural width with constraints */
-.login-form-wrapper {
-    flex: 0 1 auto;
-    max-width: 450px;
+.desktop-layout__form {
+  flex: 0 1 680px;
 }
 
-/* Currency panel: takes remaining space with constraints */
-.currency-panel-wrapper {
-    flex: 1 1 auto;
-    max-width: 550px;
-}
-
-/* Mobile: Stack vertically, hide currency panel */
-@media (max-width: 991px) {
-    .login-layout {
-        flex-direction: column;
-        max-width: 100%;
-    }
-    
-    .login-form-wrapper {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-    
-    .currency-panel-wrapper {
-        display: none;
-    }
+.desktop-layout__panel {
+  flex: 1 1 auto;
+  max-width: 550px;
 }
 </style>

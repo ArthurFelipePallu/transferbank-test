@@ -1,24 +1,31 @@
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next'
+import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 
 defineProps<{
   index: number
   isActive: boolean
   isCompleted: boolean
+  /** When false, always show the index number even if the step is completed */
+  showCheckmark: boolean
 }>()
 </script>
 
 <template>
   <div
-    class="step-bubble"
+    class="step-bubble rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-bold"
     :class="{
       'step-bubble--active': isActive,
-      'step-bubble--completed': isCompleted,
+      'step-bubble--completed': isCompleted && !isActive,
     }"
     aria-hidden="true"
   >
-    <Check v-if="isCompleted" class="step-bubble__check" :size="12" :stroke-width="3" />
-    <span v-else class="step-bubble__index">{{ index }}</span>
+    <BaseLucideIcon
+      v-if="isCompleted && showCheckmark"
+      name="Check"
+      :size="12"
+      :stroke-width="3"
+    />
+    <span v-else class="lh-1">{{ index }}</span>
   </div>
 </template>
 
@@ -26,17 +33,11 @@ defineProps<{
 .step-bubble {
   width: 1.75rem;
   height: 1.75rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
   font-size: var(--font-size-xs);
-  font-weight: 700;
   background: var(--color-chip-bg);
   color: var(--color-text-muted);
   border: 2px solid var(--color-chip-border);
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
 }
 
 .step-bubble--active {
@@ -50,14 +51,6 @@ defineProps<{
   background: var(--color-primary-teal);
   color: var(--color-white);
   border-color: var(--color-primary-teal);
-}
-
-.step-bubble__index {
-  line-height: 1;
-}
-
-.step-bubble__check {
-  display: block;
 }
 
 @media (min-width: 768px) {

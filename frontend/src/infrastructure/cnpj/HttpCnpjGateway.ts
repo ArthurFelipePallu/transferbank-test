@@ -1,89 +1,79 @@
-/**
- * HTTP CNPJ Gateway - Infrastructure Layer
- * Concrete implementation using CNPJ.ws API
- */
-
 import axios from 'axios'
 import type { ICnpjGateway } from '@/domain/cnpj/ports/ICnpjGateway'
 import type { CompanyInfo, CnpjApiResponse } from '@/domain/cnpj/entities/CompanyInfo'
 import { sanitizeCnpj } from '@/utils/formatters'
+import { InvalidCnpjError } from '@/domain/cnpj/errors/InvalidCnpjError'
+
+/**
+ * Routes CNPJ lookups through the backend API proxy, which makes the
+ * server-to-server call to publica.cnpj.ws — no CORS issues in any environment.
+ *
+ * Works in dev (localhost backend), Netlify (Cloud Run backend), and anywhere else
+ * as long as VITE_API_URL is set correctly.
+ */
+const BACKEND_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5287'
+const CNPJ_BASE_URL = `${BACKEND_URL}/api/cnpj`
+const CNPJ_REQUIRED_LENGTH = 14
+const CNPJ_TIMEOUT_MS = 10_000
 
 export class HttpCnpjGateway implements ICnpjGateway {
-  private readonly baseUrl = 'https://publica.cnpj.ws/cnpj'
-
   async lookupByCnpj(cnpj: string): Promise<CompanyInfo | null> {
+    const sanitized = sanitizeCnpj(cnpj)
+
+    if (sanitized.length !== CNPJ_REQUIRED_LENGTH) {
+      throw new InvalidCnpjError(sanitized)
+    }
+
     try {
-      // Sanitize CNPJ (remove formatting)
-      const sanitizedCnpj = sanitizeCnpj(cnpj)
-
-      if (sanitizedCnpj.length !== 14) {
-        throw new Error('CNPJ must have 14 digits')
-      }
-
-      console.log('[CNPJ Lookup] Fetching:', sanitizedCnpj)
-      
       const response = await axios.get<CnpjApiResponse>(
-        `${this.baseUrl}/${sanitizedCnpj}`,
-        {
-          timeout: 10000, // 10 second timeout
-        }
+        `${CNPJ_BASE_URL}/${sanitized}`,
+        { timeout: CNPJ_TIMEOUT_MS },
       )
-
-      console.log('[CNPJ Lookup] Response received:', {
-        razaoSocial: response.data.razao_social,
-        situacao: response.data.estabelecimento?.situacao_cadastral
-      })
-
-      return this.mapToCompanyInfo(response.data)
+      return this._mapToCompanyInfo(response.data)
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('[CNPJ Lookup] Error:', error.response?.status, error.message)
-        if (error.response?.status === 404) {
-          return null // CNPJ not found
-        }
+        if (error.response?.status === 404) return null
+        if (error.response?.status === 400) throw new InvalidCnpjError(sanitized)
         throw new Error(`Failed to lookup CNPJ: ${error.message}`)
       }
-      console.error('[CNPJ Lookup] Unexpected error:', error)
       throw error
     }
   }
 
-  private mapToCompanyInfo(data: CnpjApiResponse): CompanyInfo {
-    const estabelecimento = data.estabelecimento
+  private _mapToCompanyInfo(data: CnpjApiResponse): CompanyInfo {
+    const est = data.estabelecimento
 
-    // Format phone number
-    const telefone = estabelecimento.ddd1 && estabelecimento.telefone1
-      ? `${estabelecimento.ddd1}${estabelecimento.telefone1}`
-      : undefined
+    const telefone =
+      est.ddd1 && est.telefone1 ? `${est.ddd1}${est.telefone1}` : undefined
 
-    // Build full address
-    const logradouro = estabelecimento.tipo_logradouro && estabelecimento.logradouro
-      ? `${estabelecimento.tipo_logradouro} ${estabelecimento.logradouro}`
-      : estabelecimento.logradouro
+    const logradouro =
+      est.tipo_logradouro && est.logradouro
+        ? `${est.tipo_logradouro} ${est.logradouro}`
+        : est.logradouro
 
     return {
-      cnpj: estabelecimento.cnpj,
+      cnpj: est.cnpj,
       razaoSocial: data.razao_social,
-      nomeFantasia: estabelecimento.nome_fantasia,
-      situacaoCadastral: estabelecimento.situacao_cadastral,
+      nomeFantasia: est.nome_fantasia,
+      situacaoCadastral: est.situacao_cadastral,
       telefone,
-      email: estabelecimento.email,
+      email: est.email,
       logradouro,
-      numero: estabelecimento.numero,
-      complemento: estabelecimento.complemento,
-      bairro: estabelecimento.bairro,
+      numero: est.numero,
+      complemento: est.complemento,
+      bairro: est.bairro,
       municipio: data.municipio?.nome,
       uf: data.uf,
-      cep: estabelecimento.cep,
-      socios: data.socios?.map((s) => ({
-        nome: s.nome,
-        cpf: s.cpf_cnpj_socio,
-        qualificacao: s.qualificacao_socio?.descricao,
-        participacao: s.percentual_capital_social,
-      })) ?? [],
+      cep: est.cep,
+      socios:
+        data.socios?.map((s) => ({
+          nome: s.nome,
+          cpf: s.cpf_cnpj_socio,
+          qualificacao: s.qualificacao_socio?.descricao,
+          participacao: s.percentual_capital_social,
+        })) ?? [],
     }
   }
 }
 
-// Singleton instance
 export const httpCnpjGateway = new HttpCnpjGateway()

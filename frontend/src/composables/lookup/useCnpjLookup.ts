@@ -1,59 +1,54 @@
 /**
- * CNPJ Lookup Composable - Presentation Layer
- * Vue composable for CNPJ lookup functionality
- * Uses generic useAsyncLookup to avoid duplication
+ * CNPJ Lookup Composable — Presentation Layer
+ *
+ * Wraps the lookupCompanyByCnpj use case with reactive Vue state.
+ * Exposes typed error signals (statusError, invalidCnpj) so the
+ * presentation layer never needs to inspect raw error messages.
  */
 
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { ICnpjGateway } from '@/domain/cnpj/ports/ICnpjGateway'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
 import { httpCnpjGateway } from '@/infrastructure/cnpj/HttpCnpjGateway'
 import { lookupCompanyByCnpj } from '@/application/cnpj/lookupCnpjUseCase'
 import { CompanyStatusError } from '@/domain/cnpj/errors/CompanyStatusError'
+import { InvalidCnpjError } from '@/domain/cnpj/errors/InvalidCnpjError'
 import { useAsyncLookup } from './useAsyncLookup'
 
-/**
- * Check if CNPJ is a test CNPJ (all digits are the same)
- * For testing purposes, we skip API lookup for these CNPJs
- */
-function isTestCnpj(cnpj: string): boolean {
-  const sanitized = cnpj.replace(/\D/g, '')
-  if (sanitized.length !== 14) return false
-  
-  const firstDigit = sanitized[0]
-  return sanitized.split('').every(digit => digit === firstDigit)
-}
-
 export function useCnpjLookup(gateway: ICnpjGateway = httpCnpjGateway) {
+  // Captures the raw thrown error so we can do instanceof checks.
+  // useAsyncLookup only stores error.message (string), not the Error object itself.
+  const rawError = ref<unknown>(null)
+
   const asyncLookup = useAsyncLookup<CompanyInfo, CompanyStatusError>({
     logPrefix: 'useCnpjLookup',
+    onError: (err) => { rawError.value = err },
   })
 
   const statusError = computed(() => asyncLookup.specificError.value)
   const companyInfo = computed(() => asyncLookup.result.value)
+  const invalidCnpj = computed(() => rawError.value instanceof InvalidCnpjError)
 
-  const lookup = async (cnpj: string): Promise<CompanyInfo | null> => {
-    console.log('[useCnpjLookup] Starting lookup for:', cnpj)
-    
-    // Skip API lookup for test CNPJs (all same digits)
-    if (isTestCnpj(cnpj)) {
-      console.log('[useCnpjLookup] Test CNPJ detected, skipping API lookup')
-      asyncLookup.reset()
-      return null
-    }
-    
+  const lookup = (cnpj: string): Promise<CompanyInfo | null> => {
+    rawError.value = null
     return asyncLookup.lookup(
       () => lookupCompanyByCnpj(gateway, cnpj),
-      CompanyStatusError
+      CompanyStatusError,
     )
+  }
+
+  const reset = () => {
+    rawError.value = null
+    asyncLookup.reset()
   }
 
   return {
     isLoading: asyncLookup.isLoading,
     error: asyncLookup.error,
     statusError,
+    invalidCnpj,
     companyInfo,
     lookup,
-    reset: asyncLookup.reset,
+    reset,
   }
 }

@@ -6,7 +6,6 @@ import LoginForm from '@/components/Auth/LoginForm.vue'
 import DividerText from '@/components/UI/DividerText.vue'
 import SocialLoginButton from '@/components/Auth/SocialLoginButton.vue'
 import GoogleIcon from '@/components/icons/GoogleIcon.vue'
-import { Apple } from 'lucide-vue-next'
 import { authPageLinks } from '@/config/navigation'
 
 const { t } = useTranslation()
@@ -14,7 +13,7 @@ const { t } = useTranslation()
 
 <template>
   <div class="card border-0 shadow-lg">
-    <div class="card-body p-4 p-sm-5">
+    <div class="card-body p-4">
       <!-- Header -->
       <header class="text-center mb-4">
         <div class="d-flex justify-content-center mb-3">
@@ -39,7 +38,7 @@ const { t } = useTranslation()
           </div>
           <div class="col-12 col-sm-6">
             <SocialLoginButton label="Apple" @click="$router.push({ name: authPageLinks.socialLoginFallback })">
-              <template #icon><Apple :size="18" /></template>
+              <template #icon><BaseLucideIcon name="Apple" :size="18" /></template>
             </SocialLoginButton>
           </div>
         </div>
@@ -61,8 +60,6 @@ const { t } = useTranslation()
 .card {
   border-radius: 1rem;
   width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
 }
 
 .signup-link {
@@ -72,16 +69,5 @@ const { t } = useTranslation()
 
 .signup-link:hover {
   color: var(--color-accent-teal-1);
-}
-
-.social-buttons {
-  width: 100%;
-}
-
-/* Mobile adjustments */
-@media (max-width: 575px) {
-  .card-body {
-    padding: 1.5rem !important;
-  }
 }
 </style>

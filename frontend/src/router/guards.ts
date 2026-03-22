@@ -16,13 +16,22 @@ export function registerGuards(router: Router): void {
   })
 }
 
-/** Clears the onboarding form cache when the user navigates away from the sign-up route */
+/**
+ * Fully resets the onboarding store when the user navigates away from the
+ * sign-up route to any other route. This clears form data, step progress,
+ * completed-step flags, and the persisted cache so the user always starts
+ * fresh on their next visit.
+ *
+ * Navigating from the sign-up route back to itself (e.g. a page reload that
+ * resolves to the same route) is intentionally excluded so the store can
+ * re-hydrate from cache and restore the user's progress.
+ */
 function _clearOnboardingCacheOnLeave(
   fromName: RouteName | undefined,
   toName: RouteName | undefined,
 ): void {
   if (fromName === RouteName.Register && toName !== RouteName.Register) {
-    useOnboardingStore().clearFormCache()
+    useOnboardingStore().resetOnboarding()
   }
 }
 

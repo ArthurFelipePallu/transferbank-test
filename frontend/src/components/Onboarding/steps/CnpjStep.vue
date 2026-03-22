@@ -1,7 +1,7 @@
 ﻿<script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import { useForm } from 'vee-validate'
-import { CheckCircle, XCircle, AlertTriangle, Search, Ban } from 'lucide-vue-next'
+import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import FormInputField from '@/components/UI/FormInputField.vue'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
@@ -25,7 +25,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useTranslation()
-const { isLoading, statusError, companyInfo, lookup, reset: resetLookup } = useCnpjLookup()
+const { isLoading, statusError, invalidCnpj, companyInfo, lookup, reset: resetLookup } = useCnpjLookup()
 const { isChecking, isRegistered, check: checkRegistration, reset: resetCheck } = useCnpjRegistrationCheck()
 
 // ── UI state (presentation only) ──────────────────────────────────────────────
@@ -69,12 +69,12 @@ watch(
     await lookup(sanitized)
     lookupDone.value = true
 
-    if (!companyInfo.value && !statusError.value) {
+    if (!companyInfo.value && !statusError.value && !invalidCnpj.value) {
       cnpjNotFound.value = true
       return
     }
 
-    if (!statusError.value) {
+    if (!statusError.value && !invalidCnpj.value) {
       await checkRegistration(sanitized)
     }
   },
@@ -83,10 +83,11 @@ watch(
 // ── Proceed guard — all blocking conditions named ─────────────────────────────
 const isBlocked = computed(
   () =>
-    !lookupDone.value   ||
-    !!statusError.value ||
-    isLoading.value     ||
-    isChecking.value    ||
+    !lookupDone.value    ||
+    !!statusError.value  ||
+    !!invalidCnpj.value  ||
+    isLoading.value      ||
+    isChecking.value     ||
     isRegistered.value,
 )
 
@@ -117,7 +118,7 @@ const submit = handleSubmit((vals) => {
       >
         <template #below>
           <div v-if="isLoading || isChecking" class="d-flex align-items-center gap-1 mt-1 small text-primary">
-            <Search :size="14" />
+            <BaseLucideIcon name="Search" :size="14" />
             <span class="pulse">{{ t('onboarding.searching') }}</span>
           </div>
         </template>
@@ -129,33 +130,39 @@ const submit = handleSubmit((vals) => {
 
       <!-- Already registered in our system -->
       <AlertCard v-if="isRegistered" variant="danger" class="mb-3">
-        <template #icon><Ban :size="18" /></template>
+        <template #icon><BaseLucideIcon name="Ban" :size="18" /></template>
         <strong class="d-block">{{ t('onboarding.cnpjStep.alreadyRegistered') }}</strong>
       </AlertCard>
 
       <!-- Active company, not yet registered -->
       <AlertCard v-else-if="companyInfo && !statusError" variant="success" class="mb-3">
-        <template #icon><CheckCircle :size="18" /></template>
+        <template #icon><BaseLucideIcon name="CheckCircle" :size="18" /></template>
         <strong class="d-block">{{ t('onboarding.cnpjStep.activeStatus') }}</strong>
         <span class="small">{{ companyInfo.razaoSocial }}</span>
       </AlertCard>
 
       <!-- Inactive / suspended -->
       <AlertCard v-else-if="statusError" variant="danger" class="mb-3">
-        <template #icon><XCircle :size="18" /></template>
+        <template #icon><BaseLucideIcon name="XCircle" :size="18" /></template>
         <strong class="d-block">{{ t('onboarding.cnpjStep.inactiveStatus') }}</strong>
         <span class="small">{{ statusError.message }}</span>
       </AlertCard>
 
+      <!-- Arithmetically invalid CNPJ (check-digit failure) -->
+      <AlertCard v-else-if="invalidCnpj" variant="warning" class="mb-3">
+        <template #icon><BaseLucideIcon name="TriangleAlert" :size="18" /></template>
+        <span class="small">{{ t('onboarding.cnpjStep.invalidCnpj') }}</span>
+      </AlertCard>
+
       <!-- Test CNPJ (and not already registered) -->
       <AlertCard v-else-if="isTestCnpjValue && !isRegistered" variant="warning" class="mb-3">
-        <template #icon><AlertTriangle :size="18" /></template>
+        <template #icon><BaseLucideIcon name="TriangleAlert" :size="18" /></template>
         <span class="small">{{ t('onboarding.cnpjStep.testCnpjInfo') }}</span>
       </AlertCard>
 
       <!-- Not found in external registry -->
       <AlertCard v-else-if="cnpjNotFound" variant="warning" class="mb-3">
-        <template #icon><AlertTriangle :size="18" /></template>
+        <template #icon><BaseLucideIcon name="TriangleAlert" :size="18" /></template>
         <span class="small">{{ t('onboarding.cnpjStep.notFound') }}</span>
       </AlertCard>
 
