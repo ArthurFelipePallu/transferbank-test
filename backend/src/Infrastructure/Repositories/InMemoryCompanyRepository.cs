@@ -51,4 +51,10 @@ public class InMemoryCompanyRepository : ICompanyRepository
         var exists = _companies.Any(c => c.Cnpj == cnpj || c.Email == email);
         return Task.FromResult(exists);
     }
+
+    public Task<bool> ExistsByEmailAsync(string email)
+    {
+        var exists = _companies.Any(c => c.Email == email);
+        return Task.FromResult(exists);
+    }
 }

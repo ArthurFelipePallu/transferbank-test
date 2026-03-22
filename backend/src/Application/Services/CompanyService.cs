@@ -76,6 +76,9 @@ public class CompanyService : ICompanyService
     public async Task<bool> ExistsAsync(string cnpj, string email)
         => await _companyRepository.ExistsAsync(cnpj, email);
 
+    public async Task<bool> ExistsByEmailAsync(string email)
+        => await _companyRepository.ExistsByEmailAsync(email);
+
     // ─── Private helpers ──────────────────────────────────────────────────────
 
     private async Task<CompanyResponse> BuildResponseAsync(Company company)

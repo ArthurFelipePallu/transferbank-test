@@ -35,3 +35,12 @@ export const checkCnpjRegistered = (
   gateway: CompanyGateway,
   cnpj: string,
 ): Promise<boolean> => gateway.existsByCnpj(cnpj)
+
+/**
+ * Check if an email is already registered in our system.
+ * Returns true if registered, false if not found.
+ */
+export const checkEmailRegistered = (
+  gateway: CompanyGateway,
+  email: string,
+): Promise<boolean> => gateway.existsByEmail(email)

@@ -11,4 +11,5 @@ public interface ICompanyRepository
     Task<Company> AddAsync(Company company);
     Task<Company> UpdateAsync(Company company);
     Task<bool> ExistsAsync(string cnpj, string email);
+    Task<bool> ExistsByEmailAsync(string email);
 }

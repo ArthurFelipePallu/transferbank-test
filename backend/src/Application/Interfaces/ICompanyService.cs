@@ -11,4 +11,5 @@ public interface ICompanyService
     Task<CompanyResponse?> GetByCnpjAsync(string cnpj);
     Task<IEnumerable<CompanyResponse>> GetAllAsync();
     Task<bool> ExistsAsync(string cnpj, string email);
+    Task<bool> ExistsByEmailAsync(string email);
 }

@@ -1,36 +1,20 @@
 ﻿import { api } from '@/api/apiClient'
+import { axiosInstance } from '@/api/axiosInstance'
 import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
-import type {
-  CompanyRegistration,
-  Company,
-  CompanyListItem,
-} from '@/domain/company/interfaces/companyInterface'
-import type { PartnerSummary } from '@/domain/partner/entities/PartnerSummary'
-import type { CompanyResponse, PartnerResponse } from '@/api/backendApi'
-import { CompanyAlreadyExistsError } from '@/domain/onboarding/errors/CompanyAlreadyExistsError'
-import { sanitizeCpf } from '@/utils/formatters'
+import type { CompanyRegistration, Company, CompanyListItem } from '@/domain/company/interfaces/companyInterface'
+import type { CompanyResponse } from '@/api/backendApi'
 
-const toPartnerSummary = (p: PartnerResponse): PartnerSummary => ({
-  id: p.id ?? '',
-  companyId: p.companyId ?? '',
-  fullName: p.fullName ?? '',
-  cpf: p.cpf ?? '',
-  nationality: p.nationality ?? '',
-  shareholding: p.shareholding ?? 0,
-  isPep: p.isPep ?? false,
-  createdAt: p.createdAt ?? '',
-})
+const COMPANY_EXISTS_BY_EMAIL_ENDPOINT = '/api/Company/exists-by-email'
 
 const toCompany = (r: CompanyResponse): Company => ({
   id: r.id ?? '',
   cnpj: r.cnpj ?? '',
   companyName: r.companyName ?? '',
   fantasyName: r.fantasyName ?? '',
-  cryptoCurrencies: r.cryptoCurrencies ?? [],
-  phone: r.phone ?? '',
   email: r.email ?? '',
-  partnerCount: r.partnerCount ?? 0,
-  partners: (r.partners ?? []).map(toPartnerSummary),
+  phone: r.phone ?? '',
+  cryptoCurrencies: r.cryptoCurrencies ?? [],
+  partnerCount: r.partnerCount,
   createdAt: r.createdAt ?? '',
 })
 
@@ -45,51 +29,18 @@ const toCompanyListItem = (r: CompanyResponse): CompanyListItem => ({
   createdAt: r.createdAt ?? '',
 })
 
-const extractValidationMessage = (err: any): string | null => {
-  const errors = err?.response?.data?.errors
-  if (errors && typeof errors === 'object') {
-    return Object.entries(errors)
-      .flatMap(([field, msgs]) =>
-        Array.isArray(msgs)
-          ? (msgs as string[]).map((m) => `: `)
-          : [`: `],
-      )
-      .join('; ')
-  }
-  return err?.response?.data?.message ?? null
-}
-
 class HttpCompanyGatewayImpl implements CompanyGateway {
   async register(data: CompanyRegistration): Promise<Company> {
-    try {
-      const response = await api.company.companyRegisterCreate({
-        cnpj: data.cnpj,
-        companyName: data.companyName,
-        fantasyName: data.fantasyName,
-        cryptoCurrencies: data.cryptoCurrencies,
-        phone: data.phone,
-        email: data.email,
-        password: data.password,
-        partners: (data.partners ?? []).map((p) => ({
-          fullName: p.fullName,
-          cpf: sanitizeCpf(p.cpf),
-          nationality: p.nationality,
-          shareholding: p.shareholding,
-          isPep: p.isPep,
-          documents: p.documents
-            .filter((d) => d.name && d.size > 0 && d.type)
-            .map((d) => ({ name: d.name, size: d.size, type: d.type })),
-        })),
-      })
-      return toCompany(response.data)
-    } catch (err: any) {
-      if (err?.response?.status === 409) throw new CompanyAlreadyExistsError()
-      if (err?.response?.status === 400) {
-        const msg = extractValidationMessage(err)
-        if (msg) throw new Error(`Validation failed — `)
-      }
-      throw err
-    }
+    const response = await api.company.companyRegisterCreate({
+      cnpj: data.cnpj,
+      companyName: data.companyName,
+      fantasyName: data.fantasyName,
+      email: data.email,
+      phone: data.phone,
+      password: data.password,
+      cryptoCurrencies: data.cryptoCurrencies,
+    })
+    return toCompany(response.data)
   }
 
   async getById(id: string): Promise<Company> {
@@ -109,17 +60,19 @@ class HttpCompanyGatewayImpl implements CompanyGateway {
 
   async exists(cnpj: string, email: string): Promise<boolean> {
     const response = await api.company.companyExistsList({ cnpj, email })
-    return response.data
+    return response.data ?? false
   }
 
   async existsByCnpj(cnpj: string): Promise<boolean> {
-    try {
-      await api.company.companyCnpjDetail(cnpj)
-      return true
-    } catch (err: any) {
-      if (err?.response?.status === 404) return false
-      throw err
-    }
+    const response = await api.company.companyExistsList({ cnpj })
+    return response.data ?? false
+  }
+
+  async existsByEmail(email: string): Promise<boolean> {
+    const response = await axiosInstance.get<boolean>(COMPANY_EXISTS_BY_EMAIL_ENDPOINT, {
+      params: { email },
+    })
+    return response.data ?? false
   }
 }
 

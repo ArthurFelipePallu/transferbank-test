@@ -1,11 +1,14 @@
-<script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useForm } from 'vee-validate'
+﻿<script setup lang="ts">
+import { ref, watch, computed } from 'vue'
+import { useForm, useFieldValue } from 'vee-validate'
+import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import FormInputField from '@/components/UI/FormInputField.vue'
 import PhoneInputField from '@/components/UI/PhoneInputField.vue'
 import FormStepHeader from '@/components/UI/FormStepHeader.vue'
 import FormNavigation from '@/components/UI/FormNavigation.vue'
+import AlertCard from '@/components/UI/AlertCard.vue'
 import { onboardingCompanySchema, type OnboardingCompanyValues } from '@/domain/onboarding/onboarding.schema'
+import { useEmailRegistrationCheck } from '@/composables/lookup/useEmailRegistrationCheck'
 import { useTranslation } from '@/composables/i18n/useTranslation'
 
 interface Props {
@@ -23,25 +26,37 @@ const emit = defineEmits<{
 const { t } = useTranslation()
 const phoneInputRef = ref<InstanceType<typeof PhoneInputField> | null>(null)
 
+const { isPending, isChecking, isRegistered, scheduleCheck, reset: resetEmailCheck } = useEmailRegistrationCheck()
+
 const { handleSubmit, meta, values } = useForm<OnboardingCompanyValues>({
   validationSchema: onboardingCompanySchema,
   initialValues: {
     companyName: props.initialValues?.companyName ?? '',
     fantasyName: props.initialValues?.fantasyName ?? '',
-    phone: props.initialValues?.phone ?? '',
-    email: props.initialValues?.email ?? '',
+    phone:       props.initialValues?.phone ?? '',
+    email:       props.initialValues?.email ?? '',
   },
   validateOnMount: false,
 })
 
+const emailFieldValue = useFieldValue<string>('email')
+
+watch(emailFieldValue, (newEmail) => scheduleCheck(newEmail ?? ''))
+
+watch(values, (v) => emit('update', { ...v }), { deep: true })
+
+const isBlocked = computed(() => isPending.value || isChecking.value || isRegistered.value)
+
 const submit = handleSubmit((vals) => {
-  // fullPhoneNumber is a ComputedRef<string> exposed by PhoneInputField
+  if (isBlocked.value) return
   const fullPhone = (phoneInputRef.value?.fullPhoneNumber as { value: string } | undefined)?.value || vals.phone
   emit('next', { ...vals, phone: fullPhone })
 })
 
-// Persist field values to store as user types
-watch(values, (v) => emit('update', { ...v }), { deep: true })
+const handleBack = () => {
+  resetEmailCheck()
+  emit('back')
+}
 </script>
 
 <template>
@@ -85,14 +100,29 @@ watch(values, (v) => emit('update', { ...v }), { deep: true })
           :placeholder="t('onboarding.placeholders.email')"
           autocomplete="email"
           inputmode="email"
-        />
+        >
+          <template #below>
+            <div v-if="isPending || isChecking" class="d-flex align-items-center gap-1 mt-1 small text-muted">
+              <BaseLucideIcon name="Search" :size="14" />
+              <span class="pulse">{{ t('onboarding.searching') }}</span>
+            </div>
+          </template>
+        </FormInputField>
       </div>
     </div>
 
+    <Transition name="fade" mode="out-in">
+      <AlertCard v-if="isRegistered" variant="danger" class="mb-3">
+        <template #icon><BaseLucideIcon name="Ban" :size="18" /></template>
+        <strong class="d-block">{{ t('onboarding.companyStep.emailAlreadyRegistered') }}</strong>
+        <span class="small">{{ t('onboarding.companyStep.emailAlreadyRegisteredHint') }}</span>
+      </AlertCard>
+    </Transition>
+
     <FormNavigation
       :show-back="true"
-      :next-disabled="!meta.valid"
-      @back="$emit('back')"
+      :next-disabled="!meta.valid || isBlocked"
+      @back="handleBack"
       @next="submit"
     />
   </form>

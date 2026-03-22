@@ -23,3 +23,8 @@ artifacts/
 
 ## Publish output
 publish/
+
+# SQLite local database files
+*.db
+*.db-shm
+*.db-wal
