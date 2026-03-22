@@ -172,6 +172,8 @@ export const onboarding = {
     browse: 'Choose file',
     preview: 'See preview',
     previewTitle: 'Social Contract Preview',
+    mobilePreviewHint: 'PDF preview is not supported in this browser. Tap the button below to open the document.',
+    openDocument: 'Open document',
     sizeHint: 'PDF only · max 10 MB',
     errorType: 'Only PDF files are accepted.',
     errorSize: 'File exceeds the 10 MB limit.',

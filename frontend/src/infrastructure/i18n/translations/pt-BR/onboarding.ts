@@ -171,6 +171,8 @@ export const onboarding = {
     browse: 'Escolher arquivo',
     preview: 'Ver prévia',
     previewTitle: 'Prévia do Contrato Social',
+    mobilePreviewHint: 'A prévia de PDF não é suportada neste navegador. Toque no botão abaixo para abrir o documento.',
+    openDocument: 'Abrir documento',
     sizeHint: 'Somente PDF · máx. 10 MB',
     errorType: 'Apenas arquivos PDF são aceitos.',
     errorSize: 'O arquivo excede o limite de 10 MB.',

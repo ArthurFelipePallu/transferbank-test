@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount } from 'vue'
+import { computed, onMounted, onBeforeUnmount } from 'vue'
 import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import { useTranslation } from '@/composables/i18n/useTranslation'
 
@@ -8,16 +8,21 @@ interface Props {
   fileName: string
 }
 
-defineProps<Props>()
-const emit = defineEmits<{ close: [] }>()
-const { t } = useTranslation()
+const props  = defineProps<Props>()
+const emit   = defineEmits<{ close: [] }>()
+const { t }  = useTranslation()
+
+// iOS Safari and most mobile browsers cannot render PDFs in iframes
+const isMobile = computed(() =>
+  /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)
+)
 
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') emit('close')
 }
 
-onMounted(() => document.addEventListener('keydown', handleKeydown))
-onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
+onMounted(()        => document.addEventListener('keydown', handleKeydown))
+onBeforeUnmount(()  => document.removeEventListener('keydown', handleKeydown))
 </script>
 
 <template>
@@ -41,9 +46,28 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
             {{ t('common.close') }}
           </button>
         </div>
-        <div class="pdf-modal__body">
+
+        <!-- Mobile: iframe won't work — show open/download links instead -->
+        <div v-if="isMobile" class="pdf-modal__body d-flex flex-column align-items-center justify-content-center gap-3 p-4">
+          <BaseLucideIcon name="FileText" :size="48" class="text-muted" />
+          <p class="text-muted small text-center mb-0">
+            {{ t('onboarding.socialContractStep.mobilePreviewHint') }}
+          </p>
+          <a
+            :href="props.objectUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary d-flex align-items-center gap-2"
+          >
+            <BaseLucideIcon name="Eye" :size="16" />
+            {{ t('onboarding.socialContractStep.openDocument') }}
+          </a>
+        </div>
+
+        <!-- Desktop: iframe works fine -->
+        <div v-else class="pdf-modal__body">
           <iframe
-            :src="objectUrl"
+            :src="props.objectUrl"
             :title="fileName"
             class="pdf-modal__iframe"
             type="application/pdf"
@@ -86,6 +110,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
 .pdf-modal__body {
   flex: 1 1 auto;
   overflow: hidden;
+  min-height: 200px;
 }
 
 .pdf-modal__iframe {
