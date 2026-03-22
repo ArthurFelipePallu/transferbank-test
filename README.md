@@ -2,6 +2,8 @@
 
 Plataforma bancária corporativa full-stack para abertura e gestão de contas empresariais, com suporte nativo a criptomoedas, validação de documentos por inteligência artificial e cotações de câmbio em tempo real.
 
+🌐 **Deploy disponível em:** [mediteranianbank.netlify.app](https://mediteranianbank.netlify.app)
+
 ---
 
 ## Índice
@@ -258,6 +260,8 @@ OpenAi__MaxTokens=1000
 
 ## Executando Localmente
 
+> **Atenção:** ao rodar o backend localmente, a validação de documentos por IA **não funcionará**. As chaves das APIs de OCR (OCR.space) e análise por IA (OpenAI) são configuradas exclusivamente via variáveis de ambiente no Cloud Run. Para testar o pipeline completo de análise de contrato social, utilize o deploy em produção: [mediteranianbank.netlify.app](https://mediteranianbank.netlify.app).
+
 ### Frontend
 
 ```bash
@@ -281,7 +285,7 @@ A API estará disponível em `http://localhost:5287` com Swagger em `/swagger`.
 
 | Camada | Plataforma |
 |---|---|
-| Frontend | [Netlify](https://netlify.com) — deploy automático a cada push na branch `main` |
+| Frontend | [Netlify](https://netlify.com) — deploy automático a cada push na branch `main` — acesse em [mediteranianbank.netlify.app](https://mediteranianbank.netlify.app) |
 | Backend | [Google Cloud Run](https://cloud.google.com/run) — containerizado via Docker |
 | Banco de dados | SQLite (embutido no container, adequado para demo/staging) |
 
