@@ -18,10 +18,8 @@ export function useCepLookup(gateway: ICepGateway = httpCepGateway) {
 
   const address = computed(() => asyncLookup.result.value)
 
-  const lookup = async (cep: string): Promise<Address | null> => {
-    console.log('[useCepLookup] Starting lookup for:', cep)
-    return asyncLookup.lookup(() => lookupAddressByCep(gateway, cep))
-  }
+  const lookup = (cep: string): Promise<Address | null> =>
+    asyncLookup.lookup(() => lookupAddressByCep(gateway, cep))
 
   return {
     isLoading: asyncLookup.isLoading,

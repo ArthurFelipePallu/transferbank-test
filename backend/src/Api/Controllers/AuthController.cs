@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Domain.Constants;
 using Domain.Interfaces;
 using Domain.Models.Requests;
 using Domain.Models.Responses;
@@ -22,20 +23,13 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
     {
-        // Check model state for validation errors
         if (!ModelState.IsValid)
         {
             var errors = ModelState.Values
                 .SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage)
-                .ToList();
-            
-            var errorResponse = new ErrorResponseDto(
-                message: string.Join("; ", errors),
-                errorCode: "ValidationError",
-                statusCode: 400
-            );
-            return BadRequest(errorResponse);
+                .Select(e => e.ErrorMessage);
+            return BadRequest(new ErrorResponseDto(
+                string.Join("; ", errors), "ValidationError", 400));
         }
 
         try
@@ -43,23 +37,11 @@ public class AuthController : ControllerBase
             var response = await _authService.LoginAsync(request);
             return Ok(response);
         }
-        catch (UnauthorizedAccessException ex)
+        catch (UnauthorizedAccessException)
         {
-            var errorResponse = new ErrorResponseDto(
-                message: _localization.GetString("Auth.InvalidCredentials"),
-                errorCode: "Unauthorized",
-                statusCode: 401
-            );
-            return Unauthorized(errorResponse);
-        }
-        catch (Exception ex)
-        {
-            var errorResponse = new ErrorResponseDto(
-                message: _localization.GetString("Error.InternalServer"),
-                errorCode: "InternalError",
-                statusCode: 500
-            );
-            return StatusCode(500, errorResponse);
+            return Unauthorized(new ErrorResponseDto(
+                _localization.GetString(LocalizationKeys.Auth.InvalidCredentials),
+                "Unauthorized", 401));
         }
     }
 }

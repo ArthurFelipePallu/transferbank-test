@@ -15,6 +15,7 @@ export const VM = {
   max: (max: number) => `validation.max|max=${max}`,
   typeError: (field: string) => `validation.typeError|field=${field}`,
   cnpjFormat: 'validation.cnpjFormat',
+  cnpjCheckDigits: 'validation.cnpjCheckDigits',
   cpfFormat: 'validation.cpfFormat',
   phoneFormat: 'validation.phoneFormat',
   ufLength: 'validation.ufLength',

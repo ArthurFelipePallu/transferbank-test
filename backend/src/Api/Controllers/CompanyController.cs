@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Domain.Constants;
 using Domain.Interfaces;
 using Domain.Models.Requests;
 using Domain.Models.Responses;
@@ -22,149 +23,81 @@ public class CompanyController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CompanyResponse>>> GetAll()
     {
-        try
-        {
-            var companies = await _companyService.GetAllAsync();
-            return Ok(companies);
-        }
-        catch (Exception ex)
-        {
-            var errorResponse = new ErrorResponseDto(
-                message: _localizationService.GetString("Error.InternalServer"),
-                errorCode: "InternalError",
-                statusCode: 500
-            );
-            return StatusCode(500, errorResponse);
-        }
+        var companies = await _companyService.GetAllAsync();
+        return Ok(companies);
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<CompanyResponse>> Register([FromBody] RegisterCompanyRequest request)
     {
-        // Check model state for validation errors
         if (!ModelState.IsValid)
-        {
-            var errors = ModelState.Values
-                .SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage)
-                .ToList();
-            
-            var errorResponse = new ErrorResponseDto(
-                message: string.Join("; ", errors),
-                errorCode: "ValidationError",
-                statusCode: 400
-            );
-            return BadRequest(errorResponse);
-        }
+            return BadRequest(ValidationError());
 
         try
         {
             var response = await _companyService.RegisterAsync(request);
             return Ok(response);
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException)
         {
-            var errorResponse = new ErrorResponseDto(
-                message: _localizationService.GetString("Company.AlreadyExists"),
-                errorCode: "CompanyAlreadyExists",
-                statusCode: 409
-            );
-            return Conflict(errorResponse);
+            return Conflict(new ErrorResponseDto(
+                _localizationService.GetString(LocalizationKeys.Company.AlreadyExists),
+                "CompanyAlreadyExists", 409));
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException)
         {
-            var errorResponse = new ErrorResponseDto(
-                message: _localizationService.GetString("Error.BadRequest"),
-                errorCode: "InvalidData",
-                statusCode: 400
-            );
-            return BadRequest(errorResponse);
-        }
-        catch (Exception ex)
-        {
-            var errorResponse = new ErrorResponseDto(
-                message: _localizationService.GetString("Error.InternalServer"),
-                errorCode: "InternalError",
-                statusCode: 500
-            );
-            return StatusCode(500, errorResponse);
+            return BadRequest(new ErrorResponseDto(
+                _localizationService.GetString(LocalizationKeys.Error.BadRequest),
+                "InvalidData", 400));
         }
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<CompanyResponse>> GetById(Guid id)
     {
-        try
-        {
-            var company = await _companyService.GetByIdAsync(id);
-            if (company == null)
-            {
-                var errorResponse = new ErrorResponseDto(
-                    message: _localizationService.GetString("Company.NotFound"),
-                    errorCode: "NotFound",
-                    statusCode: 404
-                );
-                return NotFound(errorResponse);
-            }
+        var company = await _companyService.GetByIdAsync(id);
+        if (company == null)
+            return NotFound(new ErrorResponseDto(
+                _localizationService.GetString(LocalizationKeys.Company.NotFound),
+                "NotFound", 404));
 
-            return Ok(company);
-        }
-        catch (Exception ex)
-        {
-            var errorResponse = new ErrorResponseDto(
-                message: _localizationService.GetString("Error.InternalServer"),
-                errorCode: "InternalError",
-                statusCode: 500
-            );
-            return StatusCode(500, errorResponse);
-        }
+        return Ok(company);
     }
 
     [HttpGet("cnpj/{cnpj}")]
     public async Task<ActionResult<CompanyResponse>> GetByCnpj(string cnpj)
     {
-        try
-        {
-            var company = await _companyService.GetByCnpjAsync(cnpj);
-            if (company == null)
-            {
-                var errorResponse = new ErrorResponseDto(
-                    message: _localizationService.GetString("Company.NotFound"),
-                    errorCode: "NotFound",
-                    statusCode: 404
-                );
-                return NotFound(errorResponse);
-            }
+        var company = await _companyService.GetByCnpjAsync(cnpj);
+        if (company == null)
+            return NotFound(new ErrorResponseDto(
+                _localizationService.GetString(LocalizationKeys.Company.NotFound),
+                "NotFound", 404));
 
-            return Ok(company);
-        }
-        catch (Exception ex)
-        {
-            var errorResponse = new ErrorResponseDto(
-                message: _localizationService.GetString("Error.InternalServer"),
-                errorCode: "InternalError",
-                statusCode: 500
-            );
-            return StatusCode(500, errorResponse);
-        }
+        return Ok(company);
     }
 
     [HttpGet("exists")]
     public async Task<ActionResult<bool>> Exists([FromQuery] string cnpj, [FromQuery] string email)
     {
-        try
-        {
-            var exists = await _companyService.ExistsAsync(cnpj, email);
-            return Ok(exists);
-        }
-        catch (Exception ex)
-        {
-            var errorResponse = new ErrorResponseDto(
-                message: _localizationService.GetString("Error.InternalServer"),
-                errorCode: "InternalError",
-                statusCode: 500
-            );
-            return StatusCode(500, errorResponse);
-        }
+        var exists = await _companyService.ExistsAsync(cnpj, email);
+        return Ok(exists);
     }
+
+    [HttpGet("exists-by-email")]
+    public async Task<ActionResult<bool>> ExistsByEmail([FromQuery] string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return BadRequest(new ErrorResponseDto(
+                _localizationService.GetString(LocalizationKeys.Error.BadRequest),
+                "InvalidData", 400));
+
+        var exists = await _companyService.ExistsByEmailAsync(email);
+        return Ok(exists);
+    }
+
+    private ErrorResponseDto ValidationError() =>
+        new(string.Join("; ", ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage)),
+            "ValidationError", 400);
 }

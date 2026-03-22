@@ -9,6 +9,7 @@ export const validation = {
   passwordMatch: 'Passwords do not match',
   invalidFormat: 'Invalid {field} format',
   cnpjFormat: 'CNPJ must be in format: 00.000.000/0000-00',
+  cnpjCheckDigits: 'Invalid CNPJ. Please check the digits and try again.',
   cpfFormat: 'CPF must be in format: 000.000.000-00',
   phoneFormat: 'Enter a valid phone number (10-11 digits)',
   ufLength: 'State must be 2 characters',
