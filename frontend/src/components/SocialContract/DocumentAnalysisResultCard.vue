@@ -8,12 +8,13 @@ import {
   formatConfidence,
 } from '@/domain/socialContract/entities/DocumentAnalysisResult'
 import type { DocumentAnalysisResult, CriterionKey } from '@/domain/socialContract/entities/DocumentAnalysisResult'
+import type { IconName } from '@/utils/LucideIconMap'
 
 defineProps<{ result: DocumentAnalysisResult }>()
 
 const { t } = useTranslation()
 
-const criterionIcon = (score: number): string => {
+const criterionIcon = (score: number): IconName => {
   if (score >= CRITERION_SCORE_HIGH) return 'CheckCircle'
   if (score >= CRITERION_SCORE_MEDIUM) return 'TriangleAlert'
   return 'XCircle'
