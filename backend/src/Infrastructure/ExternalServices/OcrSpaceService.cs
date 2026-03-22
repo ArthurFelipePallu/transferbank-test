@@ -37,11 +37,11 @@ public sealed class OcrSpaceService : IOcrService
         content.Add(new StringContent("false"),           "isOverlayRequired");
         content.Add(new StringContent("PDF"),             "filetype");
 
-        var client = _httpClientFactory.CreateClient("OcrSpaceApi");
-        client.DefaultRequestHeaders.Remove("apikey");
-        client.DefaultRequestHeaders.Add("apikey", _options.ApiKey);
+        var client  = _httpClientFactory.CreateClient("OcrSpaceApi");
+        var request = new HttpRequestMessage(HttpMethod.Post, Endpoint) { Content = content };
+        request.Headers.Add("apikey", _options.ApiKey);
 
-        var response = await client.PostAsync(Endpoint, content);
+        var response = await client.SendAsync(request);
 
         if (!response.IsSuccessStatusCode)
             throw new OcrServiceException($"OCR service returned {(int)response.StatusCode}", OcrErrorKind.ApiError);
