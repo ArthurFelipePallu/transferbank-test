@@ -89,6 +89,10 @@ export const onboarding = {
       title: 'Senha',
       description: 'Proteja sua conta',
     },
+    socialContract: {
+      title: 'Contrato Social',
+      description: 'Envie o documento da empresa',
+    },
     partners: {
       title: 'Sócios',
       description: 'Registre os acionistas',
@@ -156,5 +160,42 @@ export const onboarding = {
     testCnpjInfo: 'CNPJ de teste detectado. Você pode continuar, mas nenhum dado será preenchido automaticamente.',
     notFound: 'CNPJ não encontrado. Verifique o número e tente novamente.',
     alreadyRegistered: 'Este CNPJ já está cadastrado em nosso sistema.',
+    invalidCnpj: 'Este CNPJ é inválido. Verifique o número e tente novamente.',
+  },
+  companyStep: {
+    emailAlreadyRegistered: 'Este e-mail já está cadastrado.',
+    emailAlreadyRegisteredHint: 'Por favor, utilize um endereço de e-mail diferente para continuar.',
+  },
+  socialContractStep: {
+    dropHint: 'Arraste e solte seu PDF aqui, ou clique para selecionar',
+    browse: 'Escolher arquivo',
+    preview: 'Ver prévia',
+    previewTitle: 'Prévia do Contrato Social',
+    sizeHint: 'Somente PDF · máx. 10 MB',
+    errorType: 'Apenas arquivos PDF são aceitos.',
+    errorSize: 'O arquivo excede o limite de 10 MB.',
+    ocrExtracting: 'Extraindo texto do documento...',
+    ocrSuccess: 'Texto extraído com sucesso.',
+    ocrError: 'Não foi possível extrair o texto deste documento.',
+    ocrExtractedLabel: 'Texto extraído',
+    aiAnalyzing: 'Validando documento com IA...',
+    aiValid: 'Documento validado com sucesso.',
+    aiInvalid: 'Este documento não parece ser um contrato social válido.',
+    aiError: 'Não foi possível validar o documento. Tente novamente.',
+    aiConfidence: 'Índice de confiança',
+    aiCriteria: {
+      companyIdentification: 'Identificação da empresa',
+      partnerData: 'Dados dos sócios',
+      signatures: 'Assinaturas',
+      requiredClauses: 'Cláusulas obrigatórias',
+      documentIntegrity: 'Integridade do documento',
+    },
+    errors: {
+      ocr_unreadable:
+        'Não foi possível ler o texto deste documento. Ele pode ser digitalizado, baseado em imagem ou protegido por senha.',
+      ocr_api: 'O serviço de extração de texto está indisponível. Tente novamente mais tarde.',
+      ai_api: 'O serviço de validação por IA está indisponível. Tente novamente mais tarde.',
+      ai_response: 'A IA retornou uma resposta inesperada. Por favor, tente novamente.',
+    },
   },
 }

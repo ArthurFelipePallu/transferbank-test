@@ -9,8 +9,9 @@ export enum OnboardingStep {
   CRYPTO = 3,
   ADDRESS = 4,
   PARTNERS = 5,
-  PASSWORD = 6,
-  REVIEW = 7,
+  SOCIAL_CONTRACT = 6,
+  PASSWORD = 7,
+  REVIEW = 8,
 }
 
 export interface OnboardingFormStep {
@@ -60,6 +61,14 @@ export interface OnboardingFormCache {
   bairro?: string
   cidade?: string
   uf?: string
+}
+
+/** Social contract PDF selected during onboarding — held in memory only, never cached */
+export interface SocialContractFile {
+  file: File
+  name: string
+  sizeBytes: number
+  objectUrl: string
 }
 
 // ─── Use-case result ──────────────────────────────────────────────────────────

@@ -90,6 +90,10 @@ export const onboarding = {
       title: 'Password',
       description: 'Secure your account',
     },
+    socialContract: {
+      title: 'Social Contract',
+      description: 'Upload your company document',
+    },
     partners: {
       title: 'Partners',
       description: 'Register shareholders',
@@ -157,5 +161,42 @@ export const onboarding = {
     testCnpjInfo: 'Test CNPJ detected. You can proceed, but no data will be auto-filled.',
     notFound: 'CNPJ not found. Please check the number and try again.',
     alreadyRegistered: 'This CNPJ is already registered in our system.',
+    invalidCnpj: 'This CNPJ is invalid. Please check the number and try again.',
+  },
+  companyStep: {
+    emailAlreadyRegistered: 'This email is already registered.',
+    emailAlreadyRegisteredHint: 'Please use a different email address to continue.',
+  },
+  socialContractStep: {
+    dropHint: 'Drag and drop your PDF here, or click to browse',
+    browse: 'Choose file',
+    preview: 'See preview',
+    previewTitle: 'Social Contract Preview',
+    sizeHint: 'PDF only · max 10 MB',
+    errorType: 'Only PDF files are accepted.',
+    errorSize: 'File exceeds the 10 MB limit.',
+    ocrExtracting: 'Extracting text from document...',
+    ocrSuccess: 'Text extracted successfully.',
+    ocrError: 'Could not extract text from this document.',
+    ocrExtractedLabel: 'Extracted text',
+    aiAnalyzing: 'Validating document with AI...',
+    aiValid: 'Document validated successfully.',
+    aiInvalid: 'This document does not appear to be a valid social contract.',
+    aiError: 'Could not validate the document. Please try again.',
+    aiConfidence: 'Confidence index',
+    aiCriteria: {
+      companyIdentification: 'Company identification',
+      partnerData: 'Partner data',
+      signatures: 'Signatures',
+      requiredClauses: 'Required clauses',
+      documentIntegrity: 'Document integrity',
+    },
+    errors: {
+      ocr_unreadable:
+        'Could not read text from this document. It may be scanned, image-based, or password-protected.',
+      ocr_api: 'The text extraction service is unavailable. Please try again later.',
+      ai_api: 'The AI validation service is unavailable. Please try again later.',
+      ai_response: 'The AI returned an unexpected response. Please try again.',
+    },
   },
 }

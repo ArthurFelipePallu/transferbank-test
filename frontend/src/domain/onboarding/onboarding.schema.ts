@@ -2,11 +2,20 @@ import * as yup from 'yup'
 import { CryptoCurrencyEnum } from '@/api/backendApi'
 import { VALIDATION } from '@/domain/validation/ValidationConstants'
 import { VM } from '@/domain/validation/ValidationMessages'
+import { isValidCnpjCheckDigits } from '@/domain/cnpj/validators/CnpjValidator'
+import { sanitizeCnpj, isTestCnpj } from '@/utils/formatters'
 
 // ─── Full schema ─────────────────────────────────────────────────────────────
 
 export const onboardingSchema = yup.object({
-  cnpj: yup.string().required(VM.required('CNPJ')),
+  cnpj: yup
+    .string()
+    .required(VM.required('CNPJ'))
+    .test('cnpj-check-digits', VM.cnpjCheckDigits, (value) => {
+      if (!value) return true
+      const sanitized = sanitizeCnpj(value)
+      return isTestCnpj(sanitized) || isValidCnpjCheckDigits(sanitized)
+    }),
   companyName: yup.string().required(VM.required('Company name')),
   fantasyName: yup.string().required(VM.required('Fantasy name')),
   cryptoCurrencies: yup
@@ -43,7 +52,14 @@ export type OnboardingFormValues = yup.InferType<typeof onboardingSchema>
 // ─── Per-step schemas ─────────────────────────────────────────────────────────
 
 export const onboardingCnpjSchema = yup.object({
-  cnpj: yup.string().required(VM.required('CNPJ')),
+  cnpj: yup
+    .string()
+    .required(VM.required('CNPJ'))
+    .test('cnpj-check-digits', VM.cnpjCheckDigits, (value) => {
+      if (!value) return true // let required() handle empty
+      const sanitized = sanitizeCnpj(value)
+      return isTestCnpj(sanitized) || isValidCnpjCheckDigits(sanitized)
+    }),
 })
 
 export const onboardingCompanySchema = yup.object({

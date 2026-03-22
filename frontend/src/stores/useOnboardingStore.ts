@@ -24,13 +24,14 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   const formKey      = ref(0)
 
   const steps = ref<OnboardingFormStep[]>([
-    { id: OnboardingStep.CNPJ,     title: 'onboarding.steps.cnpj.title',     description: 'onboarding.steps.cnpj.description',     isCompleted: _cached?.completedSteps?.includes(OnboardingStep.CNPJ)     ?? false },
-    { id: OnboardingStep.COMPANY,  title: 'onboarding.steps.company.title',  description: 'onboarding.steps.company.description',  isCompleted: _cached?.completedSteps?.includes(OnboardingStep.COMPANY)  ?? false },
-    { id: OnboardingStep.CRYPTO,   title: 'onboarding.steps.crypto.title',   description: 'onboarding.steps.crypto.description',   isCompleted: _cached?.completedSteps?.includes(OnboardingStep.CRYPTO)   ?? false },
-    { id: OnboardingStep.ADDRESS,  title: 'onboarding.steps.address.title',  description: 'onboarding.steps.address.description',  isCompleted: _cached?.completedSteps?.includes(OnboardingStep.ADDRESS)  ?? false },
-    { id: OnboardingStep.PARTNERS, title: 'onboarding.steps.partners.title', description: 'onboarding.steps.partners.description', isCompleted: _cached?.completedSteps?.includes(OnboardingStep.PARTNERS) ?? false },
-    { id: OnboardingStep.PASSWORD, title: 'onboarding.steps.password.title', description: 'onboarding.steps.password.description', isCompleted: _cached?.completedSteps?.includes(OnboardingStep.PASSWORD) ?? false },
-    { id: OnboardingStep.REVIEW,   title: 'onboarding.steps.review.title',   description: 'onboarding.steps.review.description',   isCompleted: _cached?.completedSteps?.includes(OnboardingStep.REVIEW)   ?? false },
+    { id: OnboardingStep.CNPJ,            title: 'onboarding.steps.cnpj.title',            description: 'onboarding.steps.cnpj.description',            isCompleted: _cached?.completedSteps?.includes(OnboardingStep.CNPJ)            ?? false },
+    { id: OnboardingStep.COMPANY,         title: 'onboarding.steps.company.title',         description: 'onboarding.steps.company.description',         isCompleted: _cached?.completedSteps?.includes(OnboardingStep.COMPANY)         ?? false },
+    { id: OnboardingStep.CRYPTO,          title: 'onboarding.steps.crypto.title',          description: 'onboarding.steps.crypto.description',          isCompleted: _cached?.completedSteps?.includes(OnboardingStep.CRYPTO)          ?? false },
+    { id: OnboardingStep.ADDRESS,         title: 'onboarding.steps.address.title',         description: 'onboarding.steps.address.description',         isCompleted: _cached?.completedSteps?.includes(OnboardingStep.ADDRESS)         ?? false },
+    { id: OnboardingStep.PARTNERS,        title: 'onboarding.steps.partners.title',        description: 'onboarding.steps.partners.description',        isCompleted: _cached?.completedSteps?.includes(OnboardingStep.PARTNERS)        ?? false },
+    { id: OnboardingStep.SOCIAL_CONTRACT, title: 'onboarding.steps.socialContract.title',  description: 'onboarding.steps.socialContract.description',  isCompleted: _cached?.completedSteps?.includes(OnboardingStep.SOCIAL_CONTRACT) ?? false },
+    { id: OnboardingStep.PASSWORD,        title: 'onboarding.steps.password.title',        description: 'onboarding.steps.password.description',        isCompleted: _cached?.completedSteps?.includes(OnboardingStep.PASSWORD)        ?? false },
+    { id: OnboardingStep.REVIEW,          title: 'onboarding.steps.review.title',          description: 'onboarding.steps.review.description',          isCompleted: _cached?.completedSteps?.includes(OnboardingStep.REVIEW)          ?? false },
   ])
 
   // ─── Computed ─────────────────────────────────────────────────────────────

@@ -17,6 +17,7 @@ import type {
 } from '@/domain/onboarding/onboarding.schema'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
 import type { OnboardingFormCache } from '@/domain/onboarding/onboarding.types'
+import type { SocialContractFile } from '@/domain/onboarding/onboarding.types'
 import StepIndicator from '@/components/UI/StepIndicator.vue'
 import CnpjStep from './steps/CnpjStep.vue'
 import CompanyStep from './steps/CompanyStep.vue'
@@ -24,6 +25,7 @@ import CryptoStep from './steps/CryptoStep.vue'
 import AddressStep from './steps/AddressStep.vue'
 import PasswordStep from './steps/PasswordStep.vue'
 import PartnersStep from './steps/PartnersStep.vue'
+import SocialContractStep from './steps/SocialContractStep.vue'
 import ReviewStep from './steps/ReviewStep.vue'
 
 const onboardingStore = useOnboardingStore()
@@ -36,6 +38,8 @@ const { currentStep, steps, companyData, isSubmitting, formKey } = storeToRefs(o
 
 // Password is intentionally never cached — held in memory only for security
 const pendingPassword = ref('')
+// Social contract PDF — held in memory only, never persisted
+const pendingSocialContract = ref<SocialContractFile | null>(null)
 
 // ─── Step handlers ────────────────────────────────────────────────────────────
 
@@ -60,6 +64,12 @@ const handleStepNext = (data: Partial<OnboardingFormCache>) => {
 
 const handlePasswordNext = (vals: OnboardingPasswordValues) => {
   pendingPassword.value = vals.password
+  onboardingStore.nextStep()
+  scrollToTop()
+}
+
+const handleSocialContractNext = (file: SocialContractFile) => {
+  pendingSocialContract.value = file
   onboardingStore.nextStep()
   scrollToTop()
 }
@@ -169,11 +179,18 @@ const handleSubmit = async () => {
             @back="handleBack(OnboardingStep.ADDRESS)"
           />
 
+          <SocialContractStep
+            v-else-if="currentStep === OnboardingStep.SOCIAL_CONTRACT"
+            :key="`${formKey}-${OnboardingStep.SOCIAL_CONTRACT}`"
+            @next="handleSocialContractNext"
+            @back="handleBack(OnboardingStep.PARTNERS)"
+          />
+
           <PasswordStep
             v-else-if="currentStep === OnboardingStep.PASSWORD"
             :key="`${formKey}-${OnboardingStep.PASSWORD}`"
             @next="handlePasswordNext"
-            @back="handleBack(OnboardingStep.PARTNERS)"
+            @back="handleBack(OnboardingStep.SOCIAL_CONTRACT)"
           />
 
           <ReviewStep
