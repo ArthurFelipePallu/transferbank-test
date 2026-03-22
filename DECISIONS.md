@@ -53,3 +53,15 @@ O Netlify se integra diretamente ao repositório GitHub e realiza o deploy autom
 ## 7. Bootstrap 5 como Base de UI
 
 O uso do Bootstrap 5 foi uma exigência do projeto. Dentro dessa restrição, a decisão foi utilizá-lo de forma disciplinada: as classes utilitárias do Bootstrap foram priorizadas sempre que possível, e um sistema de design tokens em CSS customizado (`base.css`) foi construído sobre ele para garantir consistência visual e facilitar futuras alterações de tema sem depender de sobrescritas espalhadas pelo código.
+
+---
+
+## 8. Duas APIs de Câmbio: CoinGecko + ExchangeRate-API
+
+O projeto utiliza duas fontes de dados distintas para as cotações porque cada API é especializada em uma classe de ativos diferente.
+
+O **CoinGecko** é voltado especificamente para o mercado de criptomoedas. Ele fornece cotações de BTC e ETH em tempo real com alta frequência de atualização — característica essencial para ativos tão voláteis quanto criptomoedas, cujo preço pode variar significativamente em questão de segundos.
+
+O **ExchangeRate-API** cobre as moedas fiduciárias tradicionais (USD, EUR, GBP, JPY). Embora o CoinGecko também disponibilize alguns dados de câmbio fiat, esse não é o seu foco principal, e o plano gratuito impõe limitações de requisições que tornariam seu uso para esse fim menos confiável. O ExchangeRate-API é mais adequado para esse propósito, simples de integrar e gratuito para o volume de consultas necessário.
+
+Utilizar cada API para aquilo que ela faz melhor resulta em dados mais confiáveis para cada tipo de ativo. Do ponto de vista arquitetural, a interface `ICurrencyRateProvider` abstrai ambas as fontes atrás de um único contrato, o que significa que qualquer uma delas pode ser substituída de forma independente no futuro sem impacto nas camadas superiores da aplicação.
