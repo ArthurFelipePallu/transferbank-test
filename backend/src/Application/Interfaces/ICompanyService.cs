@@ -1,4 +1,4 @@
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Models.Requests;
 using Domain.Models.Responses;
 
@@ -11,5 +11,6 @@ public interface ICompanyService
     Task<CompanyResponse?> GetByCnpjAsync(string cnpj);
     Task<IEnumerable<CompanyResponse>> GetAllAsync();
     Task<bool> ExistsAsync(string cnpj, string email);
+    Task<bool> ExistsByCnpjAsync(string cnpj);
     Task<bool> ExistsByEmailAsync(string email);
 }

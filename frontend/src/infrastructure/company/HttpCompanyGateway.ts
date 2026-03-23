@@ -1,4 +1,4 @@
-import { api } from '@/api/apiClient'
+﻿import { api } from '@/api/apiClient'
 import { axiosInstance } from '@/api/axiosInstance'
 import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
 import type { CompanyRegistration, Company, CompanyListItem } from '@/domain/company/interfaces/companyInterface'
@@ -72,7 +72,7 @@ class HttpCompanyGatewayImpl implements CompanyGateway {
   }
 
   async existsByCnpj(cnpj: string): Promise<boolean> {
-    const response = await api.company.companyExistsList({ cnpj })
+    const response = await axiosInstance.get<boolean>('/api/Company/exists-by-cnpj', { params: { cnpj } })
     return response.data ?? false
   }
 

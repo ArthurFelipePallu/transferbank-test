@@ -1,4 +1,4 @@
-using Domain.Entities;
+﻿using Domain.Entities;
 
 namespace Domain.Interfaces;
 
@@ -11,5 +11,6 @@ public interface ICompanyRepository
     Task<Company> AddAsync(Company company);
     Task<Company> UpdateAsync(Company company);
     Task<bool> ExistsAsync(string cnpj, string email);
+    Task<bool> ExistsByCnpjAsync(string cnpj);
     Task<bool> ExistsByEmailAsync(string email);
 }

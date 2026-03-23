@@ -1,4 +1,4 @@
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Constants;
 using Domain.Interfaces;
 using Domain.Models.Requests;
@@ -80,6 +80,18 @@ public class CompanyController : ControllerBase
     public async Task<ActionResult<bool>> Exists([FromQuery] string cnpj, [FromQuery] string email)
     {
         var exists = await _companyService.ExistsAsync(cnpj, email);
+        return Ok(exists);
+    }
+
+    [HttpGet("exists-by-cnpj")]
+    public async Task<ActionResult<bool>> ExistsByCnpj([FromQuery] string cnpj)
+    {
+        if (string.IsNullOrWhiteSpace(cnpj))
+            return BadRequest(new ErrorResponseDto(
+                _localizationService.GetString(LocalizationKeys.Error.BadRequest),
+                "InvalidData", 400));
+
+        var exists = await _companyService.ExistsByCnpjAsync(cnpj);
         return Ok(exists);
     }
 

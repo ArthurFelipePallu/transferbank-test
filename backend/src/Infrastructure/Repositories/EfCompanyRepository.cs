@@ -1,4 +1,4 @@
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +39,9 @@ public class EfCompanyRepository : ICompanyRepository
 
     public async Task<bool> ExistsAsync(string cnpj, string email)
         => await _db.Companies.AnyAsync(c => c.Cnpj == cnpj || c.Email == email);
+
+    public async Task<bool> ExistsByCnpjAsync(string cnpj)
+        => await _db.Companies.AnyAsync(c => c.Cnpj == cnpj);
 
     public async Task<bool> ExistsByEmailAsync(string email)
         => await _db.Companies.AnyAsync(c => c.Email == email);

@@ -1,4 +1,4 @@
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Mappers;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -75,6 +75,9 @@ public class CompanyService : ICompanyService
 
     public async Task<bool> ExistsAsync(string cnpj, string email)
         => await _companyRepository.ExistsAsync(cnpj, email);
+
+    public async Task<bool> ExistsByCnpjAsync(string cnpj)
+        => await _companyRepository.ExistsByCnpjAsync(cnpj);
 
     public async Task<bool> ExistsByEmailAsync(string email)
         => await _companyRepository.ExistsByEmailAsync(email);

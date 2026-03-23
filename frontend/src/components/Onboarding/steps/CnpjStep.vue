@@ -69,14 +69,14 @@ watch(
     await lookup(sanitized)
     lookupDone.value = true
 
-    if (!companyInfo.value && !statusError.value && !invalidCnpj.value) {
+    if (invalidCnpj.value || statusError.value) return
+
+    if (!companyInfo.value) {
       cnpjNotFound.value = true
-      return
     }
 
-    if (!statusError.value && !invalidCnpj.value) {
-      await checkRegistration(sanitized)
-    }
+    // Always check registration — even if BrasilAPI didn't find the CNPJ
+    await checkRegistration(sanitized)
   },
 )
 
