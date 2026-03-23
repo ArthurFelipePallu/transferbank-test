@@ -1,4 +1,4 @@
-import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+import type { TranslationKey } from '@/domain/i18n/types/TranslationKey'
 import type { CryptoCurrencyEnum } from '@/api/backendApi'
 
 // ─── Step navigation ──────────────────────────────────────────────────────────

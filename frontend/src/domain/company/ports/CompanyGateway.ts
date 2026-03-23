@@ -1,6 +1,6 @@
 import type { CompanyRegistration, Company, CompanyListItem } from '../interfaces/companyInterface'
 
-export interface CompanyGateway {
+export interface ICompanyGateway {
   register(data: CompanyRegistration): Promise<Company>
   getById(id: string): Promise<Company>
   getByCnpj(cnpj: string): Promise<Company>

@@ -21,6 +21,9 @@ export {
   applyCepMask,
 } from './masks'
 
+// Re-export domain CNPJ rules — isTestCnpj lives in the domain layer
+export { isTestCnpj } from '@/domain/cnpj/validators/CnpjValidator'
+
 import { applyCpfMask } from './masks'
 
 /**
@@ -92,14 +95,4 @@ export const formatCep = (cep: string): string => {
   const cleaned = cep.replace(/\D/g, '')
   if (cleaned.length !== 8) return cep
   return cleaned.replace(/^(\d{5})(\d{3})$/, '$1-$2')
-}
-
-/**
- * Domain rule: a CNPJ where all 14 digits are the same is a test CNPJ.
- * Used to skip the external CNPJ registry lookup for test/dev scenarios.
- * Example: "00000000000000", "11111111111111"
- */
-export const isTestCnpj = (cnpj: string): boolean => {
-  const s = cnpj.replace(/\D/g, '')
-  return s.length === 14 && s.split('').every((d) => d === s[0])
 }

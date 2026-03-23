@@ -43,3 +43,13 @@ export function isValidCnpjCheckDigits(cnpj: string): boolean {
   const second = calcCheckDigit(digits.slice(0, 13), SECOND_DIGIT_WEIGHTS)
   return second === digits[13]
 }
+
+/**
+ * Domain rule: a CNPJ where all 14 digits are the same is a test/dev CNPJ.
+ * Used to skip the external CNPJ registry lookup for test scenarios.
+ * Example: "00000000000000", "11111111111111"
+ */
+export function isTestCnpj(cnpj: string): boolean {
+  const s = cnpj.replace(/\D/g, '')
+  return s.length === CNPJ_LENGTH && s.split('').every((d) => d === s[0])
+}

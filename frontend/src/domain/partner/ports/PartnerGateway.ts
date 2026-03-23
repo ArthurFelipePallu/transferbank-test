@@ -49,7 +49,7 @@ export interface ShareholdingInfo {
  * Single contract for all partner operations — read and write.
  * Types and interface co-located so callers only need one import path.
  */
-export interface PartnerGateway {
+export interface IPartnerGateway {
   register(data: PartnerRegistration): Promise<PartnerSummary>
   update(id: string, data: PartnerUpdate): Promise<PartnerSummary>
   patch(id: string, data: PartnerPatch): Promise<PartnerSummary>

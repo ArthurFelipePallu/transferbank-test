@@ -1,5 +1,5 @@
 import type { Locale } from '../types/Locale'
-import type { TranslationKey } from '@/infrastructure/i18n/translations/en/index'
+import type { TranslationKey } from '@/domain/i18n/types/TranslationKey'
 
 /**
  * Port: Translation Service Interface

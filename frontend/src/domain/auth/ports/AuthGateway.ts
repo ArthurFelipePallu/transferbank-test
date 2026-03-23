@@ -1,5 +1,5 @@
 import type { LoginCredentials, AuthSession } from '../interfaces/authInterface'
 
-export interface AuthGateway {
+export interface IAuthGateway {
   login(credentials: LoginCredentials): Promise<AuthSession>
 }
