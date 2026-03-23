@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Formatters - Presentation Layer Utilities
  * Functions to format data for display purposes
  * Organized by responsibility following SRP
@@ -55,9 +55,12 @@ export const formatCpf = (cpf: string): string => {
  */
 export const formatCpfDisplay = (cpf: string | undefined): string => {
   if (!cpf) return '—'
-  // If it already contains the formatted separators (dots/dash), pass through
-  if (/[.*-]/.test(cpf)) return cpf
-  // Otherwise apply the standard mask to raw digits
+  // Already fully formatted — pass through
+  if (/^\*{3}\.\d{3}\.\d{3}-\*{2}$/.test(cpf)) return cpf
+  if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf)) return cpf
+  // Partial CPF from CNPJ API: 3 asterisks + 6 visible digits (e.g. "***222222")
+  if (/^\*{3}\d{6}$/.test(cpf)) return "***." + cpf.slice(3, 6) + "." + cpf.slice(6, 9) + "-**"
+  // Raw 11-digit CPF — apply standard mask
   return applyCpfMask(cpf) || '—'
 }
 

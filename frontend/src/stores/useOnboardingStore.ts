@@ -94,7 +94,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
       ...ONBOARDING_PARTNER_DEFAULTS,
       tempId: crypto.randomUUID(),
       fullName: s.nome ?? '',
-      cpf: s.cpf ? sanitizeCpf(s.cpf) : UNKNOWN_CPF_PLACEHOLDER,
+      cpf: s.cpf ? (s.cpf.includes('*') ? s.cpf : sanitizeCpf(s.cpf)) : UNKNOWN_CPF_PLACEHOLDER,
       shareholding: shareholdings[i]!,
     }))
   }
