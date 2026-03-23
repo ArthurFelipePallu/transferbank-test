@@ -1,9 +1,10 @@
-﻿import { api } from '@/api/apiClient'
+import { api } from '@/api/apiClient'
 import { axiosInstance } from '@/api/axiosInstance'
-import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
+import type { ICompanyGateway } from '@/domain/company/ports/CompanyGateway'
 import type { CompanyRegistration, Company, CompanyListItem } from '@/domain/company/interfaces/companyInterface'
 import type { CompanyResponse } from '@/api/backendApi'
 
+const COMPANY_EXISTS_BY_CNPJ_ENDPOINT = '/api/Company/exists-by-cnpj'
 const COMPANY_EXISTS_BY_EMAIL_ENDPOINT = '/api/Company/exists-by-email'
 
 const toCompany = (r: CompanyResponse): Company => ({
@@ -29,7 +30,7 @@ const toCompanyListItem = (r: CompanyResponse): CompanyListItem => ({
   createdAt: r.createdAt ?? '',
 })
 
-class HttpCompanyGatewayImpl implements CompanyGateway {
+class HttpCompanyGatewayImpl implements ICompanyGateway {
   async register(data: CompanyRegistration): Promise<Company> {
     const response = await api.company.companyRegisterCreate({
       cnpj: data.cnpj,
@@ -72,16 +73,14 @@ class HttpCompanyGatewayImpl implements CompanyGateway {
   }
 
   async existsByCnpj(cnpj: string): Promise<boolean> {
-    const response = await axiosInstance.get<boolean>('/api/Company/exists-by-cnpj', { params: { cnpj } })
+    const response = await axiosInstance.get<boolean>(COMPANY_EXISTS_BY_CNPJ_ENDPOINT, { params: { cnpj } })
     return response.data ?? false
   }
 
   async existsByEmail(email: string): Promise<boolean> {
-    const response = await axiosInstance.get<boolean>(COMPANY_EXISTS_BY_EMAIL_ENDPOINT, {
-      params: { email },
-    })
+    const response = await axiosInstance.get<boolean>(COMPANY_EXISTS_BY_EMAIL_ENDPOINT, { params: { email } })
     return response.data ?? false
   }
 }
 
-export const httpCompanyGateway: CompanyGateway = new HttpCompanyGatewayImpl()
+export const httpCompanyGateway: ICompanyGateway = new HttpCompanyGatewayImpl()
