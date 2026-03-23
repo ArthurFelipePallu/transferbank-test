@@ -1,4 +1,4 @@
-﻿import { api } from '@/api/apiClient'
+import { api } from '@/api/apiClient'
 import { axiosInstance } from '@/api/axiosInstance'
 import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
 import type { CompanyRegistration, Company, CompanyListItem } from '@/domain/company/interfaces/companyInterface'
@@ -39,6 +39,14 @@ class HttpCompanyGatewayImpl implements CompanyGateway {
       phone: data.phone,
       password: data.password,
       cryptoCurrencies: data.cryptoCurrencies,
+      partners: data.partners?.map((p) => ({
+        fullName: p.fullName,
+        cpf: p.cpf,
+        nationality: p.nationality,
+        shareholding: p.shareholding,
+        isPep: p.isPep,
+        documents: p.documents?.map((d) => ({ name: d.name, size: d.size, type: d.type })),
+      })),
     })
     return toCompany(response.data)
   }
