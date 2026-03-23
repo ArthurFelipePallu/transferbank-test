@@ -1,17 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Domain.Enums;
+using Domain.Extensions;
 
 namespace Api.Controllers;
 
 /// <summary>
-/// Proxies currency rate requests to CoinGecko and ExchangeRate-API server-side,
-/// avoiding browser CORS restrictions.
+/// Handles crypto currency metadata and proxies live rate requests
+/// to CoinGecko / ExchangeRate-API server-side (no browser CORS issues).
 /// </summary>
 [ApiController]
 [Route("api/currency")]
 public class CurrencyController : ControllerBase
 {
+    // ── Crypto metadata endpoints (used by onboarding form) ──────────────────
+
+    /// <summary>Returns all supported crypto currencies as value/alias pairs.</summary>
+    [HttpGet("all-crypto-currencies")]
+    public IActionResult GetAllCryptoCurrencies()
+    {
+        var result = Enum.GetValues<CryptoCurrencyEnum>()
+            .Select(c => new { value = c.ToString(), alias = c.GetDisplayName() });
+        return Ok(result);
+    }
+
+    /// <summary>Returns the crypto currency with the highest enum value (used as default).</summary>
+    [HttpGet("most-valuable-currency")]
+    public IActionResult GetMostValuableCurrency()
+    {
+        var top = Enum.GetValues<CryptoCurrencyEnum>()
+            .OrderByDescending(c => (int)c)
+            .First();
+        return Ok(new { value = top.ToString(), alias = top.GetDisplayName() });
+    }
+
     private static readonly string CoinGeckoUrl =
         "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=brl";
 
