@@ -50,6 +50,14 @@ builder.Services.AddHttpClient("CnpjApi", client =>
     client.DefaultRequestHeaders.Add("User-Agent", "TransferBank-API/1.0");
 });
 
+// Named HttpClient for currency rate proxies (CoinGecko + ExchangeRate-API)
+builder.Services.AddHttpClient("CurrencyApi", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(10);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.DefaultRequestHeaders.Add("User-Agent", "TransferBank-API/1.0");
+});
+
 // Named HttpClient for OCR.space proxy
 builder.Services.AddHttpClient("OcrSpaceApi", client =>
 {
