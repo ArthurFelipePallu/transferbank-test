@@ -1,27 +1,27 @@
-﻿import type { CompanyGateway } from '@/domain/company/ports/CompanyGateway'
+﻿import type { ICompanyGateway } from '@/domain/company/ports/CompanyGateway'
 import type { CompanyRegistration, Company, CompanyListItem } from '@/domain/company/interfaces/companyInterface'
 
 export const registerCompany = (
-  gateway: CompanyGateway,
+  gateway: ICompanyGateway,
   data: CompanyRegistration,
 ): Promise<Company> => gateway.register(data)
 
 export const getAllCompanies = (
-  gateway: CompanyGateway,
+  gateway: ICompanyGateway,
 ): Promise<CompanyListItem[]> => gateway.getAll()
 
 export const getCompanyById = (
-  gateway: CompanyGateway,
+  gateway: ICompanyGateway,
   id: string,
 ): Promise<Company> => gateway.getById(id)
 
 export const getCompanyByCnpj = (
-  gateway: CompanyGateway,
+  gateway: ICompanyGateway,
   cnpj: string,
 ): Promise<Company> => gateway.getByCnpj(cnpj)
 
 export const checkCompanyExists = (
-  gateway: CompanyGateway,
+  gateway: ICompanyGateway,
   cnpj: string,
   email: string,
 ): Promise<boolean> => gateway.exists(cnpj, email)
@@ -32,7 +32,7 @@ export const checkCompanyExists = (
  * Returns true if registered, false if not found.
  */
 export const checkCnpjRegistered = (
-  gateway: CompanyGateway,
+  gateway: ICompanyGateway,
   cnpj: string,
 ): Promise<boolean> => gateway.existsByCnpj(cnpj)
 
@@ -41,6 +41,6 @@ export const checkCnpjRegistered = (
  * Returns true if registered, false if not found.
  */
 export const checkEmailRegistered = (
-  gateway: CompanyGateway,
+  gateway: ICompanyGateway,
   email: string,
 ): Promise<boolean> => gateway.existsByEmail(email)

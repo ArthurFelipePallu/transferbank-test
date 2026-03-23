@@ -9,13 +9,13 @@
 import { computed, ref } from 'vue'
 import type { ICnpjGateway } from '@/domain/cnpj/ports/ICnpjGateway'
 import type { CompanyInfo } from '@/domain/cnpj/entities/CompanyInfo'
-import { httpCnpjGateway } from '@/infrastructure/cnpj/HttpCnpjGateway'
+import { cnpjGateway } from '@/infrastructure/gateways'
 import { lookupCompanyByCnpj } from '@/application/cnpj/lookupCnpjUseCase'
 import { CompanyStatusError } from '@/domain/cnpj/errors/CompanyStatusError'
 import { InvalidCnpjError } from '@/domain/cnpj/errors/InvalidCnpjError'
 import { useAsyncLookup } from './useAsyncLookup'
 
-export function useCnpjLookup(gateway: ICnpjGateway = httpCnpjGateway) {
+export function useCnpjLookup(gateway: ICnpjGateway = cnpjGateway) {
   // Captures the raw thrown error so we can do instanceof checks.
   // useAsyncLookup only stores error.message (string), not the Error object itself.
   const rawError = ref<unknown>(null)

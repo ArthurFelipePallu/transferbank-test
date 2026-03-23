@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { LoginCredentials, AuthSession } from '@/domain/auth/interfaces/authInterface'
 import { login as loginUseCase } from '@/application/auth/loginUseCase'
-import { httpAuthGateway } from '@/infrastructure/auth/HttpAuthGateway'
+import { authGateway } from '@/infrastructure/gateways'
 import { storageService, STORAGE_KEYS } from '@/infrastructure/storage/StorageService'
 import { USER_DEFAULTS } from '@/domain/auth/entities/AuthDefaults'
 
@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
       error.value = null
 
       const credentials: LoginCredentials = { email, password }
-      const session: AuthSession = await loginUseCase(httpAuthGateway, credentials)
+      const session: AuthSession = await loginUseCase(authGateway, credentials)
 
       // Map session to user
       user.value = {

@@ -1,5 +1,5 @@
 ﻿import { api } from '@/api/apiClient'
-import type { PartnerGateway } from '@/domain/partner/ports/PartnerGateway'
+import type { IPartnerGateway } from '@/domain/partner/ports/PartnerGateway'
 import type { PartnerRegistration, PartnerUpdate, PartnerPatch, ShareholdingInfo } from '@/domain/partner/ports/PartnerGateway'
 import type { PartnerSummary } from '@/domain/partner/entities/PartnerSummary'
 import type { PartnerResponse } from '@/api/backendApi'
@@ -21,7 +21,7 @@ const toPartnerSummary = (r: PartnerResponse): PartnerSummary => ({
 
 // ─── Gateway ──────────────────────────────────────────────────────────────────
 
-class HttpPartnerGatewayImpl implements PartnerGateway {
+class HttpPartnerGatewayImpl implements IPartnerGateway {
   async register(data: PartnerRegistration): Promise<PartnerSummary> {
     const response = await api.partner.partnerRegisterCreate({
       companyId: data.companyId,
@@ -78,4 +78,4 @@ class HttpPartnerGatewayImpl implements PartnerGateway {
   }
 }
 
-export const httpPartnerGateway: PartnerGateway = new HttpPartnerGatewayImpl()
+export const httpPartnerGateway: IPartnerGateway = new HttpPartnerGatewayImpl()

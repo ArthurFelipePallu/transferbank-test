@@ -10,3 +10,4 @@
 export { httpCompanyGateway as companyGateway } from './company/HttpCompanyGateway'
 export { httpPartnerGateway as partnerGateway } from './partner/HttpPartnerGateway'
 export { httpAuthGateway as authGateway } from './auth/HttpAuthGateway'
+export { httpCnpjGateway as cnpjGateway } from './cnpj/HttpCnpjGateway'
