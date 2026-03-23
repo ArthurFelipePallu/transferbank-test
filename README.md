@@ -313,3 +313,23 @@ gcloud run services update transferbank-api \
   --region us-central1 \
   --update-env-vars "OpenAi__ApiKey=sk-sua-nova-chave"
 ```
+
+---
+
+## Prompt de Design (Origem do Layout)
+
+O layout visual da aplicação foi gerado a partir do seguinte prompt utilizado em uma ferramenta de design assistido por IA (estilo Figma AI / v0):
+
+> Design a corporate banking web application UI called "Mediteranian Bank" inspired by the TransferBank visual identity. Use a deep purple-to-dark-purple gradient as the primary brand background (`#440f47` → `#2d0a4e` → `#3e0c3f`), with teal (`#1c9c8c` / `#21b8a6`) as the accent color for buttons, links, and highlights. Light gray (`#cfcfcf`) as the page surface. Inter font throughout.
+>
+> Design the following pages:
+>
+> **1. Landing Page** — Full-width hero section with the purple gradient background, large white headline, teal CTA button ("Open your account"), and a secondary login link. Below the hero, a light gray services section with a 2-column card grid showcasing features (crypto support, AI document validation, real-time exchange rates, partner management). End with a full-width gradient CTA banner and a dark footer.
+>
+> **2. Login Page** — Centered card on a light gray background. Card contains logo, email and password fields, a teal submit button, and a link to the onboarding flow.
+>
+> **3. Multi-step Onboarding Form** — Single-page layout with a vertical step indicator on the left (or top on mobile) showing 8 steps: CNPJ lookup, Company data, Crypto selection, Address, Partners, Social contract upload, Password, and Review. Each step renders a form panel on the right. The CNPJ step auto-fills company data from a lookup. The Partners step shows a split panel — partner list on the left, add/edit form sliding in from the right. The Social Contract step has a PDF drag-and-drop zone. The Review step shows a read-only summary of all entered data. Navigation uses Back/Next buttons at the bottom of each step. Progress is shown via connected step bubbles with teal active state.
+>
+> **4. Dashboard** — Authenticated view with a top navbar (logo, nav links, user avatar dropdown). Main content area shows: a welcome card with company name, a company info card (CNPJ, email, status badge), a partners list card with shareholding percentages, and a quick actions grid (teal icon cards).
+>
+> Use Bootstrap 5 grid, rounded cards with subtle shadows, teal gradient primary buttons, and white/light surfaces for form areas. Mobile-responsive throughout.
