@@ -17,8 +17,7 @@ const { t } = useTranslation()
         <!-- Brand -->
         <div class="col-12 col-sm-6 col-lg-3 footer-brand-col">
           <AppBrandLogo class="footer-brand-logo" />
-          <p class="mt-2 mb-1 small text-muted fst-italic user-select-none">(not a real website)</p>
-          <p class="mt-0 small text-muted user-select-none">{{ t('footer.tagline') }}</p>
+          <p class="mt-3 small text-muted user-select-none">{{ t('footer.tagline') }}</p>
         </div>
 
         <!-- Link columns (Services, Support, …) -->

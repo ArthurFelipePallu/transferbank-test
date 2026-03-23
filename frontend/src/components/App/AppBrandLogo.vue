@@ -7,7 +7,10 @@ import { RouteName } from '@/domain/navigation/types/RouteNames'
 <template>
   <RouterLink :to="{ name: RouteName.Home }" class="brand" aria-label="Go to home">
     <AppLogo />
-    <span class="brand-name">Mediteranian Bank</span>
+    <span class="brand-text">
+      <span class="brand-name">Mediteranian Bank</span>
+      <span class="brand-disclaimer">(not a real website)</span>
+    </span>
   </RouterLink>
 </template>
 
@@ -27,12 +30,27 @@ import { RouteName } from '@/domain/navigation/types/RouteNames'
   opacity: 0.85;
 }
 
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
 .brand-name {
   /* Mobile: 0.85rem (13.6px) */
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.03em;
   transition: font-size 0.2s ease;
+  line-height: 1.2;
+}
+
+.brand-disclaimer {
+  font-size: 0.6rem;
+  font-style: italic;
+  opacity: 0.55;
+  letter-spacing: 0;
+  line-height: 1.2;
 }
 
 /* Small tablet */
