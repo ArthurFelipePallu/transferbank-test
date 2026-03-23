@@ -11,3 +11,6 @@ export { httpCompanyGateway as companyGateway } from './company/HttpCompanyGatew
 export { httpPartnerGateway as partnerGateway } from './partner/HttpPartnerGateway'
 export { httpAuthGateway as authGateway } from './auth/HttpAuthGateway'
 export { httpCnpjGateway as cnpjGateway } from './cnpj/HttpCnpjGateway'
+export { httpCepGateway as cepGateway } from './address/HttpCepGateway'
+export { ocrGateway } from './ocr/ocrGatewayFactory'
+export { documentAnalysisGateway } from './ai/openAiGatewayFactory'

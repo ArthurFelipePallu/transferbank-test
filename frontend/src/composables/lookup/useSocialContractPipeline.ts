@@ -1,8 +1,7 @@
 import { computed } from 'vue'
 import { useSocialContractOcr } from './useSocialContractOcr'
 import { useSocialContractAnalysis } from './useSocialContractAnalysis'
-import { getOcrGateway } from '@/infrastructure/ocr/ocrGatewayFactory'
-import { getDocumentAnalysisGateway } from '@/infrastructure/ai/openAiGatewayFactory'
+import { ocrGateway, documentAnalysisGateway } from '@/infrastructure/gateways'
 import type { PipelineError } from '@/domain/socialContract/errors/PipelineError'
 
 /**
@@ -13,8 +12,8 @@ import type { PipelineError } from '@/domain/socialContract/errors/PipelineError
  * OCR errors take priority over AI errors in `pipelineError`.
  */
 export function useSocialContractPipeline() {
-  const ocr = useSocialContractOcr(getOcrGateway())
-  const analysis = useSocialContractAnalysis(getDocumentAnalysisGateway())
+  const ocr = useSocialContractOcr(ocrGateway)
+  const analysis = useSocialContractAnalysis(documentAnalysisGateway)
 
   const isProcessing = computed(() => ocr.isLoading.value || analysis.isLoading.value)
   const isPassed = computed(() => ocr.isValid.value && analysis.result.value?.isValid === true)

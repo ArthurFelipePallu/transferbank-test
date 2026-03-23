@@ -7,11 +7,11 @@
 import { computed } from 'vue'
 import type { ICepGateway } from '@/domain/address/ports/ICepGateway'
 import type { Address } from '@/domain/address/entities/Address'
-import { httpCepGateway } from '@/infrastructure/address/HttpCepGateway'
+import { cepGateway } from '@/infrastructure/gateways'
 import { lookupAddressByCep } from '@/application/address/lookupCepUseCase'
 import { useAsyncLookup } from './useAsyncLookup'
 
-export function useCepLookup(gateway: ICepGateway = httpCepGateway) {
+export function useCepLookup(gateway: ICepGateway = cepGateway) {
   const asyncLookup = useAsyncLookup<Address>({
     logPrefix: 'useCepLookup',
   })

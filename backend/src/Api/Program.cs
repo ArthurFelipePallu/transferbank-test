@@ -58,6 +58,13 @@ builder.Services.AddHttpClient("CurrencyApi", client =>
     client.DefaultRequestHeaders.Add("User-Agent", "TransferBank-API/1.0");
 });
 
+// Named HttpClient for CEP proxy (ViaCEP)
+builder.Services.AddHttpClient("CepApi", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(10);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
 // Named HttpClient for OCR.space proxy
 builder.Services.AddHttpClient("OcrSpaceApi", client =>
 {
