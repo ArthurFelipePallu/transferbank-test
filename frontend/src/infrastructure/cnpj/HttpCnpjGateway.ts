@@ -1,18 +1,18 @@
-import axios from 'axios'
 import type { ICnpjGateway } from '@/domain/cnpj/ports/ICnpjGateway'
 import type { CompanyInfo, CnpjApiResponse } from '@/domain/cnpj/entities/CompanyInfo'
 import { sanitizeCnpj } from '@/utils/formatters'
 import { InvalidCnpjError } from '@/domain/cnpj/errors/InvalidCnpjError'
+import { axiosInstance } from '@/api/axiosInstance'
+import axios from 'axios'
 
 /**
  * Routes CNPJ lookups through the backend API proxy, which makes the
  * server-to-server call to publica.cnpj.ws — no CORS issues in any environment.
  *
- * Works in dev (localhost backend), Netlify (Cloud Run backend), and anywhere else
- * as long as VITE_API_URL is set correctly.
+ * Uses axiosInstance so the correct baseURL (VITE_API_URL) is always applied,
+ * including in production on Netlify.
  */
-const BACKEND_URL = import.meta.env.VITE_API_URL ?? 'https://localhost:5287'
-const CNPJ_BASE_URL = `${BACKEND_URL}/api/cnpj`
+const CNPJ_ENDPOINT_PREFIX = '/api/cnpj'
 const CNPJ_REQUIRED_LENGTH = 14
 const CNPJ_TIMEOUT_MS = 10_000
 
@@ -25,8 +25,8 @@ export class HttpCnpjGateway implements ICnpjGateway {
     }
 
     try {
-      const response = await axios.get<CnpjApiResponse>(
-        `${CNPJ_BASE_URL}/${sanitized}`,
+      const response = await axiosInstance.get<CnpjApiResponse>(
+        `${CNPJ_ENDPOINT_PREFIX}/${sanitized}`,
         { timeout: CNPJ_TIMEOUT_MS },
       )
       return this._mapToCompanyInfo(response.data)
