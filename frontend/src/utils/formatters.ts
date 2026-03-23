@@ -58,8 +58,8 @@ export const formatCpfDisplay = (cpf: string | undefined): string => {
   // Already fully formatted — pass through
   if (/^\*{3}\.\d{3}\.\d{3}-\*{2}$/.test(cpf)) return cpf
   if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf)) return cpf
-  // Partial CPF from CNPJ API: 3 asterisks + 6 visible digits (e.g. "***222222")
-  if (/^\*{3}\d{6}$/.test(cpf)) return "***." + cpf.slice(3, 6) + "." + cpf.slice(6, 9) + "-**"
+  // Partial CPF from BrasilAPI: "***NNNNNN**" (e.g. "***354400**")
+  if (/^\*{3}\d{6}\*{2}$/.test(cpf)) return "***." + cpf.slice(3, 6) + "." + cpf.slice(6, 9) + "-**"
   // Raw 11-digit CPF — apply standard mask
   return applyCpfMask(cpf) || '—'
 }
