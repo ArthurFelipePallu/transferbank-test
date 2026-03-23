@@ -25,14 +25,13 @@ public class CurrencyController : ControllerBase
         return Ok(result);
     }
 
-    /// <summary>Returns the crypto currency with the highest enum value (used as default).</summary>
+    /// <summary>Returns the crypto currency with the highest market cap (Bitcoin by convention).</summary>
     [HttpGet("most-valuable-currency")]
     public IActionResult GetMostValuableCurrency()
     {
-        var top = Enum.GetValues<CryptoCurrencyEnum>()
-            .OrderByDescending(c => (int)c)
-            .First();
-        return Ok(new { value = top.ToString(), alias = top.GetDisplayName() });
+        // Bitcoin is conventionally the most valuable; return it directly
+        var btc = CryptoCurrencyEnum.Bitcoin;
+        return Ok(new { value = btc.ToString(), alias = btc.GetDisplayName() });
     }
 
     private static readonly string CoinGeckoUrl =
