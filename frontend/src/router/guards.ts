@@ -14,6 +14,10 @@ export function registerGuards(router: Router): void {
     _clearOnboardingCacheOnLeave(from.name as RouteName | undefined, to.name as RouteName | undefined)
     _enforceAuthRules(to, next)
   })
+
+  router.afterEach((to) => {
+    _setPageTitle(to)
+  })
 }
 
 /**
@@ -55,4 +59,17 @@ function _enforceAuthRules(to: RouteLocationNormalized, next: NavigationGuardNex
   }
 
   next()
+}
+
+/** Sets document.title from the route's titleKey meta, falling back to the app name */
+function _setPageTitle(to: RouteLocationNormalized): void {
+  const APP_NAME = 'Mediteranian Bank'
+  const titleKey = to.matched
+    .slice()
+    .reverse()
+    .find((r) => r.meta.titleKey)?.meta.titleKey as string | undefined
+
+  document.title = titleKey
+    ? `${translationService.t(titleKey as Parameters<typeof translationService.t>[0])} | ${APP_NAME}`
+    : APP_NAME
 }
