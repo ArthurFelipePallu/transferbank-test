@@ -20,8 +20,10 @@ public sealed class OpenAiDocumentAnalysisService : IDocumentAnalysisService
     private static readonly double   ConfidenceThreshold  = 0.70;
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
-    private static readonly string SystemPrompt = @"You are a document validation assistant for a Brazilian financial institution.
+    private static readonly string SystemPromptTemplate = @"You are a document validation assistant for a Brazilian financial institution.
 Analyze the provided text and determine whether it is a valid Brazilian social contract (Contrato Social).
+
+IMPORTANT: Respond with all text fields (""reason"" and all ""notes"") in {LANGUAGE}.
 
 Evaluate EACH of the following criteria and assign a score from 0.0 to 1.0:
 
@@ -61,8 +63,13 @@ Respond ONLY with a JSON object in this exact format, no markdown, no extra text
         _options           = options.Value;
     }
 
-    public async Task<DocumentAnalysisResponse> AnalyzeAsync(string extractedText)
+    public async Task<DocumentAnalysisResponse> AnalyzeAsync(string extractedText, string? locale = null)
     {
+        var language = locale?.StartsWith("pt", StringComparison.OrdinalIgnoreCase) == true
+            ? "Brazilian Portuguese (pt-BR)"
+            : "English";
+
+        var systemPrompt = SystemPromptTemplate.Replace("{LANGUAGE}", language);
         var truncated = extractedText.Length > TextTruncationLimit
             ? extractedText[..TextTruncationLimit]
             : extractedText;
@@ -74,7 +81,7 @@ Respond ONLY with a JSON object in this exact format, no markdown, no extra text
             temperature = 0,
             messages    = new[]
             {
-                new { role = "system", content = SystemPrompt },
+                new { role = "system", content = systemPrompt },
                 new { role = "user",   content = truncated    },
             },
         };

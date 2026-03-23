@@ -57,7 +57,8 @@ public class DocumentController : ControllerBase
 
         try
         {
-            var result = await _analysisService.AnalyzeAsync(request.Text);
+            var locale = Request.Headers["Accept-Language"].FirstOrDefault();
+            var result = await _analysisService.AnalyzeAsync(request.Text, locale);
             return Ok(result);
         }
         catch (AiServiceException ex)

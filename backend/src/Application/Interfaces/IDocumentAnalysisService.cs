@@ -8,5 +8,5 @@ namespace Application.Interfaces;
 /// </summary>
 public interface IDocumentAnalysisService
 {
-    Task<DocumentAnalysisResponse> AnalyzeAsync(string extractedText);
+    Task<DocumentAnalysisResponse> AnalyzeAsync(string extractedText, string? locale = null);
 }
