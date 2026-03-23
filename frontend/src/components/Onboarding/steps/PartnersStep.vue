@@ -1,8 +1,8 @@
 ﻿<script setup lang="ts">
 import { computed, isRef } from 'vue'
-import { UserPlus, CheckCircle, Users } from 'lucide-vue-next'
 import { useTranslation } from '@/composables/i18n/useTranslation'
 import { useScrollToTop } from '@/composables/ui/useScrollToTop'
+import BaseLucideIcon from '@/components/BaseLucideIcon.vue'
 import { usePartnerPanel } from '@/composables/form/usePartnerPanel'
 import type { PartnerPanelStore } from '@/composables/form/usePartnerPanel'
 import type { OnboardingPartner } from '@/domain/onboarding/onboarding.types'
@@ -92,7 +92,7 @@ const hasForm = computed(() => showForm.value || formLeaving.value)
             v-if="partnersList.length === 0"
             class="d-flex flex-column align-items-center justify-content-center gap-1 p-4 border border-dashed rounded-3 text-secondary text-center"
           >
-            <Users :size="28" class="opacity-50" />
+            <BaseLucideIcon name="Users" :size="28" class="opacity-50" />
             <p class="small mb-0">{{ t('onboarding.partnersStep.noPartners') }}</p>
           </div>
 
@@ -102,12 +102,12 @@ const hasForm = computed(() => showForm.value || formLeaving.value)
             class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 w-100 mt-1"
             @click="openAddForm"
           >
-            <UserPlus :size="15" />
+            <BaseLucideIcon name="UserPlus" :size="15" />
             {{ t('onboarding.partnersStep.addPartner') }}
           </button>
 
           <div v-if="isComplete" class="d-flex align-items-center gap-2 text-success small mt-1">
-            <CheckCircle :size="15" />
+            <BaseLucideIcon name="CheckCircle" :size="15" />
             {{ t('onboarding.partnersStep.shareholdingFull') }}
           </div>
         </div>

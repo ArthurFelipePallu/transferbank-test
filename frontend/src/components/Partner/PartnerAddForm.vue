@@ -1,8 +1,8 @@
 ﻿<script setup lang="ts">
 import { ref, computed, isRef } from "vue"
 import { useForm } from "vee-validate"
-import { X } from "lucide-vue-next"
 import { useUiStore } from "@/stores/useUiStore"
+import BaseLucideIcon from "@/components/BaseLucideIcon.vue"
 import { useTranslation } from "@/composables/i18n/useTranslation"
 import { usePartnerFormValidation } from "@/composables/form/usePartnerFormValidation"
 import { createOnboardingPartnerSchema, type OnboardingPartnerValues } from "@/domain/onboarding/onboarding.schema"
@@ -76,6 +76,9 @@ const { shareholdingWarning, duplicateNameWarning, duplicateCpfWarning } =
     props.editingPartner?.tempId,
   )
 
+const hasDuplicates = computed(() => !!duplicateNameWarning.value || !!duplicateCpfWarning.value)
+const canSubmit = computed(() => meta.value.valid && !hasDuplicates.value)
+
 const updateDocuments = (files: PartnerDocument[]) => {
   documents.value = files
   setFieldValue("documents", files)
@@ -88,6 +91,7 @@ const close = () => {
 }
 
 const save = handleSubmit(async (vals) => {
+  if (hasDuplicates.value) return
   uiStore.startLoading(t("onboarding.partnersStep.saving"))
   try {
     if (isEditMode.value && props.editingPartner) {
@@ -132,7 +136,7 @@ const save = handleSubmit(async (vals) => {
         </p>
       </div>
       <button type="button" class="btn-close-form" @click="close" :aria-label="t('common.close')">
-        <X :size="16" />
+        <BaseLucideIcon name="X" :size="16" />
       </button>
     </div>
 
@@ -173,7 +177,7 @@ const save = handleSubmit(async (vals) => {
         <button type="button" class="btn btn-outline-secondary flex-fill" @click="close">
           {{ t("onboarding.partnersStep.cancel") }}
         </button>
-        <button type="submit" class="btn btn-gradient-primary flex-fill" :disabled="!meta.valid">
+        <button type="submit" class="btn btn-gradient-primary flex-fill" :disabled="!canSubmit">
           {{ isEditMode ? t("onboarding.partnersStep.update") : t("onboarding.partnersStep.save") }}
         </button>
       </div>
